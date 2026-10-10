@@ -1,6 +1,7 @@
 import "server-only";
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
+import { adalahPemilik } from "@/lib/pemilik";
 
 export type SekolahSaya = { id: string; slug: string; nama: string };
 
@@ -24,6 +25,7 @@ export async function wajibAdmin() {
       if (!error) ({ data: sekolah } = await ambil());
     }
   }
+  if (!sekolah && adalahPemilik(user)) redirect("/super"); // pemilik tidak punya sekolah
   if (!sekolah) redirect("/daftar/lengkapi"); // slug keburu dipakai orang lain, dll.
   return { db, user, sekolah: sekolah as SekolahSaya };
 }

@@ -1,0 +1,109 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { wajibPemilik } from "@/lib/pemilik";
+import { SLUG_RE, SLUG_DIPESAN } from "@/lib/slug";
+
+type Hasil = { ok: true } | { ok: false; pesan: string };
+const gagal = (pesan: string): Hasil => ({ ok: false, pesan });
+const UUID = /^[0-9a-f-]{36}$/;
+
+async function catat(svc: Awaited<ReturnType<typeof wajibPemilik>>["svc"], oleh: string, sekolahId: string | null, peristiwa: string, detail: object) {
+  await svc.from("log_langganan").insert({ sekolah_id: sekolahId, peristiwa, detail: { ...detail, oleh } });
+}
+const segarkan = (id?: string) => { revalidatePath("/super"); if (id) revalidatePath(`/super/sekolah/${id}`); };
+
+export async function setNonaktif(id: string, nonaktif: boolean): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  const { error } = await svc.from("sekolah").update({ nonaktif }).eq("id", id);
+  if (error) return gagal("Gagal menyimpan.");
+  await catat(svc, email, id, nonaktif ? "pemilik_nonaktifkan" : "pemilik_aktifkan_kembali", {});
+  segarkan(id);
+  return { ok: true };
+}
+
+export async function setBatal(id: string, dibatalkan: boolean): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  const { error } = await svc.from("langganan").update({ dibatalkan }).eq("sekolah_id", id);
+  if (error) return gagal("Gagal menyimpan.");
+  await catat(svc, email, id, dibatalkan ? "pemilik_batalkan_langganan" : "pemilik_pulihkan_langganan", {});
+  segarkan(id);
+  return { ok: true };
+}
+
+/** Untuk sekolah percontohan atau kompensasi: menambah masa aktif tanpa kode. */
+export async function beriMasaAktif(id: string, hari: number): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  if (!Number.isInteger(hari) || hari < 1 || hari > 730) return gagal("Isi jumlah hari 1–730.");
+  const { data: l } = await svc.from("langganan").select("trial_until,active_until").eq("sekolah_id", id).maybeSingle();
+  if (!l) return gagal("Sekolah tidak ditemukan.");
+  const dasar = Math.max(Date.now(), new Date(l.active_until ?? l.trial_until).getTime());
+  const baru = new Date(dasar + hari * 86400000).toISOString();
+  const { error } = await svc.from("langganan").update({ active_until: baru }).eq("sekolah_id", id);
+  if (error) return gagal("Gagal menyimpan.");
+  await catat(svc, email, id, "pemilik_beri_masa_aktif", { hari, sampai: baru });
+  segarkan(id);
+  return { ok: true };
+}
+
+export async function gantiSlug(id: string, slug: string): Promise<Hasil> {
+  const { svc } = await wajibPemilik();
+  const s = slug.trim().toLowerCase();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  if (!SLUG_RE.test(s) || SLUG_DIPESAN.includes(s)) return gagal("Alamat tidak valid (huruf kecil, angka, tanda hubung; 3–40 karakter).");
+  const { error } = await svc.rpc("ganti_slug", { p_sekolah: id, p_slug: s });
+  if (error) return gagal(error.message === "slug_dipakai" ? "Alamat itu sudah dipakai sekolah lain." : "Gagal mengganti alamat.");
+  revalidatePath(`/${s}`);
+  segarkan(id);
+  return { ok: true };
+}
+
+export async function gantiEmail(id: string, emailBaru: string): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  const em = emailBaru.trim().toLowerCase();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  if (!/^\S+@\S+\.\S+$/.test(em) || em.length > 200) return gagal("Isi email yang benar.");
+
+  const { data: a } = await svc.from("admin_sekolah").select("user_id,email").eq("sekolah_id", id).maybeSingle();
+  if (!a) return gagal("Admin sekolah tidak ditemukan.");
+  if (a.email === em) return { ok: true };
+  if ((await svc.from("admin_sekolah").select("sekolah_id").eq("email", em).maybeSingle()).data) return gagal("Email itu sudah dipakai sekolah lain.");
+
+  // email_confirm: true karena pemilik sudah memverifikasi permintaan (lihat PRD: atas permintaan sekolah)
+  const { error: e1 } = await svc.auth.admin.updateUserById(a.user_id, { email: em, email_confirm: true });
+  if (e1) return gagal("Gagal mengganti email di akun login. Mungkin sudah dipakai akun lain.");
+  const { error: e2 } = await svc.from("admin_sekolah").update({ email: em }).eq("sekolah_id", id);
+  if (e2) {
+    await svc.auth.admin.updateUserById(a.user_id, { email: a.email, email_confirm: true }); // kembalikan agar tetap sinkron
+    return gagal("Gagal menyimpan. Perubahan dibatalkan.");
+  }
+  await catat(svc, email, id, "pemilik_ganti_email", { dari: a.email, ke: em });
+  segarkan(id);
+  return { ok: true };
+}
+
+export async function simpanPengaturan(f: { lynk: string; harga: string; komisi: string; batas: string }): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  const lynk = f.lynk.trim();
+  if (lynk && !/^https:\/\//.test(lynk)) return gagal("Link Lynk harus diawali https://");
+  const angka = (s: string) => (s.trim() === "" ? null : Number(s));
+  const harga = angka(f.harga), komisi = angka(f.komisi), batas = angka(f.batas);
+  for (const n of [harga, komisi, batas]) if (n !== null && (!Number.isInteger(n) || n < 0)) return gagal("Nominal harus angka bulat 0 atau lebih.");
+  if (komisi === null || batas === null) return gagal("Isi nominal komisi dan batas pencairan.");
+
+  const { data: lama } = await svc.from("pengaturan").select("komisi_nominal,batas_pencairan").eq("id", 1).single();
+  const { error } = await svc.from("pengaturan").update({
+    lynk_url: lynk || null, harga_paket: harga, komisi_nominal: komisi, batas_pencairan: batas,
+  }).eq("id", 1);
+  if (error) return gagal("Gagal menyimpan.");
+  // perubahan nominal komisi wajib tercatat (PRD)
+  if (lama && (lama.komisi_nominal !== komisi || lama.batas_pencairan !== batas)) {
+    await catat(svc, email, null, "komisi_diubah", { komisi: [lama.komisi_nominal, komisi], batas: [lama.batas_pencairan, batas] });
+  }
+  revalidatePath("/super/pengaturan");
+  revalidatePath("/admin/langganan");
+  return { ok: true };
+}
