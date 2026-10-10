@@ -8,6 +8,14 @@ export const MIME: Record<string, string> = {
 export type SekolahPublik = {
   slug: string;
   nama: string;
+  alamat: string | null;
+  logo_path: string | null;
+  banner_path: string | null;
+  keunggulan: string[];
+  kontak_wa: string | null;
+  peta_url: string | null;
+  instagram: string | null;
+  galeri: string[];
   warna_aksen: string;
   format_berkas: string[];
   status: "trial" | "aktif" | "tenggang" | "nonaktif";
@@ -40,3 +48,7 @@ export async function kompres(file: File): Promise<File> {
   if (!blob || blob.size >= file.size) return file;
   return new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" });
 }
+
+/** URL publik aset sekolah (logo, banner, galeri) dari bucket `sekolah-aset`. */
+export const urlAset = (path: string | null | undefined) =>
+  path ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/sekolah-aset/${path}` : null;
