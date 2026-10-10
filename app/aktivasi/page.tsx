@@ -1,3 +1,9 @@
-export default function Page() {
-  return <main className="p-6"><h1 className="text-xl font-semibold">Aktivasi</h1></main>;
+import type { Metadata } from "next";
+import FormAktivasi from "./form";
+
+// Tidak ditautkan dari menu; dituju lewat redirect setelah bayar di Lynk.
+export const metadata: Metadata = { title: "Aktivasi langganan", robots: { index: false, follow: false } };
+
+export default function Aktivasi() {
+  return <FormAktivasi sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY ?? null} />;
 }
