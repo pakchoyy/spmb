@@ -21,7 +21,7 @@ const ambil = cache(async (slug: string) => {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { sekolah } = await ambil((await params).slug);
   return sekolah
-    ? { title: `SPMB ${sekolah.nama}`, description: `Pendaftaran SPMB online ${sekolah.nama}.` }
+    ? { title: `SPMB ${sekolah.nama}`, description: `Pendaftaran SPMB online ${sekolah.nama}.`, manifest: `/${sekolah.slug}/manifest.webmanifest` }
     : {};
 }
 

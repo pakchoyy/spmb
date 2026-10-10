@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
   let q = db.from("pendaftar")
     .select("nomor,nama_anak,tanggal_lahir,isian,status,catatan,wa_ortu,dibuat_pada,jalur(nama),berkas(jenis)")
     .order("dibuat_pada", { ascending: true }).limit(BATAS);
+  q = q.eq("diarsip", f.arsip === "1"); // default hanya pendaftar aktif; ?arsip=1 untuk data arsip
   if (f.status) q = q.eq("status", f.status);
   if (f.jalur) q = q.eq("jalur_id", f.jalur);
   if (f.q) q = q.or(`nama_anak.ilike.%${f.q}%,nomor.ilike.%${f.q}%`);

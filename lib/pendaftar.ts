@@ -8,7 +8,7 @@ export const WARNA_STATUS: Record<string, string> = {
   Ditolak: "bg-red-100 text-red-800",
 };
 
-export type Filter = { status?: string; jalur?: string; q?: string };
+export type Filter = { status?: string; jalur?: string; q?: string; arsip?: string };
 
 /** Baca filter dari query string; nilai yang tidak dikenal dibuang. */
 export function bacaFilter(p: Record<string, string | string[] | undefined>): Filter {
@@ -16,6 +16,7 @@ export function bacaFilter(p: Record<string, string | string[] | undefined>): Fi
   const status = satu("status");
   const jalur = satu("jalur");
   return {
+    arsip: satu("arsip") === "1" ? "1" : undefined,
     status: (STATUS as readonly string[]).includes(status) ? status : undefined,
     jalur: /^[0-9a-f-]{36}$/.test(jalur) ? jalur : undefined,
     // karakter khusus sintaks filter PostgREST dibuang

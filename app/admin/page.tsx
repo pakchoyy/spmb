@@ -6,7 +6,7 @@ import Cetak from "./pendaftar/[id]/cetak";
 export const dynamic = "force-dynamic";
 
 type Status = { status: "trial" | "aktif" | "tenggang" | "nonaktif"; trial_until: string; active_until: string | null };
-type Ringkasan = { total: number; baru: number; diterima: number; cadangan: number; ditolak: number; hari_ini: number; berkas_kurang: number };
+type Ringkasan = { total: number; arsip: number; baru: number; diterima: number; cadangan: number; ditolak: number; hari_ini: number; berkas_kurang: number };
 type Jalur = { nama: string; syarat_berkas: string[] } | null;
 const LABEL = { trial: "Coba gratis", aktif: "Aktif", tenggang: "Masa tenggang (hanya baca)", nonaktif: "Nonaktif" };
 const PER_HAL = 30;
@@ -21,6 +21,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
   let q = db.from("pendaftar")
     .select("id,nomor,nama_anak,status,wa_ortu,dibuat_pada,jalur(nama,syarat_berkas),berkas(id)", { count: "exact" })
     .order("dibuat_pada", { ascending: false }).range((hal - 1) * PER_HAL, hal * PER_HAL - 1);
+  q = q.eq("diarsip", f.arsip === "1");
   if (f.status) q = q.eq("status", f.status);
   if (f.jalur) q = q.eq("jalur_id", f.jalur);
   if (f.q) q = q.or(`nama_anak.ilike.%${f.q}%,nomor.ilike.%${f.q}%`);
@@ -30,7 +31,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
     db.from("jalur").select("id,nama").order("nama"), q,
   ]);
   const langganan = st as Status | null;
-  const r = (rk ?? { total: 0, baru: 0, diterima: 0, cadangan: 0, ditolak: 0, hari_ini: 0, berkas_kurang: 0 }) as Ringkasan;
+  const r = (rk ?? { total: 0, arsip: 0, baru: 0, diterima: 0, cadangan: 0, ditolak: 0, hari_ini: 0, berkas_kurang: 0 }) as Ringkasan;
   const ganda = new Set((gandaIds ?? []) as string[]);
   const akhir = langganan ? new Date(langganan.active_until ?? langganan.trial_until) : null;
   const sisa = akhir ? Math.max(0, Math.ceil((akhir.getTime() - kini()) / 86400000)) : 0;
@@ -41,6 +42,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
     return `/admin?${s}${h > 1 ? `${s ? "&" : ""}hal=${h}` : ""}`;
   };
   const adaFilter = !!(f.status || f.jalur || f.q);
+  const lihatArsip = f.arsip === "1";
 
   const tugas = [
     { n: r.baru, teks: "pendaftar baru menunggu diperiksa", href: tautan({ status: "Baru" }) },
@@ -67,6 +69,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
         <div className="flex flex-col items-end gap-1 text-sm">
           <Link className="underline" href="/admin/langganan">Langganan</Link>
           <Link className="underline" href="/admin/pengaturan">Pengaturan</Link>
+          {r.arsip > 0 && !lihatArsip && <Link className="underline" href="/admin?arsip=1">Arsip ({r.arsip})</Link>}
           <Link className="underline" href={`/${sekolah.slug}`}>Lihat halaman</Link>
         </div>
       </section>
@@ -89,7 +92,9 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
       </section>
 
       <section id="daftar" className="space-y-3">
+        {lihatArsip && <p className="rounded-lg bg-neutral-100 p-3 text-sm">Anda melihat data yang sudah diarsipkan. <Link className="underline" href="/admin">Kembali ke pendaftar aktif</Link></p>}
         <form className="grid grid-cols-2 gap-2 print:hidden" action="/admin">
+          {lihatArsip && <input type="hidden" name="arsip" value="1" />}
           <input name="q" defaultValue={f.q} placeholder="Cari nama atau nomor" className="col-span-2 h-12 rounded-lg border bg-white px-3" />
           <select name="status" defaultValue={f.status ?? ""} className="h-12 rounded-lg border bg-white px-3">
             <option value="">Semua status</option>{STATUS.map((s) => <option key={s}>{s}</option>)}
