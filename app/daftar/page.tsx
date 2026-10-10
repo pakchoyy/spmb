@@ -1,3 +1,9 @@
-export default function Page() {
-  return <main className="p-6"><h1 className="text-xl font-semibold">Daftar sekolah</h1></main>;
+import type { Metadata } from "next";
+import FormDaftarSekolah from "./form";
+
+export const metadata: Metadata = { title: "Daftar sekolah — coba gratis 7 hari" };
+
+export default async function Daftar({ searchParams }: { searchParams: Promise<{ ref?: string }> }) {
+  const { ref } = await searchParams;
+  return <FormDaftarSekolah kodeAwal={(ref ?? "").slice(0, 12)} />;
 }

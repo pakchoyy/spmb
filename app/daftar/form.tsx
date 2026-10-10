@@ -1,0 +1,64 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import Link from "next/link";
+import { Galat, Halaman, Kolom, input, tombol } from "@/components/ui";
+import SlugField from "@/components/slug-field";
+import { buatSlug } from "@/lib/slug";
+import { daftarSekolah } from "./actions";
+
+export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
+  const [f, setF] = useState({ nama: "", slug: "", npsn: "", email: "", sandi: "", kodeRef: kodeAwal });
+  const [slugManual, setSlugManual] = useState(false);
+  const [galat, setGalat] = useState("");
+  const [selesai, setSelesai] = useState(false);
+  const [pending, start] = useTransition();
+  const set = (p: Partial<typeof f>) => setF((x) => ({ ...x, ...p }));
+
+  function kirim(e: React.FormEvent) {
+    e.preventDefault();
+    setGalat("");
+    start(async () => {
+      try {
+        const r = await daftarSekolah(f);
+        if (r.ok) setSelesai(true); else setGalat(r.pesan);
+      } catch { setGalat("Koneksi terputus. Coba lagi."); }
+    });
+  }
+
+  if (selesai) {
+    return (
+      <Halaman judul="Cek email Anda" sub={`Kami mengirim link konfirmasi ke ${f.email}.`}>
+        <p>Klik link di email itu untuk mengaktifkan akun. Masa coba gratis 7 hari mulai setelah akun aktif. Tidak ada email? Periksa folder spam.</p>
+        <Link className="underline" href="/masuk">Sudah konfirmasi? Masuk</Link>
+      </Halaman>
+    );
+  }
+
+  return (
+    <Halaman judul="Coba gratis 7 hari" sub="Buat halaman SPMB sekolah Anda. Tanpa kartu kredit.">
+      <form onSubmit={kirim} className="space-y-4">
+        <Kolom label="Nama sekolah">
+          <input className={input} value={f.nama} maxLength={150} autoComplete="organization" required
+            onChange={(e) => set({ nama: e.target.value, ...(slugManual ? {} : { slug: buatSlug(e.target.value) }) })} />
+        </Kolom>
+        <SlugField nilai={f.slug} onUbah={(s) => { setSlugManual(true); set({ slug: s }); }} />
+        <Kolom label="NPSN (opsional)" bantu={<span className="text-neutral-600">Membantu memastikan sekolah Anda asli.</span>}>
+          <input className={input} value={f.npsn} inputMode="numeric" maxLength={8} onChange={(e) => set({ npsn: e.target.value.replace(/\D/g, "") })} />
+        </Kolom>
+        <Kolom label="Email admin" bantu={<span className="text-neutral-600">Satu email untuk satu sekolah. Dipakai untuk masuk dan kode aktivasi.</span>}>
+          <input className={input} type="email" value={f.email} autoComplete="email" required onChange={(e) => set({ email: e.target.value })} />
+        </Kolom>
+        <Kolom label="Kata sandi" bantu={<span className="text-neutral-600">Minimal 8 karakter.</span>}>
+          <input className={input} type="password" value={f.sandi} minLength={8} autoComplete="new-password" required onChange={(e) => set({ sandi: e.target.value })} />
+        </Kolom>
+        <Kolom label="Kode ajakan (opsional)">
+          <input className={input} value={f.kodeRef} maxLength={12} autoCapitalize="characters" onChange={(e) => set({ kodeRef: e.target.value })} />
+        </Kolom>
+        <Galat>{galat}</Galat>
+        <button className={tombol} disabled={pending}>{pending ? "Memproses…" : "Buat akun sekolah"}</button>
+      </form>
+      <p className="text-center text-sm">Sudah punya akun? <Link className="underline" href="/masuk">Masuk</Link></p>
+    </Halaman>
+  );
+}
