@@ -1,0 +1,72 @@
+"use server";
+
+import { headers } from "next/headers";
+import { supabaseAnon } from "@/lib/supabase/anon";
+import { supabaseService } from "@/lib/supabase/admin";
+import { lolosTurnstile } from "@/lib/turnstile";
+import { MAKS_BYTE, MIME, normalWa, pesanError, type SekolahPublik } from "@/lib/berkas";
+
+type Hasil = { ok: true; nomor?: string } | { ok: false; pesan: string };
+
+export async function kirimPendaftaran(slug: string, data: {
+  jalur: string | null; namaAnak: string; tglLahir: string; wa: string;
+  isian: Record<string, string>; setuju: boolean; turnstile: string | null;
+}): Promise<Hasil> {
+  if (!(await lolosTurnstile(data.turnstile))) return { ok: false, pesan: "Verifikasi gagal. Muat ulang halaman." };
+  const db = supabaseAnon();
+  const { data: s } = await db.rpc("sekolah_publik", { p_slug: slug });
+  const sekolah = s as SekolahPublik | null;
+  if (!sekolah) return { ok: false, pesan: "Sekolah tidak ditemukan." };
+
+  const nama = data.namaAnak.trim();
+  if (nama.length < 2) return { ok: false, pesan: "Isi nama lengkap anak." };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(data.tglLahir)) return { ok: false, pesan: "Isi tanggal lahir." };
+
+  const wa = normalWa(data.wa);
+  if (!wa) return { ok: false, pesan: pesanError("wa_tidak_valid") };
+
+  // hanya terima isian untuk field yang memang ada; wajib dicek di server
+  const isian: Record<string, string> = {};
+  for (const f of sekolah.form) {
+    const v = (data.isian[f.id] ?? "").trim().slice(0, 500);
+    if (f.wajib && !v) return { ok: false, pesan: `Isi "${f.label}".` };
+    if (f.tipe === "pilihan" && v && !f.opsi?.includes(v)) return { ok: false, pesan: `Pilihan "${f.label}" tidak valid.` };
+    if (v) isian[f.label] = v;
+  }
+
+  // perangkat = hash IP + user agent; cukup untuk pembatasan kasar
+  const h = await headers();
+  const mentah = `${h.get("x-forwarded-for") ?? ""}|${h.get("user-agent") ?? ""}`;
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(mentah));
+  const perangkat = Buffer.from(buf).toString("hex").slice(0, 32);
+
+  const { data: nomor, error } = await db.rpc("daftar_pendaftar", {
+    p_slug: slug, p_jalur: data.jalur, p_nama_anak: nama, p_tgl_lahir: data.tglLahir,
+    p_isian: isian, p_perangkat: perangkat, p_setuju: data.setuju, p_wa: wa,
+  });
+  if (error) return { ok: false, pesan: pesanError(error.message) };
+  return { ok: true, nomor: nomor as string };
+}
+
+export async function unggahBerkas(slug: string, nomor: string, tglLahir: string, jenis: string, form: FormData): Promise<Hasil> {
+  const file = form.get("file");
+  if (!(file instanceof File)) return { ok: false, pesan: "Berkas tidak ditemukan." };
+  if (file.size > MAKS_BYTE) return { ok: false, pesan: "Ukuran berkas maksimal 2 MB." };
+
+  const svc = supabaseService();
+  const { data: info, error } = await svc.rpc("siapkan_berkas", { p_slug: slug, p_nomor: nomor, p_tgl: tglLahir, p_jenis: jenis });
+  if (error) return { ok: false, pesan: "Data pendaftaran tidak cocok." };
+  const { sekolah_id, pendaftar_id, format } = info as { sekolah_id: string; pendaftar_id: string; format: string[] };
+
+  const ext = Object.keys(MIME).find((e) => MIME[e] === file.type);
+  if (!ext || !format.includes(ext)) return { ok: false, pesan: `Format berkas harus ${format.join(", ").toUpperCase()}.` };
+
+  const path = `${sekolah_id}/${pendaftar_id}/${jenis.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.${ext}`;
+  const { error: up } = await svc.storage.from("berkas").upload(path, file, { contentType: file.type, upsert: true });
+  if (up) return { ok: false, pesan: "Unggah gagal. Coba lagi." };
+
+  const { data: lama, error: cat } = await svc.rpc("catat_berkas", { p_pendaftar: pendaftar_id, p_jenis: jenis, p_path: path, p_ukuran: file.size });
+  if (cat) return { ok: false, pesan: "Unggah gagal. Coba lagi." };
+  if (lama && lama !== path) await svc.storage.from("berkas").remove([lama as string]);
+  return { ok: true };
+}

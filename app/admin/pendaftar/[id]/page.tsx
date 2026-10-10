@@ -1,0 +1,72 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { wajibAdmin } from "@/lib/sekolah-saya";
+import { linkWa, tglId, WARNA_STATUS } from "@/lib/pendaftar";
+import StatusForm from "./status-form";
+import BerkasList from "./berkas-list";
+import Cetak from "./cetak";
+
+export const dynamic = "force-dynamic";
+
+export default async function Detail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const { db, sekolah } = await wajibAdmin();
+  if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
+  const { data: p } = await db.from("pendaftar")
+    .select("id,nomor,nama_anak,tanggal_lahir,isian,status,catatan,wa_ortu,dibuat_pada,jalur(nama,syarat_berkas)")
+    .eq("id", id).maybeSingle();
+  if (!p) notFound();
+  const jalur = (Array.isArray(p.jalur) ? p.jalur[0] : p.jalur) as { nama: string; syarat_berkas: string[] } | null;
+
+  const [{ data: berkas }, { data: ganda }, { data: st }] = await Promise.all([
+    db.from("berkas").select("id,jenis,ukuran").eq("pendaftar_id", id),
+    db.from("pendaftar").select("id,nomor,dibuat_pada").eq("tanggal_lahir", p.tanggal_lahir).ilike("nama_anak", p.nama_anak.trim()).neq("id", id),
+    db.rpc("status_saya"),
+  ]);
+  const bisaUbah = ["trial", "aktif"].includes((st as { status: string } | null)?.status ?? "");
+  const wa = linkWa(p.wa_ortu);
+  const isian = Object.entries((p.isian ?? {}) as Record<string, string>);
+
+  return (
+    <main className="mx-auto w-full max-w-2xl space-y-6 px-5 py-8">
+      <div className="flex items-center justify-between print:hidden">
+        <Link className="text-sm underline" href="/admin">← Daftar pendaftar</Link>
+        <Cetak />
+      </div>
+
+      <header>
+        <p className="text-sm text-neutral-600">{sekolah.nama} · {p.nomor}</p>
+        <h1 className="font-serif text-2xl font-bold">{p.nama_anak}</h1>
+        <span className={`mt-2 inline-block rounded-full px-3 py-0.5 text-sm font-bold ${WARNA_STATUS[p.status]}`}>{p.status}</span>
+      </header>
+
+      {!!ganda?.length && (
+        <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+          ⚠ Kemungkinan data ganda: nama dan tanggal lahir sama dengan{" "}
+          {ganda.map((g, i) => <span key={g.id}>{i > 0 && ", "}<Link className="underline" href={`/admin/pendaftar/${g.id}`}>{g.nomor}</Link></span>)}.
+        </p>
+      )}
+
+      <dl className="divide-y rounded-xl border bg-white text-sm">
+        {[["Tanggal lahir", tglId(p.tanggal_lahir)], ["Jalur", jalur?.nama ?? "-"], ["Mendaftar", tglId(p.dibuat_pada, true)], ...isian].map(([k, v]) => (
+          <div key={k} className="flex justify-between gap-4 p-3"><dt className="text-neutral-600">{k}</dt><dd className="text-right font-medium">{v}</dd></div>
+        ))}
+        <div className="flex items-center justify-between gap-4 p-3">
+          <dt className="text-neutral-600">WhatsApp</dt>
+          <dd className="font-medium">{wa ? <a className="underline" href={wa} rel="noopener noreferrer">+{p.wa_ortu}</a> : "-"}</dd>
+        </div>
+      </dl>
+
+      <section>
+        <h2 className="mb-2 font-serif text-lg font-bold">Berkas</h2>
+        <BerkasList syarat={jalur?.syarat_berkas ?? []} berkas={berkas ?? []} />
+      </section>
+
+      <section className="print:hidden">
+        <h2 className="mb-2 font-serif text-lg font-bold">Keputusan</h2>
+        {!bisaUbah && <p className="mb-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">Langganan tidak aktif, data hanya bisa dibaca.</p>}
+        <StatusForm id={p.id} status={p.status} catatan={p.catatan} bisaUbah={bisaUbah} />
+      </section>
+    </main>
+  );
+}
