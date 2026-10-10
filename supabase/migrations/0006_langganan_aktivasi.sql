@@ -44,7 +44,7 @@ begin
   end if;
   loop
     v := 'SPMB-';
-    for i in 1..5 loop v := v || substr(alfabet, 1 + get_byte(gen_random_bytes(1), 0) % 31, 1); end loop;
+    for i in 1..5 loop v := v || substr(alfabet, 1 + get_byte(extensions.gen_random_bytes(1), 0) % 31, 1); end loop;
     exit when not exists (select 1 from kode_aktivasi where kode = v);
   end loop;
   insert into kode_aktivasi (kode, sekolah_id, email) values (v, sid, lower(trim(p_email)));

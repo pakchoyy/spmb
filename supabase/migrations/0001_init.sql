@@ -1,7 +1,7 @@
 -- Gerbang (SPMB multi-sekolah): skema awal, RLS, dan fungsi.
 -- Prinsip: anon tidak boleh menyentuh tabel; hanya memanggil fungsi di bawah.
 
-create extension if not exists pgcrypto;
+create extension if not exists pgcrypto with schema extensions;
 alter default privileges in schema public revoke execute on functions from public;
 
 -- ───────── Tabel ─────────
@@ -32,7 +32,7 @@ create table sekolah (
   instagram text,
   slug_dikunci boolean not null default false,
   nonaktif boolean not null default false,       -- diatur pemilik
-  kode_ajakan text not null unique default upper(substr(encode(gen_random_bytes(6), 'hex'), 1, 8)),
+  kode_ajakan text not null unique default upper(substr(encode(extensions.gen_random_bytes(6), 'hex'), 1, 8)),
   diajak_oleh text,                              -- kode ajakan sekolah pengajak
   dibuat_pada timestamptz not null default now()
 );
@@ -236,7 +236,7 @@ begin
     if j.kuota is not null and (select count(*) from pendaftar where jalur_id = j.id) >= j.kuota then
       raise exception 'kuota_penuh'; end if;
   end if;
-  nomor := to_char(now(), 'YY') || '-' || upper(substr(encode(gen_random_bytes(4), 'hex'), 1, 6));
+  nomor := to_char(now(), 'YY') || '-' || upper(substr(encode(extensions.gen_random_bytes(4), 'hex'), 1, 6));
   insert into pendaftar (sekolah_id, nomor, jalur_id, nama_anak, tanggal_lahir, isian, perangkat)
     values (s.id, nomor, p_jalur, left(p_nama_anak, 100), p_tgl_lahir, coalesce(p_isian,'{}'), left(p_perangkat, 64));
   return nomor;
@@ -309,7 +309,7 @@ begin
   end if;
   loop
     v := 'SPMB-';
-    for i in 1..5 loop v := v || substr(alfabet, 1 + get_byte(gen_random_bytes(1), 0) % 31, 1); end loop;
+    for i in 1..5 loop v := v || substr(alfabet, 1 + get_byte(extensions.gen_random_bytes(1), 0) % 31, 1); end loop;
     exit when not exists (select 1 from kode_aktivasi where kode = v);
   end loop;
   insert into kode_aktivasi (kode, sekolah_id, email) values (v, sid, lower(trim(p_email)));

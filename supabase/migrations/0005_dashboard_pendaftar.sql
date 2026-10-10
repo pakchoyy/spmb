@@ -33,7 +33,7 @@ begin
     if j.kuota is not null and (select count(*) from pendaftar where jalur_id = j.id) >= j.kuota then
       raise exception 'kuota_penuh'; end if;
   end if;
-  nomor := to_char(now(), 'YY') || '-' || upper(substr(encode(gen_random_bytes(4), 'hex'), 1, 6));
+  nomor := to_char(now(), 'YY') || '-' || upper(substr(encode(extensions.gen_random_bytes(4), 'hex'), 1, 6));
   insert into pendaftar (sekolah_id, nomor, jalur_id, nama_anak, tanggal_lahir, isian, perangkat, setuju_privasi_pada, wa_ortu)
     values (s.id, nomor, p_jalur, left(trim(p_nama_anak), 100), p_tgl_lahir, coalesce(p_isian,'{}'), left(p_perangkat, 64), now(), p_wa);
   return nomor;
