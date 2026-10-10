@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { supabaseAnon } from "@/lib/supabase/anon";
 import { supabaseServer } from "@/lib/supabase/server";
 import { SLUG_RE } from "@/lib/slug";
+import { VERSI_PRIVASI, VERSI_SYARAT } from "@/lib/hukum";
 
 export async function cekSlugAksi(slug: string): Promise<{ tersedia: boolean; saran: string[] }> {
   if (!SLUG_RE.test(slug)) return { tersedia: false, saran: [] };
@@ -23,8 +24,9 @@ export async function cekSlugAksi(slug: string): Promise<{ tersedia: boolean; sa
 type Hasil = { ok: true } | { ok: false; pesan: string };
 
 export async function daftarSekolah(f: {
-  nama: string; slug: string; npsn: string; email: string; sandi: string; kodeRef: string;
+  nama: string; slug: string; npsn: string; email: string; sandi: string; kodeRef: string; setuju: boolean;
 }): Promise<Hasil> {
+  if (!f.setuju) return { ok: false, pesan: "Centang persetujuan Syarat dan Ketentuan untuk melanjutkan." };
   const email = f.email.trim().toLowerCase();
   if (f.nama.trim().length < 3) return { ok: false, pesan: "Isi nama sekolah." };
   if (!SLUG_RE.test(f.slug)) return { ok: false, pesan: "Alamat halaman tidak valid." };
@@ -41,7 +43,9 @@ export async function daftarSekolah(f: {
     options: {
       emailRedirectTo: `${origin}/auth/konfirmasi`,
       // sekolah dibuat setelah email dikonfirmasi (lihat lib/sekolah-saya.ts)
-      data: { nama: f.nama.trim(), slug: f.slug, npsn: f.npsn, kode_ref: f.kodeRef.trim().toUpperCase() },
+      data: { nama: f.nama.trim(), slug: f.slug, npsn: f.npsn, kode_ref: f.kodeRef.trim().toUpperCase(),
+        // versi dokumen yang disetujui, tercatat di akun
+        setuju_syarat: VERSI_SYARAT, setuju_privasi: VERSI_PRIVASI, setuju_pada: new Date().toISOString() },
     },
   });
   // Email yang sudah terdaftar tidak dibedakan, supaya tidak bisa dipakai menebak email orang.

@@ -8,7 +8,7 @@ import { buatSlug } from "@/lib/slug";
 import { daftarSekolah } from "./actions";
 
 export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
-  const [f, setF] = useState({ nama: "", slug: "", npsn: "", email: "", sandi: "", kodeRef: kodeAwal });
+  const [f, setF] = useState({ nama: "", slug: "", npsn: "", email: "", sandi: "", kodeRef: kodeAwal, setuju: false });
   const [slugManual, setSlugManual] = useState(false);
   const [galat, setGalat] = useState("");
   const [selesai, setSelesai] = useState(false);
@@ -55,8 +55,12 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
         <Kolom label="Kode ajakan (opsional)">
           <input className={input} value={f.kodeRef} maxLength={12} autoCapitalize="characters" onChange={(e) => set({ kodeRef: e.target.value })} />
         </Kolom>
+        <label className="flex items-start gap-3 text-sm">
+          <input type="checkbox" className="mt-1 size-5" checked={f.setuju} onChange={(e) => set({ setuju: e.target.checked })} />
+          <span>Saya mewakili sekolah ini dan menyetujui <Link className="underline" href="/syarat" target="_blank">Syarat dan Ketentuan</Link> serta <Link className="underline" href="/privasi" target="_blank">Kebijakan Privasi</Link>.</span>
+        </label>
         <Galat>{galat}</Galat>
-        <button className={tombol} disabled={pending}>{pending ? "Memproses…" : "Buat akun sekolah"}</button>
+        <button className={tombol} disabled={pending || !f.setuju}>{pending ? "Memproses…" : "Buat akun sekolah"}</button>
       </form>
       <p className="text-center text-sm">Sudah punya akun? <Link className="underline" href="/masuk">Masuk</Link></p>
     </Halaman>

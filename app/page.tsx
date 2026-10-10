@@ -123,6 +123,7 @@ export default async function Beranda() {
 
       <footer className="border-t px-5 py-8 text-center text-sm text-neutral-600">
         <p><Link className="underline" href="/masuk">Masuk admin sekolah</Link> · <Link className="underline" href="/daftar">Daftar sekolah</Link></p>
+        <p className="mt-2"><Link className="underline" href="/syarat">Syarat dan Ketentuan</Link> · <Link className="underline" href="/privasi">Kebijakan Privasi</Link></p>
         <p className="mt-2">© {new Date().getFullYear()} Gerbang · SPMB Multi-Sekolah</p>
       </footer>
     </div>

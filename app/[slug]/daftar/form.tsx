@@ -147,7 +147,7 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
           </dl>
           <label className="flex items-start gap-3 text-sm">
             <input type="checkbox" className="mt-1 size-5" checked={d.setuju} onChange={(e) => set({ setuju: e.target.checked })} />
-            <span>Saya menyetujui data anak diproses {sekolah.nama} hanya untuk keperluan SPMB, sesuai kebijakan privasi.</span>
+            <span>Saya orang tua/wali anak ini dan menyetujui data anak diproses {sekolah.nama} hanya untuk keperluan SPMB, sesuai <a className="underline" href="/privasi" target="_blank" rel="noopener">Kebijakan Privasi</a>.</span>
           </label>
           {sitekey && <div className="cf-turnstile" data-sitekey={sitekey} data-callback="onTurnstile" />}
         </>)}
