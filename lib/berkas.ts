@@ -31,6 +31,7 @@ export const PESAN_ERROR: Record<string, string> = {
   jalur_wajib: "Pilih jalur pendaftaran.",
   jalur_tidak_valid: "Jalur yang dipilih tidak valid.",
   perlu_persetujuan: "Centang persetujuan privasi untuk melanjutkan.",
+  wa_tidak_valid: "Isi nomor WhatsApp yang benar, contoh 081234567890.",
   tanggal_lahir_tidak_valid: "Tanggal lahir tidak valid.",
 };
 export const pesanError = (m?: string) => PESAN_ERROR[m ?? ""] ?? "Terjadi kesalahan. Coba lagi.";
@@ -52,3 +53,9 @@ export async function kompres(file: File): Promise<File> {
 /** URL publik aset sekolah (logo, banner, galeri) dari bucket `sekolah-aset`. */
 export const urlAset = (path: string | null | undefined) =>
   path ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/sekolah-aset/${path}` : null;
+
+/** "0812-3456-7890" / "+62 812…" -> "628123456890"; null bila bukan nomor wajar (9–15 digit). */
+export function normalWa(mentah: string): string | null {
+  const d = mentah.replace(/\D/g, "").replace(/^0/, "62");
+  return /^[0-9]{9,15}$/.test(d) ? d : null;
+}

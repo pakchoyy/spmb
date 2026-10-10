@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import type { SekolahPublik } from "@/lib/berkas";
+import { normalWa, type SekolahPublik } from "@/lib/berkas";
 import { kirimPendaftaran } from "./actions";
 import Unggah from "./unggah";
 
-type Draft = { step: number; jalur: string; namaAnak: string; tglLahir: string; isian: Record<string, string>; setuju: boolean };
+type Draft = { step: number; jalur: string; namaAnak: string; tglLahir: string; wa: string; isian: Record<string, string>; setuju: boolean };
 type Terkirim = { nomor: string; tglLahir: string };
-const KOSONG: Draft = { step: 0, jalur: "", namaAnak: "", tglLahir: "", isian: {}, setuju: false };
+const KOSONG: Draft = { step: 0, jalur: "", namaAnak: "", tglLahir: "", wa: "", isian: {}, setuju: false };
 
 const baca = <T,>(k: string): T | null => {
   try { const v = localStorage.getItem(k); return v ? (JSON.parse(v) as T) : null; } catch { return null; }
@@ -58,6 +58,7 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
       if (sekolah.jalur.length && !d.jalur) return "Pilih jalur pendaftaran.";
       if (d.namaAnak.trim().length < 2) return "Isi nama lengkap anak.";
       if (!d.tglLahir) return "Isi tanggal lahir anak.";
+      if (!normalWa(d.wa)) return "Isi nomor WhatsApp orang tua yang benar.";
     }
     if (nama === "Data tambahan") {
       const f = sekolah.form.find((x) => x.wajib && !d.isian[x.id]?.trim());
@@ -74,7 +75,7 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
     start(async () => {
       try {
         const r = await kirimPendaftaran(sekolah.slug, {
-          jalur: d.jalur || null, namaAnak: d.namaAnak, tglLahir: d.tglLahir,
+          jalur: d.jalur || null, namaAnak: d.namaAnak, tglLahir: d.tglLahir, wa: d.wa,
           isian: d.isian, setuju: d.setuju, turnstile: token,
         });
         if (!r.ok) return setGalat(r.pesan);
@@ -123,6 +124,9 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
             <input className={input} value={d.namaAnak} maxLength={100} autoComplete="off" onChange={(e) => set({ namaAnak: e.target.value })} /></label>
           <label className="block"><span className="text-sm font-medium">Tanggal lahir anak</span>
             <input type="date" className={input} value={d.tglLahir} max={new Date().toISOString().slice(0, 10)} onChange={(e) => set({ tglLahir: e.target.value })} /></label>
+          <label className="block"><span className="text-sm font-medium">WhatsApp orang tua</span>
+            <input className={input} type="tel" inputMode="tel" autoComplete="tel" placeholder="081234567890" value={d.wa} maxLength={20} onChange={(e) => set({ wa: e.target.value })} />
+            <span className="mt-1 block text-xs text-neutral-600">Dipakai panitia untuk menghubungi Anda.</span></label>
         </>)}
 
         {nama === "Data tambahan" && sekolah.form.map((f) => (
@@ -138,6 +142,7 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
             {jalur && <Baris k="Jalur" v={jalur.nama} />}
             <Baris k="Nama anak" v={d.namaAnak} />
             <Baris k="Tanggal lahir" v={d.tglLahir} />
+            <Baris k="WhatsApp" v={d.wa} />
             {sekolah.form.filter((f) => d.isian[f.id]).map((f) => <Baris key={f.id} k={f.label} v={d.isian[f.id]} />)}
           </dl>
           <label className="flex items-start gap-3 text-sm">

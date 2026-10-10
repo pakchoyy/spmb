@@ -4,12 +4,12 @@ import { headers } from "next/headers";
 import { supabaseAnon } from "@/lib/supabase/anon";
 import { supabaseService } from "@/lib/supabase/admin";
 import { lolosTurnstile } from "@/lib/turnstile";
-import { MAKS_BYTE, MIME, pesanError, type SekolahPublik } from "@/lib/berkas";
+import { MAKS_BYTE, MIME, normalWa, pesanError, type SekolahPublik } from "@/lib/berkas";
 
 type Hasil = { ok: true; nomor?: string } | { ok: false; pesan: string };
 
 export async function kirimPendaftaran(slug: string, data: {
-  jalur: string | null; namaAnak: string; tglLahir: string;
+  jalur: string | null; namaAnak: string; tglLahir: string; wa: string;
   isian: Record<string, string>; setuju: boolean; turnstile: string | null;
 }): Promise<Hasil> {
   if (!(await lolosTurnstile(data.turnstile))) return { ok: false, pesan: "Verifikasi gagal. Muat ulang halaman." };
@@ -21,6 +21,9 @@ export async function kirimPendaftaran(slug: string, data: {
   const nama = data.namaAnak.trim();
   if (nama.length < 2) return { ok: false, pesan: "Isi nama lengkap anak." };
   if (!/^\d{4}-\d{2}-\d{2}$/.test(data.tglLahir)) return { ok: false, pesan: "Isi tanggal lahir." };
+
+  const wa = normalWa(data.wa);
+  if (!wa) return { ok: false, pesan: pesanError("wa_tidak_valid") };
 
   // hanya terima isian untuk field yang memang ada; wajib dicek di server
   const isian: Record<string, string> = {};
@@ -39,7 +42,7 @@ export async function kirimPendaftaran(slug: string, data: {
 
   const { data: nomor, error } = await db.rpc("daftar_pendaftar", {
     p_slug: slug, p_jalur: data.jalur, p_nama_anak: nama, p_tgl_lahir: data.tglLahir,
-    p_isian: isian, p_perangkat: perangkat, p_setuju: data.setuju,
+    p_isian: isian, p_perangkat: perangkat, p_setuju: data.setuju, p_wa: wa,
   });
   if (error) return { ok: false, pesan: pesanError(error.message) };
   return { ok: true, nomor: nomor as string };
