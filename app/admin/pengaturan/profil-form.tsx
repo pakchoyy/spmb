@@ -26,7 +26,7 @@ export default function ProfilForm({ awal, bisaUbah }: { awal: Profil; bisaUbah:
         <Kolom label="Alamat"><input className={input} value={f.alamat} maxLength={300} onChange={(e) => set({ alamat: e.target.value })} /></Kolom>
         <Kolom label="Warna utama halaman" bantu={<span className="text-neutral-600">Ambil dari warna logo sekolah.</span>}>
           <div className="flex items-center gap-3">
-            <input type="color" className="size-12 rounded border" value={f.warna} onChange={(e) => set({ warna: e.target.value })} />
+            <input type="color" className="size-12 cursor-pointer rounded-xl border-2 border-neutral-200" value={f.warna} onChange={(e) => set({ warna: e.target.value })} />
             <code>{f.warna}</code>
           </div>
         </Kolom>

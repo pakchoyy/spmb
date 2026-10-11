@@ -33,13 +33,13 @@ export default async function Super({ searchParams }: { searchParams: Promise<{ 
     <main className="mx-auto w-full max-w-3xl space-y-6 px-5 py-8">
       <header className="flex items-start justify-between gap-4">
         <div><p className="text-sm text-neutral-600">Pemilik aplikasi</p><h1 className="font-serif text-2xl font-bold">Pantau sekolah</h1></div>
-        <form action="/keluar" method="post"><button className="rounded-lg border px-4 py-2 text-sm">Keluar</button></form>
+        <form action="/keluar" method="post"><button className="btn btn-pil border-2 border-neutral-300 bg-white">Keluar</button></form>
       </header>
 
-      <nav className="flex gap-2 text-sm"><Link className="rounded-full border bg-white px-3 py-1" href="/super/pengaturan">Pengaturan harga & komisi</Link></nav>
+      <nav className="flex gap-2 text-sm"><Link className="btn btn-pil btn-lembut" href="/super/pengaturan">Pengaturan harga & komisi</Link></nav>
 
       <section className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-        <Link href="/super" className="rounded-xl border bg-white p-3 text-center"><p className="text-2xl font-bold">{semua.length}</p><p className="text-xs text-neutral-600">Semua</p></Link>
+        <Link href="/super" className="rounded-2xl bg-white p-3 text-center shadow-sm ring-1 ring-black/5"><p className="text-2xl font-bold">{semua.length}</p><p className="text-xs text-neutral-600">Semua</p></Link>
         {STATUS.map((s) => (
           <Link key={s} href={`/super?status=${s}`} className={`rounded-xl border bg-white p-3 text-center ${status === s ? "border-2 border-[var(--biru)]" : ""}`}>
             <p className="text-2xl font-bold">{hitung(s)}</p><p className="text-xs capitalize text-neutral-600">{s}</p>
@@ -48,15 +48,15 @@ export default async function Super({ searchParams }: { searchParams: Promise<{ 
       </section>
 
       <form action="/super" className="flex gap-2">
-        <input name="q" defaultValue={q} placeholder="Cari nama, alamat, atau email" className="h-12 min-w-0 flex-1 rounded-lg border bg-white px-3" />
+        <input name="q" defaultValue={q} placeholder="Cari nama, alamat, atau email" className="h-12 min-w-0 flex-1 rounded-xl border border-neutral-300 bg-white px-3" />
         {status && <input type="hidden" name="status" value={status} />}
-        <button className="h-12 rounded-lg bg-[var(--biru)] px-5 font-bold text-white">Cari</button>
+        <button className="btn btn-utama">Cari</button>
       </form>
 
       <ul className="space-y-2">
         {tampil.map((s) => (
           <li key={s.id}>
-            <Link href={`/super/sekolah/${s.id}`} className="block rounded-xl border bg-white p-3">
+            <Link href={`/super/sekolah/${s.id}`} className="block rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0"><p className="truncate font-semibold">{s.nama}</p><p className="truncate text-sm text-neutral-600">/{s.slug} · {s.email ?? "-"}</p></div>
                 <span className={`shrink-0 rounded-full px-3 py-0.5 text-xs font-bold ${WARNA[s.status]}`}>{s.status}{s.dibatalkan && " · batal"}</span>
@@ -67,12 +67,12 @@ export default async function Super({ searchParams }: { searchParams: Promise<{ 
             </Link>
           </li>
         ))}
-        {tampil.length === 0 && <li className="rounded-xl border bg-white p-4 text-center text-sm text-neutral-600">Tidak ada sekolah.</li>}
+        {tampil.length === 0 && <li className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 text-center text-sm text-neutral-600">Tidak ada sekolah.</li>}
       </ul>
 
       <section>
-        <h2 className="mb-2 font-serif text-lg font-bold">Catatan terbaru</h2>
-        <ul className="divide-y rounded-xl border bg-white text-sm">
+        <h2 className="mb-2 font-serif text-xl font-bold">Catatan terbaru</h2>
+        <ul className="divide-y divide-neutral-100 rounded-3xl bg-white text-sm shadow-sm ring-1 ring-black/5">
           {(log ?? []).map((l) => (
             <li key={l.id} className="flex flex-wrap justify-between gap-2 p-3">
               <span><b>{l.peristiwa}</b>{l.sekolah_id && ` · ${nama.get(l.sekolah_id) ?? "sekolah dihapus"}`}</span>

@@ -13,7 +13,7 @@ function Editor({ fd, bisaUbah, onSelesai }: { fd?: FieldAdmin; bisaUbah: boolea
   const { pending, galat, jalankan } = useAksi();
   const set = (p: Partial<typeof f>) => setF((x) => ({ ...x, ...p }));
   return (
-    <form className="space-y-3 rounded-xl border bg-white p-4" onSubmit={(e) => {
+    <form className="space-y-3 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5" onSubmit={(e) => {
       e.preventDefault();
       jalankan(() => simpanField({ id: fd?.id, ...f }), () => { if (!fd) setF({ label: "", tipe: "teks", opsi: "", wajib: true }); onSelesai?.(); });
     }}>
@@ -25,7 +25,7 @@ function Editor({ fd, bisaUbah, onSelesai }: { fd?: FieldAdmin; bisaUbah: boolea
           </select>
         </Kolom>
         {f.tipe === "pilihan" && (
-          <Kolom label="Pilihan (satu per baris)"><textarea className="min-h-20 w-full rounded-lg border p-3" value={f.opsi} onChange={(e) => set({ opsi: e.target.value })} /></Kolom>
+          <Kolom label="Pilihan (satu per baris)"><textarea className="min-h-20 w-full rounded-xl border border-neutral-300 bg-white p-3 outline-none focus:border-[var(--biru)] focus:ring-4 focus:ring-[var(--biru-muda)]" value={f.opsi} onChange={(e) => set({ opsi: e.target.value })} /></Kolom>
         )}
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" className="size-5" checked={f.wajib} onChange={(e) => set({ wajib: e.target.checked })} />Wajib diisi</label>
       </fieldset>
@@ -45,16 +45,16 @@ export default function FieldForm({ fields, bisaUbah }: { fields: FieldAdmin[]; 
         {fields.map((fd, i) => (
           <li key={fd.id}>
             {edit === fd.id ? <Editor fd={fd} bisaUbah={bisaUbah} onSelesai={() => setEdit(null)} /> : (
-              <div className="flex items-center gap-2 rounded-xl border bg-white p-3">
+              <div className="flex items-center gap-2 rounded-2xl bg-neutral-50 p-3 ring-1 ring-black/5">
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold">{fd.label}{fd.wajib && <span className="text-red-600"> *</span>}</p>
                   <p className="text-sm text-neutral-600">{TIPE[fd.tipe]}</p>
                 </div>
                 {bisaUbah && (<>
-                  <button aria-label="Naik" className="size-10 rounded border disabled:opacity-30" disabled={i === 0 || aksi.pending} onClick={() => aksi.jalankan(() => geserField(fd.id, -1))}>↑</button>
-                  <button aria-label="Turun" className="size-10 rounded border disabled:opacity-30" disabled={i === fields.length - 1 || aksi.pending} onClick={() => aksi.jalankan(() => geserField(fd.id, 1))}>↓</button>
-                  <button className="h-10 rounded border px-3 text-sm" onClick={() => setEdit(fd.id)}>Ubah</button>
-                  <button className="h-10 rounded border px-3 text-sm" disabled={aksi.pending} onClick={() => confirm(`Hapus isian "${fd.label}"?`) && aksi.jalankan(() => hapusField(fd.id))}>Hapus</button>
+                  <button aria-label="Naik" className="grid size-10 place-items-center rounded-xl bg-[var(--biru-muda)] font-bold text-[var(--biru)] disabled:opacity-30" disabled={i === 0 || aksi.pending} onClick={() => aksi.jalankan(() => geserField(fd.id, -1))}>↑</button>
+                  <button aria-label="Turun" className="grid size-10 place-items-center rounded-xl bg-[var(--biru-muda)] font-bold text-[var(--biru)] disabled:opacity-30" disabled={i === fields.length - 1 || aksi.pending} onClick={() => aksi.jalankan(() => geserField(fd.id, 1))}>↓</button>
+                  <button className="btn btn-pil btn-lembut" onClick={() => setEdit(fd.id)}>Ubah</button>
+                  <button className="btn btn-pil btn-lembut" disabled={aksi.pending} onClick={() => confirm(`Hapus isian "${fd.label}"?`) && aksi.jalankan(() => hapusField(fd.id))}>Hapus</button>
                 </>)}
               </div>
             )}

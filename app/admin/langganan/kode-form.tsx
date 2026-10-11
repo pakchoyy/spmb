@@ -14,7 +14,7 @@ export default function KodeForm() {
 
   if (berakhir) {
     return (
-      <p className="rounded-lg bg-green-50 p-4 font-semibold text-green-800">
+      <p className="rounded-2xl bg-[var(--mint-muda)] p-4 font-semibold text-[#0b6b52]">
         Langganan aktif sampai {new Date(berakhir).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta" })}. ✓
       </p>
     );

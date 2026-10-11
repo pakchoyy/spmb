@@ -27,26 +27,28 @@ export default async function Langganan() {
   const dikunci = st.dibatalkan || st.dinonaktifkan;
 
   const ringkas = {
-    trial: { judul: "Coba gratis", teks: `Berakhir ${tgl(akhir)} (sisa ${sisa} hari). Semua fitur aktif.`, warna: "bg-blue-50 text-blue-900" },
-    aktif: { judul: "Langganan aktif", teks: `Berlaku sampai ${tgl(akhir)} (sisa ${sisa} hari).`, warna: "bg-green-50 text-green-900" },
-    tenggang: { judul: "Masa tenggang", teks: `Masa aktif habis ${tgl(akhir)}. Beranda admin hanya bisa dibaca dan form pendaftaran ditutup. Sisa ${sisaTenggang} hari sebelum nonaktif.`, warna: "bg-amber-50 text-amber-900" },
-    nonaktif: { judul: "Nonaktif", teks: dikunci ? "Langganan ini dinonaktifkan oleh pemilik aplikasi." : "Beranda admin dan form pendaftaran ditutup. Halaman informasi sekolah dan cek status masih bisa dibuka, dan data Anda tetap tersimpan.", warna: "bg-red-50 text-red-900" },
+    trial: { judul: "Coba gratis", teks: `Berakhir ${tgl(akhir)} (sisa ${sisa} hari). Semua fitur aktif.`, warna: "bg-[var(--biru-muda)] text-[var(--biru-tua)]" },
+    aktif: { judul: "Langganan aktif", teks: `Berlaku sampai ${tgl(akhir)} (sisa ${sisa} hari).`, warna: "bg-[var(--mint-muda)] text-[#0b6b52]" },
+    tenggang: { judul: "Masa tenggang", teks: `Masa aktif habis ${tgl(akhir)}. Beranda admin hanya bisa dibaca dan form pendaftaran ditutup. Sisa ${sisaTenggang} hari sebelum nonaktif.`, warna: "bg-[var(--kuning-muda)] text-[#8a5a00]" },
+    nonaktif: { judul: "Nonaktif", teks: dikunci ? "Langganan ini dinonaktifkan oleh pemilik aplikasi." : "Beranda admin dan form pendaftaran ditutup. Halaman informasi sekolah dan cek status masih bisa dibuka, dan data Anda tetap tersimpan.", warna: "bg-[var(--oranye-muda)] text-[#a2401a]" },
   }[st.status];
 
   return (
-    <main className="mx-auto w-full max-w-2xl space-y-6 px-5 py-8">
-      <Link className="text-sm tautan" href="/admin">← Beranda admin</Link>
-      <h1 className="font-serif text-2xl font-bold">Langganan</h1>
+    <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
+      <header className="rounded-3xl bg-[var(--biru)] p-5 text-white">
+        <h1 className="font-serif text-2xl font-bold">Langganan</h1>
+        <p className="mt-1 text-sm text-white/85">Status paket, pembelian, dan kode aktivasi.</p>
+      </header>
 
-      <section className={`rounded-xl p-4 ${ringkas.warna}`}>
+      <section className={`rounded-3xl p-5 ${ringkas.warna}`}>
         <p className="text-lg font-bold">{ringkas.judul}</p>
         <p className="mt-1 text-sm">{ringkas.teks}</p>
       </section>
 
       {dikunci ? (
-        <p className="rounded-xl border bg-white p-4 text-sm">Hubungi pemilik aplikasi untuk mengaktifkan kembali. Kode aktivasi tidak bisa dipakai saat langganan dinonaktifkan.</p>
+        <p className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 text-sm">Hubungi pemilik aplikasi untuk mengaktifkan kembali. Kode aktivasi tidak bisa dipakai saat langganan dinonaktifkan.</p>
       ) : (<>
-        <section className="space-y-3 rounded-xl border bg-white p-4">
+        <section className="space-y-3 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
           <h2 className="font-bold">{st.status === "aktif" ? "Perpanjang langganan" : "Beli paket 1 tahun"}</h2>
           {p?.harga_paket ? <p className="text-2xl font-bold">{rupiah(p.harga_paket)}<span className="text-sm font-normal text-neutral-600"> / tahun</span></p> : null}
           <ol className="list-decimal space-y-1 pl-5 text-sm">
@@ -56,24 +58,24 @@ export default async function Langganan() {
           </ol>
           {st.status === "aktif" && <p className="text-xs text-neutral-600">Perpanjangan menambah 1 tahun dari tanggal berakhir, sisa hari tidak hangus.</p>}
           {lynk
-            ? <a href={lynk} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center justify-center rounded-lg bg-[var(--kuning)] font-bold text-black">Beli sekarang</a>
-            : <p className="rounded-lg bg-neutral-100 p-3 text-sm">Link pembelian belum diatur. Hubungi pemilik aplikasi.</p>}
+            ? <a href={lynk} target="_blank" rel="noopener noreferrer" className="btn btn-kuning w-full">Beli sekarang</a>
+            : <p className="rounded-2xl bg-[var(--biru-muda)] p-3 text-sm">Tautan pembelian belum diatur. Hubungi pemilik aplikasi.</p>}
           <Link className="block text-center text-sm tautan" href="/aktivasi">Sudah bayar tetapi belum dapat kode?</Link>
         </section>
 
-        <section className="space-y-3 rounded-xl border bg-white p-4">
+        <section className="space-y-3 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
           <h2 className="font-bold">Punya kode aktivasi?</h2>
           <KodeForm />
         </section>
       </>)}
 
       {(st.status === "tenggang" || st.status === "nonaktif") && (
-        <section className="rounded-xl border bg-white p-4">
+        <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
           <h2 className="font-bold">Data Anda</h2>
           <p className="mt-1 text-sm text-neutral-600">Unduh semua data pendaftar sebelum atau sesudah langganan berakhir.</p>
           {/* unduhan berkas, bukan navigasi halaman */}
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a className="mt-3 flex h-12 items-center justify-center rounded-lg border font-semibold" href="/admin/pendaftar/unduh">Unduh semua data (Excel)</a>
+          <a className="btn btn-lembut mt-3 w-full" href="/admin/pendaftar/unduh">Unduh semua data (Excel)</a>
         </section>
       )}
     </main>

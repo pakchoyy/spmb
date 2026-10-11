@@ -12,13 +12,13 @@ export default function Qr({ url, svg, png, slug }: { url: string; svg: string; 
   const svgHref = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   return (
     <div className="space-y-3">
-      <div className="mx-auto w-48 rounded-xl border bg-white p-2" dangerouslySetInnerHTML={{ __html: svg }} />
+      <div className="mx-auto w-52 rounded-3xl bg-white p-3 ring-4 ring-[var(--biru-muda)]" dangerouslySetInnerHTML={{ __html: svg }} />
       <p className="break-all text-center text-sm">{url}</p>
       <div className="grid grid-cols-2 gap-2">
-        <button className="h-12 rounded-lg border font-semibold" onClick={unduh(png, `qr-${slug}.png`)}>Unduh PNG</button>
-        <button className="h-12 rounded-lg border font-semibold" onClick={unduh(svgHref, `qr-${slug}.svg`)}>Unduh SVG</button>
+        <button className="btn btn-garis" onClick={unduh(png, `qr-${slug}.png`)}>Unduh PNG</button>
+        <button className="btn btn-garis" onClick={unduh(svgHref, `qr-${slug}.svg`)}>Unduh SVG</button>
       </div>
-      <button className="h-12 w-full rounded-lg border font-semibold" onClick={() => { void navigator.clipboard?.writeText(url); void kunciSlug().catch(() => {}); }}>Salin tautan</button>
+      <button className="btn btn-garis w-full" onClick={() => { void navigator.clipboard?.writeText(url); void kunciSlug().catch(() => {}); }}>Salin tautan</button>
     </div>
   );
 }

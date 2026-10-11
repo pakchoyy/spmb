@@ -2,10 +2,10 @@ export const STATUS = ["Baru", "Diterima", "Cadangan", "Ditolak"] as const;
 export type StatusPendaftar = (typeof STATUS)[number];
 
 export const WARNA_STATUS: Record<string, string> = {
-  Baru: "bg-blue-100 text-blue-800",
-  Diterima: "bg-green-100 text-green-800",
-  Cadangan: "bg-amber-100 text-amber-900",
-  Ditolak: "bg-red-100 text-red-800",
+  Baru: "bg-[var(--biru-muda)] text-[var(--biru-tua)]",
+  Diterima: "bg-[var(--mint-muda)] text-[#0b6b52]",
+  Cadangan: "bg-[var(--kuning-muda)] text-[#8a5a00]",
+  Ditolak: "bg-[var(--oranye-muda)] text-[#a2401a]",
 };
 
 export type Filter = { status?: string; jalur?: string; q?: string; arsip?: string };

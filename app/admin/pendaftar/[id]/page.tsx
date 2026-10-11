@@ -28,26 +28,26 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
   const isian = Object.entries((p.isian ?? {}) as Record<string, string>);
 
   return (
-    <main className="mx-auto w-full max-w-2xl space-y-6 px-5 py-8">
+    <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
       <div className="flex items-center justify-between print:hidden">
         <Link className="text-sm tautan" href="/admin">← Daftar pendaftar</Link>
         <Cetak />
       </div>
 
-      <header>
+      <header className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
         <p className="text-sm text-neutral-600">{sekolah.nama} · {p.nomor}</p>
         <h1 className="font-serif text-2xl font-bold">{p.nama_anak}</h1>
         <span className={`mt-2 inline-block rounded-full px-3 py-0.5 text-sm font-bold ${WARNA_STATUS[p.status]}`}>{p.status}</span>
       </header>
 
       {!!ganda?.length && (
-        <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+        <p className="rounded-2xl bg-[var(--kuning-muda)] p-3 text-sm text-amber-900">
           ⚠ Kemungkinan data ganda: nama dan tanggal lahir sama dengan{" "}
           {ganda.map((g, i) => <span key={g.id}>{i > 0 && ", "}<Link className="tautan" href={`/admin/pendaftar/${g.id}`}>{g.nomor}</Link></span>)}.
         </p>
       )}
 
-      <dl className="divide-y rounded-xl border bg-white text-sm">
+      <dl className="divide-y divide-neutral-100 rounded-3xl bg-white text-sm shadow-sm ring-1 ring-black/5">
         {[["Tanggal lahir", tglId(p.tanggal_lahir)], ["Jalur", jalur?.nama ?? "-"], ["Mendaftar", tglId(p.dibuat_pada, true)], ...isian].map(([k, v]) => (
           <div key={k} className="flex justify-between gap-4 p-3"><dt className="text-neutral-600">{k}</dt><dd className="text-right font-medium">{v}</dd></div>
         ))}
@@ -58,13 +58,13 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
       </dl>
 
       <section>
-        <h2 className="mb-2 font-serif text-lg font-bold">Berkas</h2>
+        <h2 className="mb-2 font-serif text-xl font-bold">Berkas</h2>
         <BerkasList syarat={jalur?.syarat_berkas ?? []} berkas={berkas ?? []} />
       </section>
 
       <section className="print:hidden">
-        <h2 className="mb-2 font-serif text-lg font-bold">Keputusan</h2>
-        {!bisaUbah && <p className="mb-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">Langganan tidak aktif, data hanya bisa dibaca.</p>}
+        <h2 className="mb-2 font-serif text-xl font-bold">Keputusan</h2>
+        {!bisaUbah && <p className="mb-2 rounded-2xl bg-[var(--kuning-muda)] p-3 text-sm text-amber-900">Langganan tidak aktif, data hanya bisa dibaca.</p>}
         <StatusForm id={p.id} status={p.status} catatan={p.catatan} bisaUbah={bisaUbah} />
       </section>
     </main>

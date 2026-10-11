@@ -25,9 +25,9 @@ export default function BerkasList({ syarat, berkas }: { syarat: string[]; berka
       {jenis.map((j) => {
         const b = berkas.find((x) => x.jenis === j);
         return (
-          <div key={j} className="flex items-center justify-between gap-3 rounded-lg border bg-white p-3">
+          <div key={j} className="flex items-center justify-between gap-3 rounded-2xl bg-neutral-50 p-3 ring-1 ring-black/5">
             <div><p className="font-medium">{j}</p><p className="text-sm text-neutral-600">{b ? `${Math.round(b.ukuran / 1024)} KB` : "Belum diunggah"}</p></div>
-            {b && <button className="h-10 rounded-lg border px-4 text-sm font-semibold" disabled={aksi.pending} onClick={() => buka(b.id)}>Buka</button>}
+            {b && <button className="btn btn-pil btn-lembut" disabled={aksi.pending} onClick={() => buka(b.id)}>Buka</button>}
           </div>
         );
       })}

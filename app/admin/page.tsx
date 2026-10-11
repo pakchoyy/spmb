@@ -133,7 +133,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
 
       <section id="daftar" className="space-y-3 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-black/5">
         <h2 className="flex items-center gap-2 font-bold"><Users className="size-5 text-[var(--biru)]" aria-hidden />Daftar pendaftar</h2>
-        {lihatArsip && <p className="rounded-lg bg-neutral-100 p-3 text-sm">Anda melihat data yang sudah diarsipkan. <Link className="tautan" href="/admin">Kembali ke pendaftar aktif</Link></p>}
+        {lihatArsip && <p className="rounded-2xl bg-[var(--biru-muda)] p-3 text-sm">Anda melihat data yang sudah diarsipkan. <Link className="tautan" href="/admin">Kembali ke pendaftar aktif</Link></p>}
         <form className="grid grid-cols-2 gap-2 print:hidden" action="/admin">
           {lihatArsip && <input type="hidden" name="arsip" value="1" />}
           <label className="relative col-span-2"><Search className="absolute left-3 top-3.5 size-5 text-neutral-400" aria-hidden />

@@ -29,9 +29,9 @@ export default function SlugField({ nilai, onUbah }: { nilai: string; onUbah: (s
     <div>
       <label className="block">
         <span className="text-sm font-semibold">Alamat halaman sekolah</span>
-        <div className="flex items-center rounded-lg border border-neutral-300 bg-white pl-3">
+        <div className="flex items-center rounded-xl border border-neutral-300 bg-white pl-3 focus-within:border-[var(--biru)] focus-within:ring-4 focus-within:ring-[var(--biru-muda)]">
           <span className="text-neutral-500">{HOST_APP}/</span>
-          <input className="h-12 min-w-0 flex-1 rounded-lg px-1 text-base outline-none" value={nilai} maxLength={40}
+          <input className="h-12 min-w-0 flex-1 rounded-xl px-1 text-base outline-none" value={nilai} maxLength={40}
             autoCapitalize="none" autoCorrect="off" spellCheck={false}
             onChange={(e) => onUbah(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))} />
         </div>

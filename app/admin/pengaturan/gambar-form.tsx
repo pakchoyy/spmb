@@ -22,7 +22,7 @@ async function siapkan(file: File, sisiMaks: number): Promise<File> {
 
 function Pilih({ jenis, label, sisi, aksi }: { jenis: Jenis; label: string; sisi: number; aksi: ReturnType<typeof useAksi> }) {
   return (
-    <label className="flex h-12 cursor-pointer items-center justify-center rounded-lg border border-dashed text-sm font-semibold">
+    <label className="flex h-12 cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[var(--biru)]/40 bg-[var(--biru-muda)] text-[var(--biru-tua)] text-sm font-semibold">
       {aksi.pending ? "Memproses…" : label}
       <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={aksi.pending}
         onChange={(e) => {
@@ -51,7 +51,7 @@ export default function GambarForm({ logo, banner, galeri, bisaUbah }: {
         <h3 className="font-semibold">Logo</h3>
         {logo && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={urlAset(logo)!} alt="Logo" className="mt-2 size-20 rounded-lg border bg-white object-contain p-1" />
+          <img src={urlAset(logo)!} alt="Logo" className="mt-2 size-20 rounded-2xl bg-white object-contain p-1 ring-1 ring-black/10" />
         )}
         {bisaUbah && (
           <div className="mt-2 grid gap-2">
@@ -66,7 +66,7 @@ export default function GambarForm({ logo, banner, galeri, bisaUbah }: {
         <h3 className="font-semibold">Banner foto (1)</h3>
         {banner && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={urlAset(banner)!} alt="Banner" className="mt-2 aspect-[16/7] w-full rounded-lg border object-cover" />
+          <img src={urlAset(banner)!} alt="Banner" className="mt-2 aspect-[16/7] w-full rounded-2xl object-cover ring-1 ring-black/10" />
         )}
         {bisaUbah && (
           <div className="mt-2 grid gap-2">
@@ -83,7 +83,7 @@ export default function GambarForm({ logo, banner, galeri, bisaUbah }: {
           {galeri.map((g) => (
             <div key={g.id} className="relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={urlAset(g.path)!} alt="" loading="lazy" className="aspect-square w-full rounded-lg border object-cover" />
+              <img src={urlAset(g.path)!} alt="" loading="lazy" className="aspect-square w-full rounded-2xl object-cover ring-1 ring-black/10" />
               {bisaUbah && (
                 <button aria-label="Hapus foto" className="absolute right-1 top-1 size-7 rounded-full bg-black/70 text-white"
                   onClick={() => aHapus.jalankan(() => hapusGambar("galeri", g.id))}>×</button>
