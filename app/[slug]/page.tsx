@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BadgeCheck, CalendarClock, CheckCircle2, FileText, AtSign, MapPin, MessageCircle, Search, Users } from "lucide-react";
 import TeksBesar from "@/components/teks-besar";
 import Bagikan from "@/components/bagikan";
+import { WaMelayang } from "@/components/wa-melayang";
 import { Footer } from "@/components/footer";
 import { cache } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -183,6 +184,7 @@ export default async function HalamanSekolah({ params }: Params) {
       </main>
 
       <Footer />
+      {wa && <WaMelayang href={wa} label={`Chat WhatsApp ${s.nama}`} naik />}
 
       <div className="fixed inset-x-0 bottom-0 z-10 border-t bg-white/95 p-3 backdrop-blur">
         <div className="mx-auto max-w-2xl">

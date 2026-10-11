@@ -65,12 +65,7 @@ a { text-decoration: none; }
 html.teks-besar { font-size: 112.5%; }
 
 /* Latar hero: gradasi lembut + pola titik */
-.hero-latar {
-  background:
-    radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--kuning) 28%, transparent), transparent 40%),
-    radial-gradient(circle at 90% 30%, color-mix(in srgb, var(--ungu) 18%, transparent), transparent 45%),
-    radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--mint) 18%, transparent), transparent 50%);
-}
+.hero-latar { background: var(--background); }
 .hero-latar::before {
   content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .35;
   background-image: radial-gradient(#2449d81f 1px, transparent 1px); background-size: 18px 18px;

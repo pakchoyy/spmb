@@ -108,7 +108,7 @@ export default async function Beranda() {
               <p className="inline-flex items-center gap-1.5 rounded-full bg-[var(--kuning-muda)] px-3 py-1 text-sm font-bold text-[#8a5a00]">
                 <CalendarClock className="size-4" aria-hidden /> SPMB online untuk sekolah
               </p>
-              <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl">Web SPMB <span className="bg-gradient-to-r from-[var(--biru)] to-[var(--ungu)] bg-clip-text text-transparent">Custom</span> untuk sekolah anda</h1>
+              <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl">Web SPMB <span className="relative whitespace-nowrap text-[var(--biru)]">Custom<svg aria-hidden viewBox="0 0 120 10" preserveAspectRatio="none" className="absolute -bottom-1 left-0 h-2.5 w-full text-[var(--kuning)]"><path d="M2 7c30-5 80-6 116-2" stroke="currentColor" strokeWidth="5" fill="none" strokeLinecap="round" /></svg></span> untuk sekolah anda</h1>
               <p className="mt-3 text-lg text-neutral-700">Orang tua daftar dari HP tanpa akun. Sekolah memeriksa berkas dengan mudah.</p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <TombolCoba className="btn btn-utama h-14 text-lg">Daftarkan sekolah <ArrowRight className="size-5" aria-hidden /></TombolCoba>
