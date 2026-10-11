@@ -30,7 +30,7 @@ export default function ProfilForm({ awal, bisaUbah }: { awal: Profil; bisaUbah:
             <code>{f.warna}</code>
           </div>
         </Kolom>
-        <Kolom label="WhatsApp panitia" bantu={<span className="text-neutral-600">Contoh 081234567890. Orang tua mengetuk untuk chat.</span>}>
+        <Kolom label="WhatsApp sekolah" bantu={<span className="text-neutral-600">Contoh 081234567890. Orang tua mengetuk untuk chat.</span>}>
           <input className={input} inputMode="tel" value={f.wa} onChange={(e) => set({ wa: e.target.value })} />
         </Kolom>
         <Kolom label="Link peta (Google Maps)"><input className={input} inputMode="url" value={f.peta} placeholder="https://maps.app.goo.gl/…" onChange={(e) => set({ peta: e.target.value })} /></Kolom>

@@ -17,7 +17,7 @@ export default async function Daftar({ params }: { params: Promise<{ slug: strin
       <main className="mx-auto max-w-md p-6">
         <h1 className="text-xl font-semibold">Pendaftaran ditutup</h1>
         <p className="mt-2">Pendaftaran {sekolah.nama} sedang tidak dibuka.</p>
-        <Link className="mt-4 inline-block underline" href={`/${slug}`}>Kembali ke halaman sekolah</Link>
+        <Link className="mt-4 inline-block tautan" href={`/${slug}`}>Kembali ke halaman sekolah</Link>
       </main>
     );
   }

@@ -23,7 +23,7 @@ export default async function Sukses({ params, searchParams }: {
         <p className="mt-4 text-sm text-neutral-600">Simpan nomor ini. Cek status dengan nomor dan tanggal lahir anak.</p>
       </section>
       <Cetak />
-      <a className="block text-center underline print:hidden" href={`/${slug}/cek-status`}>Cek status pendaftaran</a>
+      <a className="block text-center tautan print:hidden" href={`/${slug}/cek-status`}>Cek status pendaftaran</a>
     </main>
   );
 }

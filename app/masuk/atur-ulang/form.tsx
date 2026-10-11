@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { KeyRound } from "lucide-react";
 import { Galat, Halaman, Kolom, input, tombol } from "@/components/ui";
 import { aturSandiBaru } from "../actions";
 
@@ -11,7 +12,7 @@ export default function FormAtur() {
   const [galat, setGalat] = useState("");
   const [pending, start] = useTransition();
   return (
-    <Halaman judul="Kata sandi baru">
+    <Halaman ikon={KeyRound} judul="Kata sandi baru">
       <form className="space-y-4" onSubmit={(e) => {
         e.preventDefault(); setGalat("");
         start(async () => {

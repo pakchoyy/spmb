@@ -56,7 +56,7 @@ export default function GambarForm({ logo, banner, galeri, bisaUbah }: {
         {bisaUbah && (
           <div className="mt-2 grid gap-2">
             <Pilih jenis="logo" label={logo ? "Ganti logo" : "Pasang logo"} sisi={512} aksi={aLogo} />
-            {logo && <button className="text-sm underline" onClick={() => aHapus.jalankan(() => hapusGambar("logo"))}>Hapus logo</button>}
+            {logo && <button className="text-sm tautan" onClick={() => aHapus.jalankan(() => hapusGambar("logo"))}>Hapus logo</button>}
             <Galat>{aLogo.galat}</Galat>
           </div>
         )}
@@ -71,7 +71,7 @@ export default function GambarForm({ logo, banner, galeri, bisaUbah }: {
         {bisaUbah && (
           <div className="mt-2 grid gap-2">
             <Pilih jenis="banner" label={banner ? "Ganti banner" : "Pasang banner"} sisi={1600} aksi={aBanner} />
-            {banner && <button className="text-sm underline" onClick={() => aHapus.jalankan(() => hapusGambar("banner"))}>Hapus banner</button>}
+            {banner && <button className="text-sm tautan" onClick={() => aHapus.jalankan(() => hapusGambar("banner"))}>Hapus banner</button>}
             <Galat>{aBanner.galat}</Galat>
           </div>
         )}

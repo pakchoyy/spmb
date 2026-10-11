@@ -4,7 +4,16 @@
   --background: #f4f6ff;
   --foreground: #17203d;
   --biru: #2449d8;
+  --biru-tua: #1a35a3;
+  --biru-muda: #e6ecff;
   --kuning: #ffb020;
+  --kuning-muda: #fff4dc;
+  --mint: #12a37f;
+  --mint-muda: #dcf5ec;
+  --oranye: #f2683c;
+  --oranye-muda: #ffe9e0;
+  --ungu: #7a5af5;
+  --ungu-muda: #eee9ff;
 }
 
 @theme inline {
@@ -19,4 +28,35 @@ body {
   color: var(--foreground);
   font-family: var(--font-isi), system-ui, sans-serif;
   font-size: 16px;
+}
+
+/* Tautan tanpa garis bawah; dibedakan lewat warna dan ketebalan. */
+a { text-decoration: none; }
+
+/* Tombol: utama, garis, lembut, pil. */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 3rem; padding: 0 1.25rem;
+  border-radius: .875rem; font-weight: 700; transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease; }
+.btn:active { transform: scale(.98); }
+.btn:disabled { opacity: .5; }
+.btn-utama { background: var(--biru); color: #fff; box-shadow: 0 6px 16px -6px rgb(36 73 216 / .55); }
+.btn-utama:hover { background: var(--biru-tua); }
+.btn-kuning { background: var(--kuning); color: #1b1b1b; box-shadow: 0 6px 16px -6px rgb(255 176 32 / .6); }
+.btn-garis { border: 2px solid var(--biru); color: var(--biru); background: #fff; }
+.btn-lembut { background: var(--biru-muda); color: var(--biru-tua); }
+.btn-wa { background: #1faa59; color: #fff; }
+.btn-pil { min-height: 2.25rem; padding: 0 .9rem; border-radius: 999px; font-size: .875rem; }
+.tautan { color: var(--biru); font-weight: 600; }
+
+/* Deretan logo sekolah: bergerak dari kanan ke kiri, berhenti saat disentuh. */
+@keyframes geser { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+.marquee-isi { display: flex; width: max-content; animation: geser var(--durasi, 30s) linear infinite; }
+.marquee:hover .marquee-isi, .marquee:active .marquee-isi { animation-play-state: paused; }
+
+/* Muncul halus saat dimuat. */
+@keyframes naik { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+.muncul { animation: naik .45s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-isi, .muncul { animation: none; }
+  .btn { transition: none; }
 }

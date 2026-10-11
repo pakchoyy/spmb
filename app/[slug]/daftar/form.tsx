@@ -126,7 +126,7 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
             <input type="date" className={input} value={d.tglLahir} max={new Date().toISOString().slice(0, 10)} onChange={(e) => set({ tglLahir: e.target.value })} /></label>
           <label className="block"><span className="text-sm font-medium">WhatsApp orang tua</span>
             <input className={input} type="tel" inputMode="tel" autoComplete="tel" placeholder="081234567890" value={d.wa} maxLength={20} onChange={(e) => set({ wa: e.target.value })} />
-            <span className="mt-1 block text-xs text-neutral-600">Dipakai panitia untuk menghubungi Anda.</span></label>
+            <span className="mt-1 block text-xs text-neutral-600">Dipakai sekolah untuk menghubungi Anda.</span></label>
         </>)}
 
         {nama === "Data tambahan" && sekolah.form.map((f) => (
@@ -147,7 +147,7 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
           </dl>
           <label className="flex items-start gap-3 text-sm">
             <input type="checkbox" className="mt-1 size-5" checked={d.setuju} onChange={(e) => set({ setuju: e.target.checked })} />
-            <span>Saya orang tua/wali anak ini dan menyetujui data anak diproses {sekolah.nama} hanya untuk keperluan SPMB, sesuai <a className="underline" href="/privasi" target="_blank" rel="noopener">Kebijakan Privasi</a>.</span>
+            <span>Saya orang tua/wali anak ini dan menyetujui data anak diproses {sekolah.nama} hanya untuk keperluan SPMB, sesuai <a className="tautan" href="/privasi" target="_blank" rel="noopener">Kebijakan Privasi</a>.</span>
           </label>
           {sitekey && <div className="cf-turnstile" data-sitekey={sitekey} data-callback="onTurnstile" />}
         </>)}

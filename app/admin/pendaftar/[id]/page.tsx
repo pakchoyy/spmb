@@ -30,7 +30,7 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
   return (
     <main className="mx-auto w-full max-w-2xl space-y-6 px-5 py-8">
       <div className="flex items-center justify-between print:hidden">
-        <Link className="text-sm underline" href="/admin">← Daftar pendaftar</Link>
+        <Link className="text-sm tautan" href="/admin">← Daftar pendaftar</Link>
         <Cetak />
       </div>
 
@@ -43,7 +43,7 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
       {!!ganda?.length && (
         <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
           ⚠ Kemungkinan data ganda: nama dan tanggal lahir sama dengan{" "}
-          {ganda.map((g, i) => <span key={g.id}>{i > 0 && ", "}<Link className="underline" href={`/admin/pendaftar/${g.id}`}>{g.nomor}</Link></span>)}.
+          {ganda.map((g, i) => <span key={g.id}>{i > 0 && ", "}<Link className="tautan" href={`/admin/pendaftar/${g.id}`}>{g.nomor}</Link></span>)}.
         </p>
       )}
 
@@ -53,7 +53,7 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
         ))}
         <div className="flex items-center justify-between gap-4 p-3">
           <dt className="text-neutral-600">WhatsApp</dt>
-          <dd className="font-medium">{wa ? <a className="underline" href={wa} rel="noopener noreferrer">+{p.wa_ortu}</a> : "-"}</dd>
+          <dd className="font-medium">{wa ? <a className="tautan" href={wa} rel="noopener noreferrer">+{p.wa_ortu}</a> : "-"}</dd>
         </div>
       </dl>
 

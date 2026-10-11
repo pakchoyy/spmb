@@ -14,7 +14,7 @@ export default function ArsipForm({ slug, aktif, arsip, bisaUbah }: { slug: stri
   return (
     <div className="space-y-4">
       <p className="text-sm text-neutral-600">
-        Setelah musim SPMB selesai, arsipkan pendaftar tahun lalu. Data arsip tidak ikut dihitung di dashboard, kuota, dan data ganda, tetapi masih bisa dilihat dan diunduh. Mengarsipkan juga membebaskan pengaturan kuota dan periode jalur untuk tahun baru.
+        Setelah musim SPMB selesai, arsipkan pendaftar tahun lalu. Data arsip tidak ikut dihitung di beranda admin, kuota, dan data ganda, tetapi masih bisa dilihat dan diunduh. Mengarsipkan juga membebaskan pengaturan kuota dan periode jalur untuk tahun baru.
       </p>
       <dl className="grid grid-cols-2 gap-2 text-center">
         <div className="rounded-xl border bg-white p-3"><dt className="text-xs text-neutral-600">Pendaftar aktif</dt><dd className="text-2xl font-bold">{aktif}</dd></div>
@@ -35,7 +35,7 @@ export default function ArsipForm({ slug, aktif, arsip, bisaUbah }: { slug: stri
             onClick={() => a1.jalankan(async () => { const r = await arsipkan(false); if (r.ok) setInfo(`${r.jumlah} pendaftar dipulihkan.`); return r; })}>
             Pulihkan semua arsip
           </button>
-          {arsip > 0 && <Link className="text-center text-sm underline" href="/admin?arsip=1">Lihat arsip</Link>}
+          {arsip > 0 && <Link className="text-center text-sm tautan" href="/admin?arsip=1">Lihat arsip</Link>}
         </div>
         <Galat>{a1.galat}</Galat>
         {info && <p className="text-sm font-semibold text-green-700">{info}</p>}

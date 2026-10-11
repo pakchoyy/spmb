@@ -49,7 +49,9 @@ export async function daftarSekolah(f: {
     },
   });
   // Email yang sudah terdaftar tidak dibedakan, supaya tidak bisa dipakai menebak email orang.
-  if (error && error.status !== 422) return { ok: false, pesan: "Pendaftaran gagal. Coba lagi sebentar lagi." };
+  if (error?.code === "email_address_invalid") return { ok: false, pesan: "Email ini ditolak. Pastikan alamat email benar dan masih aktif." };
+  if (error?.code === "over_email_send_rate_limit") return { ok: false, pesan: "Terlalu banyak percobaan. Coba lagi beberapa menit lagi." };
+  if (error && error.status !== 422) return { ok: false, pesan: "Pendaftaran belum berhasil. Coba lagi sebentar lagi." };
   return { ok: true };
 }
 

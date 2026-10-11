@@ -7,14 +7,14 @@ export const metadata: Metadata = { title: "Syarat dan Ketentuan" };
 export default function Syarat() {
   return (
     <KerangkaHukum judul="Syarat dan Ketentuan">
-      <p>Dokumen ini mengatur penggunaan aplikasi SPMB Gerbang (&ldquo;Layanan&rdquo;) oleh sekolah. Dengan mendaftar atau memakai Layanan, pihak sekolah menyatakan setuju. Ketentuan bagi orang tua calon siswa ada di <Link className="underline" href="/privasi">Kebijakan Privasi</Link>.</p>
+      <p>Dokumen ini mengatur penggunaan aplikasi Yuk Masuk! (&ldquo;Layanan&rdquo;) oleh sekolah. Dengan mendaftar atau memakai Layanan, pihak sekolah menyatakan setuju. Ketentuan bagi orang tua calon siswa ada di <Link className="tautan" href="/privasi">Kebijakan Privasi</Link>.</p>
 
       <Pasal no={1} judul="Pihak dan istilah">
         <Daftar butir={[
           <><b>Penyedia</b>: pemilik dan pengelola Layanan <mark>[DIISI: nama penyedia/badan usaha]</mark>.</>,
           <><b>Sekolah</b>: lembaga pendidikan yang mendaftar, diwakili admin sekolah.</>,
           <><b>Orang tua</b>: pihak yang mengisi form pendaftaran untuk anaknya di halaman sekolah.</>,
-          <><b>Slug</b>: alamat halaman sekolah, misalnya <code>domain.com/nama-sekolah</code>.</>,
+          <><b>Alamat halaman</b>: alamat halaman sekolah, misalnya <code>yukmasuk/nama-sekolah</code>.</>,
         ]} />
       </Pasal>
 
@@ -44,8 +44,8 @@ export default function Syarat() {
 
       <Pasal no={5} judul="Masa tenggang dan nonaktif">
         <Daftar butir={[
-          "Setelah masa aktif atau masa coba berakhir, ada masa tenggang 3 hari: dashboard hanya bisa dibaca dan form pendaftaran ditutup.",
-          "Sesudahnya sekolah menjadi nonaktif: dashboard dan form ditutup, sedangkan halaman informasi sekolah dan cek status tetap dapat dibuka.",
+          "Setelah masa aktif atau masa coba berakhir, ada masa tenggang 3 hari: beranda admin hanya bisa dibaca dan form pendaftaran ditutup.",
+          "Sesudahnya sekolah menjadi nonaktif: beranda admin dan form ditutup, sedangkan halaman informasi sekolah dan cek status tetap dapat dibuka.",
           "Data sekolah dan pendaftar tetap tersimpan. Sekolah dapat mengunduh seluruh data (Excel) pada masa tenggang maupun nonaktif.",
           "Langganan kembali berjalan setelah kode aktivasi baru dimasukkan, selama sekolah tidak dibatalkan atau dinonaktifkan oleh Penyedia.",
           <>Penyedia dapat menghapus data sekolah nonaktif setelah <mark>[DIISI: jangka waktu]</mark> dengan pemberitahuan lebih dulu ke email admin.</>,
@@ -66,7 +66,7 @@ export default function Syarat() {
         <Daftar butir={[
           "Sekolah adalah pihak yang menentukan data apa yang dikumpulkan dan untuk apa. Penyedia memproses data atas nama sekolah untuk menjalankan Layanan.",
           "Sekolah menjamin memiliki dasar yang sah untuk mengumpulkan data calon siswa dan hanya meminta data yang perlu untuk SPMB.",
-          "Sekolah hanya memakai data pendaftar untuk keperluan SPMB, menjaga akses panitia, dan tidak membagikannya tanpa dasar yang sah.",
+          "Sekolah hanya memakai data pendaftar untuk keperluan SPMB, menjaga akses admin, dan tidak membagikannya tanpa dasar yang sah.",
           "Sekolah bertanggung jawab atas keputusan penerimaan, ketepatan aturan jalur, kuota, dan jadwal SPMB yang berlaku di daerahnya. Layanan tidak menghitung zonasi atau nilai secara otomatis.",
           "Sekolah dapat mengarsipkan atau menghapus data tahun lalu. Penghapusan bersifat permanen.",
           "Pemrosesan data pribadi dijelaskan lebih lanjut di Kebijakan Privasi.",

@@ -77,7 +77,7 @@ export default async function HalamanSekolah({ params }: Params) {
               ? <img src={logo} alt={`Logo ${s.nama}`} className="size-full object-contain p-2" />
               : <span className="font-serif text-3xl font-bold" style={{ color: "var(--aksen)" }}>{s.nama[0]}</span>}
           </div>
-          <p className="mt-4 text-sm opacity-90">SPMB (dulu PPDB)</p>
+          <p className="mt-4 text-sm opacity-90">SPMB online</p>
           <h1 className="font-serif text-3xl font-bold leading-tight">{s.nama}</h1>
           {s.alamat && <p className="mt-1 text-sm opacity-90">{s.alamat}</p>}
           <p className={`mt-5 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold ${buka ? "bg-[var(--kuning)] text-black" : "bg-white/20"}`}>
@@ -141,15 +141,15 @@ export default async function HalamanSekolah({ params }: Params) {
       )}
 
       <section className="bg-white px-5 py-8">
-        <h2 className="font-serif text-xl font-bold">Hubungi panitia</h2>
+        <h2 className="font-serif text-xl font-bold">Hubungi sekolah</h2>
         <div className="mt-4 grid gap-2">
-          {wa && <a className="flex h-12 items-center justify-center rounded-lg border font-medium" href={wa} rel="noopener">WhatsApp panitia</a>}
+          {wa && <a className="flex h-12 items-center justify-center rounded-lg border font-medium" href={wa} rel="noopener">WhatsApp sekolah</a>}
           {peta && <a className="flex h-12 items-center justify-center rounded-lg border font-medium" href={peta} rel="noopener noreferrer">Lihat peta</a>}
           {ig && <a className="flex h-12 items-center justify-center rounded-lg border font-medium" href={ig.url} rel="noopener noreferrer">Instagram {ig.nama}</a>}
           <Link className="flex h-12 items-center justify-center rounded-lg border font-medium" href={`/${s.slug}/cek-status`}>Cek status pendaftaran</Link>
         </div>
         {process.env.NEXT_PUBLIC_EMAIL_LAPOR && (
-          <a className="mt-6 block text-center text-sm text-neutral-500 underline"
+          <a className="mt-6 block text-center text-sm text-neutral-500 tautan"
             href={`mailto:${process.env.NEXT_PUBLIC_EMAIL_LAPOR}?subject=${encodeURIComponent(`Laporkan halaman /${s.slug}`)}`}>
             Laporkan halaman ini
           </a>

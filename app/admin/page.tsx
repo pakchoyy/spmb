@@ -67,10 +67,10 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
           <p className="font-bold">{langganan ? LABEL[langganan.status] : "-"}{langganan && (langganan.status === "trial" || langganan.status === "aktif") && <span className="font-normal"> · sisa {sisa} hari</span>}</p>
         </div>
         <div className="flex flex-col items-end gap-1 text-sm">
-          <Link className="underline" href="/admin/langganan">Langganan</Link>
-          <Link className="underline" href="/admin/pengaturan">Pengaturan</Link>
-          {r.arsip > 0 && !lihatArsip && <Link className="underline" href="/admin?arsip=1">Arsip ({r.arsip})</Link>}
-          <Link className="underline" href={`/${sekolah.slug}`}>Lihat halaman</Link>
+          <Link className="tautan" href="/admin/langganan">Langganan</Link>
+          <Link className="tautan" href="/admin/pengaturan">Pengaturan</Link>
+          {r.arsip > 0 && !lihatArsip && <Link className="tautan" href="/admin?arsip=1">Arsip ({r.arsip})</Link>}
+          <Link className="tautan" href={`/${sekolah.slug}`}>Lihat halaman</Link>
         </div>
       </section>
 
@@ -92,7 +92,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
       </section>
 
       <section id="daftar" className="space-y-3">
-        {lihatArsip && <p className="rounded-lg bg-neutral-100 p-3 text-sm">Anda melihat data yang sudah diarsipkan. <Link className="underline" href="/admin">Kembali ke pendaftar aktif</Link></p>}
+        {lihatArsip && <p className="rounded-lg bg-neutral-100 p-3 text-sm">Anda melihat data yang sudah diarsipkan. <Link className="tautan" href="/admin">Kembali ke pendaftar aktif</Link></p>}
         <form className="grid grid-cols-2 gap-2 print:hidden" action="/admin">
           {lihatArsip && <input type="hidden" name="arsip" value="1" />}
           <input name="q" defaultValue={f.q} placeholder="Cari nama atau nomor" className="col-span-2 h-12 rounded-lg border bg-white px-3" />
@@ -106,7 +106,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
         </form>
 
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm text-neutral-600">{total} pendaftar{adaFilter && " (terfilter)"}{adaFilter && <> · <Link className="underline print:hidden" href="/admin">hapus filter</Link></>}</p>
+          <p className="text-sm text-neutral-600">{total} pendaftar{adaFilter && " (terfilter)"}{adaFilter && <> · <Link className="tautan print:hidden" href="/admin">hapus filter</Link></>}</p>
           <div className="flex gap-2 print:hidden">
             <Cetak label="Cetak daftar" />
             <a className="inline-flex h-10 items-center rounded-lg border px-4 text-sm font-semibold" href={`/admin/pendaftar/unduh?${kueri(f)}`}>Unduh ke Excel</a>

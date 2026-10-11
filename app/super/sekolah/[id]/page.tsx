@@ -23,10 +23,10 @@ export default async function DetailSekolah({ params }: { params: Promise<{ id: 
 
   return (
     <main className="mx-auto w-full max-w-2xl space-y-6 px-5 py-8">
-      <Link className="text-sm underline" href="/super">← Semua sekolah</Link>
+      <Link className="text-sm tautan" href="/super">← Semua sekolah</Link>
       <header>
         <h1 className="font-serif text-2xl font-bold">{s.nama}</h1>
-        <p className="text-sm text-neutral-600"><Link className="underline" href={`/${s.slug}`}>/{s.slug}</Link> · NPSN {s.npsn ?? "-"}</p>
+        <p className="text-sm text-neutral-600"><Link className="tautan" href={`/${s.slug}`}>/{s.slug}</Link> · NPSN {s.npsn ?? "-"}</p>
       </header>
 
       <dl className="divide-y rounded-xl border bg-white text-sm">

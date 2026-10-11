@@ -39,7 +39,7 @@ export default function CekForm({ slug, nama, format, bisaUnggah }: { slug: stri
         <section className="space-y-3 rounded-xl border p-4">
           <p className="text-sm text-neutral-600">{hasil.nomor} · {hasil.nama_anak}</p>
           <p className="text-2xl font-bold">{hasil.status}</p>
-          {hasil.catatan && <p className="text-sm">Catatan panitia: {hasil.catatan}</p>}
+          {hasil.catatan && <p className="text-sm">Catatan sekolah: {hasil.catatan}</p>}
           {bisaUnggah && hasil.syarat_berkas.length > 0 && hasil.status === "Baru" && (<>
             <h2 className="pt-2 font-medium">Berkas</h2>
             <Unggah slug={slug} nomor={hasil.nomor} tglLahir={tgl} syarat={hasil.syarat_berkas} sudah={hasil.berkas} format={format} />

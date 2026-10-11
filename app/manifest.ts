@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Gerbang — SPMB",
-    short_name: "Gerbang",
+    name: "Yuk Masuk! — SPMB",
+    short_name: "Yuk Masuk!",
     description: "Pendaftaran SPMB online untuk sekolah.",
     start_url: "/",
     display: "standalone",

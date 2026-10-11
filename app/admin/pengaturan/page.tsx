@@ -52,9 +52,9 @@ export default async function Pengaturan() {
   return (
     <main className="mx-auto w-full max-w-2xl pb-16">
       <header className="px-5 pt-8">
-        <Link className="text-sm underline" href="/admin">← Dashboard</Link>
+        <Link className="text-sm tautan" href="/admin">← Beranda admin</Link>
         <h1 className="mt-2 font-serif text-2xl font-bold">Pengaturan sekolah</h1>
-        {!bisaUbah && <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">Langganan tidak aktif, pengaturan hanya bisa dibaca. <Link className="underline" href="/admin/langganan">Kelola langganan</Link></p>}
+        {!bisaUbah && <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">Langganan tidak aktif, pengaturan hanya bisa dibaca. <Link className="tautan" href="/admin/langganan">Kelola langganan</Link></p>}
         <nav className="mt-4 flex flex-wrap gap-2 text-sm">
           {[["profil", "Profil"], ["gambar", "Logo & foto"], ["jalur", "Jalur"], ["form", "Form"], ["arsip", "Arsip"], ["qr", "QR"]].map(([i, l]) => (
             <a key={i} href={`#${i}`} className="rounded-full border px-3 py-1">{l}</a>

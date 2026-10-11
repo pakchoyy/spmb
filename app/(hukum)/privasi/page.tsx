@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Kebijakan Privasi" };
 export default function Privasi() {
   return (
     <KerangkaHukum judul="Kebijakan Privasi">
-      <p>Kebijakan ini menjelaskan data apa yang dikumpulkan lewat aplikasi SPMB Gerbang, untuk apa, dan bagaimana dijaga. Data anak adalah data pribadi, dan kami memperlakukannya dengan hati-hati.</p>
+      <p>Kebijakan ini menjelaskan data apa yang dikumpulkan lewat aplikasi Yuk Masuk!, untuk apa, dan bagaimana dijaga. Data anak adalah data pribadi, dan kami memperlakukannya dengan hati-hati.</p>
 
       <Pasal no={1} judul="Siapa yang mengelola data">
         <Daftar butir={[
@@ -19,18 +19,18 @@ export default function Privasi() {
         <p><b>Dari orang tua (tanpa akun):</b></p>
         <Daftar butir={[
           "Nama lengkap dan tanggal lahir anak, jalur yang dipilih, serta isian tambahan yang diminta sekolah.",
-          "Nomor WhatsApp orang tua, untuk dihubungi panitia sekolah.",
+          "Nomor WhatsApp orang tua, untuk dihubungi admin sekolah.",
           "Berkas pendukung yang diunggah (misalnya kartu keluarga, akta kelahiran) sesuai syarat sekolah.",
-          "Waktu persetujuan privasi, nomor pendaftaran, dan status pendaftaran beserta catatan panitia.",
+          "Waktu persetujuan privasi, nomor pendaftaran, dan status pendaftaran beserta catatan sekolah.",
           "Sidik perangkat berupa hash dari alamat IP dan jenis browser, hanya untuk membatasi spam. Alamat IP mentah tidak disimpan di data pendaftaran.",
         ]} />
         <p><b>Dari admin sekolah:</b> email, kata sandi (disimpan terenkripsi oleh penyedia autentikasi), data profil sekolah, dan catatan aktivitas langganan.</p>
-        <p>Kami tidak memakai pelacak iklan.</p>
+        <p>Kami tidak memakai pelacak iklan. Kami hanya menghitung kunjungan halaman secara anonim (Vercel Analytics, tanpa cookie) untuk memperbaiki aplikasi.</p>
       </Pasal>
 
       <Pasal no={3} judul="Untuk apa data dipakai">
         <Daftar butir={[
-          "Memproses pendaftaran: panitia sekolah memeriksa data dan berkas, menetapkan status, dan menghubungi orang tua.",
+          "Memproses pendaftaran: admin sekolah memeriksa data dan berkas, menetapkan status, dan menghubungi orang tua.",
           "Menampilkan status pendaftaran kepada Anda lewat nomor pendaftaran dan tanggal lahir anak.",
           "Menjaga keamanan dan mencegah penyalahgunaan, misalnya pendaftaran massal otomatis.",
           "Operasional langganan: kode aktivasi dan pengingat dikirim ke email admin sekolah.",
@@ -40,7 +40,7 @@ export default function Privasi() {
 
       <Pasal no={4} judul="Siapa yang dapat mengakses">
         <Daftar butir={[
-          "Panitia (admin) sekolah yang Anda daftari, hanya untuk data sekolahnya sendiri. Sekolah lain tidak dapat melihatnya.",
+          "Admin sekolah yang Anda daftari, hanya untuk data sekolahnya sendiri. Sekolah lain tidak dapat melihatnya.",
           "Penyedia aplikasi, terbatas untuk pemeliharaan, keamanan, dan menangani permintaan dukungan.",
           "Penyedia infrastruktur yang kami pakai untuk menyimpan dan menjalankan sistem (basis data, penyimpanan berkas, hosting, dan pengiriman email) sebagai pemroses data. Penyedia ini dapat berada di luar Indonesia: lokasi saat ini <mark>[DIISI: wilayah server]</mark>.",
           "Pihak berwenang bila diwajibkan oleh hukum.",
@@ -49,7 +49,7 @@ export default function Privasi() {
 
       <Pasal no={5} judul="Keamanan">
         <Daftar butir={[
-          "Berkas disimpan di penyimpanan privat dan hanya dibuka panitia lewat tautan sementara sekitar 5 menit.",
+          "Berkas disimpan di penyimpanan privat dan hanya dibuka admin sekolah lewat tautan sementara sekitar 5 menit.",
           "Setiap tabel data dilindungi aturan akses per sekolah (row level security), dan akses publik hanya lewat fungsi yang dibatasi.",
           "Koneksi memakai HTTPS. Batas ukuran dan jenis berkas diperiksa di server.",
         ]} />
@@ -65,7 +65,7 @@ export default function Privasi() {
       </Pasal>
 
       <Pasal no={7} judul="Hak Anda">
-        <p>Sesuai peraturan pelindungan data pribadi yang berlaku di Indonesia, Anda dapat meminta akses, perbaikan, atau penghapusan data anak Anda, atau menarik persetujuan. Karena sekolah yang memutuskan penggunaan data pendaftar, ajukan permintaan ke panitia sekolah (lewat WhatsApp di halaman sekolah). Anda juga dapat menghubungi kami di kontak di bawah; kami akan meneruskannya ke sekolah.</p>
+        <p>Sesuai peraturan pelindungan data pribadi yang berlaku di Indonesia, Anda dapat meminta akses, perbaikan, atau penghapusan data anak Anda, atau menarik persetujuan. Karena sekolah yang memutuskan penggunaan data pendaftar, ajukan permintaan ke admin sekolah (lewat WhatsApp di halaman sekolah). Anda juga dapat menghubungi kami di kontak di bawah; kami akan meneruskannya ke sekolah.</p>
       </Pasal>
 
       <Pasal no={8} judul="Data anak">

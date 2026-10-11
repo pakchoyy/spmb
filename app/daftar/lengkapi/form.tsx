@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { School } from "lucide-react";
 import { Galat, Halaman, Kolom, input, tombol } from "@/components/ui";
 import SlugField from "@/components/slug-field";
 import { buatSlug } from "@/lib/slug";
@@ -25,7 +26,7 @@ export default function Lengkapi({ nama: n0, npsn }: { nama: string; npsn: strin
     });
   }
   return (
-    <Halaman judul="Lengkapi sekolah" sub="Alamat halaman yang Anda pilih tadi sudah dipakai sekolah lain. Pilih alamat baru.">
+    <Halaman ikon={School} judul="Lengkapi sekolah" sub="Alamat halaman yang Anda pilih tadi sudah dipakai sekolah lain. Pilih alamat baru.">
       <form onSubmit={kirim} className="space-y-4">
         <Kolom label="Nama sekolah"><input className={input} value={nama} required onChange={(e) => setNama(e.target.value)} /></Kolom>
         <SlugField nilai={slug} onUbah={setSlug} />

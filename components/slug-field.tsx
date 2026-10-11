@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { cekSlugAksi } from "@/app/daftar/actions";
 import { SLUG_RE } from "@/lib/slug";
+import { HOST_APP } from "@/lib/merek";
 
 type Cek = { slug: string; tersedia: boolean; saran: string[] };
 
@@ -29,7 +30,7 @@ export default function SlugField({ nilai, onUbah }: { nilai: string; onUbah: (s
       <label className="block">
         <span className="text-sm font-semibold">Alamat halaman sekolah</span>
         <div className="flex items-center rounded-lg border border-neutral-300 bg-white pl-3">
-          <span className="text-neutral-500">domain.com/</span>
+          <span className="text-neutral-500">{HOST_APP}/</span>
           <input className="h-12 min-w-0 flex-1 rounded-lg px-1 text-base outline-none" value={nilai} maxLength={40}
             autoCapitalize="none" autoCorrect="off" spellCheck={false}
             onChange={(e) => onUbah(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))} />
@@ -41,7 +42,7 @@ export default function SlugField({ nilai, onUbah }: { nilai: string; onUbah: (s
           : !cek ? <span className="text-neutral-600">Memeriksa…</span>
           : cek.tersedia ? <span className="font-semibold text-green-700">Tersedia ✓</span>
           : <span className="text-red-700">Sudah dipakai.{" "}
-              {cek.saran.map((s) => <button key={s} type="button" className="mr-2 underline" onClick={() => onUbah(s)}>{s}</button>)}
+              {cek.saran.map((s) => <button key={s} type="button" className="mr-2 tautan" onClick={() => onUbah(s)}>{s}</button>)}
             </span>}
       </p>
       <p className="mt-1 text-xs text-neutral-500">Alamat ini dikunci setelah dibagikan. Mengubahnya nanti lewat permintaan ke pemilik aplikasi.</p>

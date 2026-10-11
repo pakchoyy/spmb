@@ -25,7 +25,7 @@ export default function Aksi({ id, slug, email, dibatalkan, nonaktif }: { id: st
             {dibatalkan ? "Pulihkan langganan" : "Batalkan langganan"}
           </button>
           <button className={`${tbl} ${nonaktif ? "border-green-700 text-green-800" : "border-red-700 text-red-800"}`} disabled={status.pending}
-            onClick={() => confirm(nonaktif ? "Aktifkan kembali sekolah?" : "Nonaktifkan sekolah ini? Dashboard dan form langsung ditutup.") && status.jalankan(() => setNonaktif(id, !nonaktif))}>
+            onClick={() => confirm(nonaktif ? "Aktifkan kembali sekolah?" : "Nonaktifkan sekolah ini? Beranda admin dan form langsung ditutup.") && status.jalankan(() => setNonaktif(id, !nonaktif))}>
             {nonaktif ? "Aktifkan kembali sekolah" : "Nonaktifkan sekolah"}
           </button>
         </div>

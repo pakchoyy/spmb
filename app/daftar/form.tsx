@@ -2,7 +2,9 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { MailCheck, School } from "lucide-react";
 import { Galat, Halaman, Kolom, input, tombol } from "@/components/ui";
+import { BantuanWa } from "@/components/bantuan-wa";
 import SlugField from "@/components/slug-field";
 import { buatSlug } from "@/lib/slug";
 import { daftarSekolah } from "./actions";
@@ -28,15 +30,20 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
 
   if (selesai) {
     return (
-      <Halaman judul="Cek email Anda" sub={`Kami mengirim link konfirmasi ke ${f.email}.`}>
+      <Halaman ikon={MailCheck} judul="Cek email Anda" sub={`Kami mengirim tautan konfirmasi ke ${f.email}.`}>
         <p>Klik link di email itu untuk mengaktifkan akun. Masa coba gratis 7 hari mulai setelah akun aktif. Tidak ada email? Periksa folder spam.</p>
-        <Link className="underline" href="/masuk">Sudah konfirmasi? Masuk</Link>
+        <Link className="tautan" href="/masuk">Sudah konfirmasi? Masuk</Link>
       </Halaman>
     );
   }
 
   return (
-    <Halaman judul="Coba gratis 7 hari" sub="Buat halaman SPMB sekolah Anda. Tanpa kartu kredit.">
+    <Halaman ikon={School} judul="Coba gratis 7 hari" sub="Buat halaman SPMB sekolah Anda. Tanpa kartu kredit.">
+      <ol className="grid grid-cols-3 gap-2 text-center text-xs font-semibold">
+        {["Isi data sekolah", "Konfirmasi email", "Atur & bagikan"].map((t, i) => (
+          <li key={t} className="rounded-xl bg-[var(--biru-muda)] px-2 py-2 text-[var(--biru-tua)]"><span className="block text-base font-bold">{i + 1}</span>{t}</li>
+        ))}
+      </ol>
       <form onSubmit={kirim} className="space-y-4">
         <Kolom label="Nama sekolah">
           <input className={input} value={f.nama} maxLength={150} autoComplete="organization" required
@@ -57,12 +64,13 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
         </Kolom>
         <label className="flex items-start gap-3 text-sm">
           <input type="checkbox" className="mt-1 size-5" checked={f.setuju} onChange={(e) => set({ setuju: e.target.checked })} />
-          <span>Saya mewakili sekolah ini dan menyetujui <Link className="underline" href="/syarat" target="_blank">Syarat dan Ketentuan</Link> serta <Link className="underline" href="/privasi" target="_blank">Kebijakan Privasi</Link>.</span>
+          <span>Saya mewakili sekolah ini dan menyetujui <Link className="tautan" href="/syarat" target="_blank">Syarat dan Ketentuan</Link> serta <Link className="tautan" href="/privasi" target="_blank">Kebijakan Privasi</Link>.</span>
         </label>
         <Galat>{galat}</Galat>
         <button className={tombol} disabled={pending || !f.setuju}>{pending ? "Memproses…" : "Buat akun sekolah"}</button>
       </form>
-      <p className="text-center text-sm">Sudah punya akun? <Link className="underline" href="/masuk">Masuk</Link></p>
+      <p className="text-center text-sm">Sudah punya akun? <Link className="tautan" href="/masuk">Masuk</Link></p>
+      <BantuanWa konteks="sekolah" />
     </Halaman>
   );
 }

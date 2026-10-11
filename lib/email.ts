@@ -14,7 +14,7 @@ export async function kirimEmail(ke: string, subjek: string, teks: string): Prom
     const r = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${kunci}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: process.env.EMAIL_DARI ?? "Gerbang <onboarding@resend.dev>", to: [ke], subject: subjek, text: teks }),
+      body: JSON.stringify({ from: process.env.EMAIL_DARI ?? "Yuk Masuk! <onboarding@resend.dev>", to: [ke], subject: subjek, text: teks }),
     });
     if (!r.ok) console.error("kirimEmail gagal", r.status);
     return r.ok;

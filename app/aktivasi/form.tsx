@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { BadgeCheck, MailCheck } from "lucide-react";
 import { Galat, Halaman, Kolom, input, tombol } from "@/components/ui";
 import Turnstile from "@/components/turnstile";
 import { mintaKode } from "./actions";
@@ -15,14 +16,14 @@ export default function FormAktivasi({ sitekey }: { sitekey: string | null }) {
 
   if (terkirim) {
     return (
-      <Halaman judul="Cek email Anda" sub={`Jika ${email} adalah email admin sekolah yang terdaftar, kode aktivasi sudah dikirim.`}>
+      <Halaman ikon={MailCheck} judul="Cek email Anda" sub={`Jika ${email} adalah email admin sekolah yang terdaftar, kode aktivasi sudah dikirim.`}>
         <p>Kode berbentuk <b>SPMB-XXXXX</b>. Masukkan di menu <b>Langganan</b> setelah masuk ke aplikasi. Tidak ada email? Periksa folder spam, dan pastikan memakai email yang sama dengan akun sekolah. Satu email bisa meminta maksimal 3 kode per hari.</p>
-        <Link className="underline" href="/admin/langganan">Buka halaman Langganan</Link>
+        <Link className="tautan" href="/admin/langganan">Buka halaman Langganan</Link>
       </Halaman>
     );
   }
   return (
-    <Halaman judul="Aktifkan langganan" sub="Terima kasih sudah membeli. Isi email admin sekolah, kami kirim kode aktivasi.">
+    <Halaman ikon={BadgeCheck} judul="Aktifkan langganan" sub="Terima kasih sudah membeli. Isi email admin sekolah, kami kirim kode aktivasi.">
       <form className="space-y-4" onSubmit={(e) => {
         e.preventDefault(); setGalat("");
         start(async () => {
