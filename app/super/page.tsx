@@ -32,10 +32,11 @@ const STATUS = ["trial", "aktif", "tenggang", "nonaktif"];
 export default async function Super({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
   const { status, q } = await searchParams;
   const { svc } = await wajibPemilik();
-  const [{ data }, { data: log }, { data: pakai }] = await Promise.all([
+  const [{ data }, { data: log }, { data: pakai }, { count: masukanBaru }] = await Promise.all([
     svc.rpc("ringkasan_sekolah"),
     svc.from("log_langganan").select("id,sekolah_id,peristiwa,detail,waktu").order("waktu", { ascending: false }).limit(25),
     svc.rpc("pemakaian_penyimpanan"),
+    svc.from("masukan").select("id", { count: "exact", head: true }).eq("selesai", false),
   ]);
   const p = (pakai ?? { db_mb: 0, file_mb: 0, sekolah: [] }) as Pemakaian;
   const semua = (data ?? []) as Baris[];
@@ -53,7 +54,8 @@ export default async function Super({ searchParams }: { searchParams: Promise<{ 
         <form action="/keluar" method="post"><button className="btn btn-pil border-2 border-neutral-300 bg-white">Keluar</button></form>
       </header>
 
-      <nav className="flex gap-2 text-sm"><Link className="btn btn-pil btn-lembut" href="/super/pengaturan">Pengaturan harga & komisi</Link><Link className="btn btn-pil btn-lembut" href="/super/testimoni">Testimoni</Link></nav>
+      <nav className="flex flex-wrap gap-2 text-sm"><Link className="btn btn-pil btn-lembut" href="/super/pengaturan">Pengaturan harga & komisi</Link><Link className="btn btn-pil btn-lembut" href="/super/testimoni">Testimoni</Link>
+        <Link className="btn btn-pil btn-lembut" href="/super/masukan">Masukan{!!masukanBaru && <span className="rounded-full bg-red-600 px-2 text-xs font-bold text-white">{masukanBaru}</span>}</Link></nav>
 
       <section className="grid grid-cols-2 gap-2 sm:grid-cols-5">
         <Link href="/super" className="rounded-2xl bg-white p-3 text-center shadow-sm ring-1 ring-black/5"><p className="text-2xl font-bold">{semua.length}</p><p className="text-xs text-neutral-600">Semua</p></Link>

@@ -3,8 +3,9 @@
 import { useState, useTransition } from "react";
 import { cekStatus, type Status } from "./actions";
 import Unggah from "../daftar/unggah";
-import { BadgeCheck, Clock, Hourglass, Search, XCircle } from "lucide-react";
+import { BadgeCheck, Clock, Hourglass, PartyPopper, Printer, Search, XCircle } from "lucide-react";
 import TeksBesar from "@/components/teks-besar";
+import Konfeti from "@/components/konfeti";
 
 // Warna, ikon, dan langkah berikutnya per status, dengan bahasa untuk orang tua.
 const INFO = {
@@ -51,8 +52,24 @@ export default function CekForm({ slug, nama, format, bisaUnggah }: { slug: stri
         </form>
         {galat && <p role="alert" className="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-800">{galat}</p>}
       </div>
+      {hasil?.status === "Diterima" && (<>
+        <Konfeti />
+        <section className="muncul overflow-hidden rounded-3xl bg-white text-center shadow-lg ring-4 ring-[var(--mint)]">
+          <div className="bg-[var(--mint)] px-5 py-6 text-white">
+            <PartyPopper className="mx-auto size-12" aria-hidden />
+            <p className="mt-2 font-serif text-3xl font-bold">Selamat!</p>
+            <p className="mt-1 text-white/90">{hasil.nama_anak} diterima di</p>
+            <p className="text-lg font-bold">{nama}</p>
+          </div>
+          <div className="space-y-1 p-5">
+            <p className="text-sm text-neutral-600">Nomor pendaftaran</p>
+            <p className="font-mono text-2xl font-bold tracking-wider">{hasil.nomor}</p>
+            <button type="button" onClick={() => window.print()} className="btn btn-pil btn-lembut mt-3 print:hidden"><Printer className="size-4" aria-hidden />Simpan / cetak bukti</button>
+          </div>
+        </section>
+      </>)}
       {hasil && info && (
-        <section className="muncul space-y-3 rounded-3xl p-5" style={{ background: info.latar }}>
+        <section className="muncul space-y-3 rounded-3xl p-5 print:hidden" style={{ background: info.latar }}>
           <p className="text-sm font-semibold text-neutral-700">{hasil.nomor} · {hasil.nama_anak}</p>
           <p className="flex items-center gap-2 font-serif text-2xl font-bold" style={{ color: info.warna }}><info.ikon className="size-7" aria-hidden />{info.judul}</p>
           <p>{info.saran}</p>

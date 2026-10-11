@@ -10,6 +10,7 @@ const isi = Plus_Jakarta_Sans({ variable: "--font-isi", subsets: ["latin"] });
 export const viewport: Viewport = { themeColor: "#2449d8" };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://spmbz.web.id"),
   title: "SPMB Zone — Web SPMB Custom untuk sekolah anda",
   description: "Pendaftaran SPMB online untuk sekolah. Halaman SPMB sendiri, periksa berkas dengan mudah.",
 };

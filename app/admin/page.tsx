@@ -2,7 +2,7 @@ import Link from "next/link";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import { bacaFilter, kueri, linkWa, STATUS, tglId, WARNA_STATUS } from "@/lib/pendaftar";
 import Cetak from "./pendaftar/[id]/cetak";
-import { BadgeCheck, CheckCircle2, ChevronRight, Circle, Clock, Hourglass, ListChecks, LogOut, MessageCircle, Search, Users, Download, XCircle } from "lucide-react";
+import { Lightbulb, BadgeCheck, CheckCircle2, ChevronRight, Circle, Clock, Hourglass, ListChecks, LogOut, MessageCircle, Search, Users, Download, XCircle } from "lucide-react";
 import Bagikan from "@/components/bagikan";
 import TestimoniForm from "./testimoni-form";
 
@@ -197,6 +197,12 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
           </nav>
         )}
       </section>
+
+      <Link href="/admin/masukan" className="flex items-center gap-3 rounded-3xl bg-[var(--ungu-muda)] p-4 print:hidden">
+        <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-white"><Lightbulb className="size-6 text-[var(--ungu)]" aria-hidden /></span>
+        <span className="min-w-0 flex-1"><b className="block">Minta fitur atau beri saran</b><span className="block text-sm text-neutral-700">Bantu kami membuat aplikasi ini lebih baik.</span></span>
+        <ChevronRight className="size-5 shrink-0" aria-hidden />
+      </Link>
     </main>
   );
 }

@@ -88,3 +88,10 @@ html.teks-besar { font-size: 112.5%; }
 
 /* Deretan berjalan ke kanan (prestasi siswa) */
 .marquee-kanan .marquee-isi { animation-direction: reverse; }
+
+/* Konfeti pengumuman diterima */
+.konfeti { position: absolute; top: -20px; opacity: 0; animation: jatuh 3s ease-in 1 forwards; }
+@keyframes jatuh {
+  0% { opacity: 1; transform: translateY(0) rotate(0); }
+  100% { opacity: 0; transform: translateY(105vh) rotate(720deg); }
+}

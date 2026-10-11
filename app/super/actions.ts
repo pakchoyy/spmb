@@ -178,3 +178,13 @@ export async function hapusTestimoni(id: string): Promise<Hasil> {
   segarkanTestimoni();
   return { ok: true };
 }
+
+export async function setMasukanSelesai(id: string, selesai: boolean): Promise<Hasil> {
+  const { svc } = await wajibPemilik();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  const { error } = await svc.from("masukan").update({ selesai }).eq("id", id);
+  if (error) return gagal("Gagal menyimpan.");
+  revalidatePath("/super/masukan");
+  revalidatePath("/super");
+  return { ok: true };
+}

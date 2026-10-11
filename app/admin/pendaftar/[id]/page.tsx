@@ -32,7 +32,11 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
     <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
       <div className="flex items-center justify-between print:hidden">
         <Kembali href="/admin">Daftar pendaftar</Kembali>
-        <Cetak />
+        <Cetak label="Cetak / simpan PDF" />
+      </div>
+      <div className="hidden border-b-2 border-black pb-2 text-center print:block">
+        <p className="text-lg font-bold uppercase">Formulir Pendaftaran Siswa Baru</p>
+        <p>{sekolah.nama}</p>
       </div>
 
       <header className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
@@ -58,7 +62,7 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
         </div>
       </dl>
 
-      <section>
+      <section className="print:break-inside-avoid">
         <h2 className="mb-2 font-serif text-xl font-bold">Berkas</h2>
         <BerkasList syarat={jalur?.syarat_berkas ?? []} berkas={berkas ?? []} />
       </section>
@@ -68,6 +72,7 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
         {!bisaUbah && <p className="mb-2 rounded-2xl bg-[var(--kuning-muda)] p-3 text-sm text-amber-900">Langganan tidak aktif, data hanya bisa dibaca.</p>}
         <StatusForm id={p.id} status={p.status} catatan={p.catatan} bisaUbah={bisaUbah} />
       </section>
+      <p className="hidden pt-8 text-right text-sm print:block">Dicetak {tglId(new Date().toISOString(), true)}<br /><br /><br />(............................................)<br />Panitia SPMB</p>
     </main>
   );
 }

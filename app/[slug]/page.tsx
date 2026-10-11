@@ -26,9 +26,15 @@ const ambil = cache(async (slug: string) => {
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { sekolah } = await ambil((await params).slug);
-  return sekolah
-    ? { title: `SPMB ${sekolah.nama}`, description: `Pendaftaran SPMB online ${sekolah.nama}.`, manifest: `/${sekolah.slug}/manifest.webmanifest` }
-    : {};
+  if (!sekolah) return {};
+  const desk = `Pendaftaran siswa baru (SPMB) ${sekolah.nama} secara online dari HP.${sekolah.alamat ? ` ${sekolah.alamat}.` : ""}`;
+  const gambar = urlAset(sekolah.banner_path) ?? urlAset(sekolah.logo_path);
+  return {
+    title: `SPMB ${sekolah.nama}`, description: desk,
+    manifest: `/${sekolah.slug}/manifest.webmanifest`,
+    alternates: { canonical: `/${sekolah.slug}` },
+    openGraph: { title: `SPMB ${sekolah.nama}`, description: desk, type: "website", ...(gambar ? { images: [gambar] } : {}) },
+  };
 }
 
 // Halaman di-cache 10 menit, jadi status jalur bisa terlambat sampai selama itu.
@@ -264,6 +270,10 @@ export default async function HalamanSekolah({ params }: Params) {
         </section>
       </main>
 
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org", "@type": "School", name: s.nama,
+        ...(s.alamat ? { address: s.alamat } : {}), ...(logo ? { logo } : {}),
+      }).replace(/</g, "\\u003c") }} />
       <Footer />
       {wa && <WaMelayang href={wa} label={`Chat WhatsApp ${s.nama}`} naik />}
 
