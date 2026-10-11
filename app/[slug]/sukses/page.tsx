@@ -36,7 +36,7 @@ export default async function Sukses({ params, searchParams }: {
         <div className="p-5 text-center">
           <p className="text-sm text-neutral-600">Nomor pendaftaran</p>
           <p className="font-mono text-4xl font-bold tracking-wider" style={{ color: "var(--aksen)" }}>{nomor}</p>
-          <p className="mt-3 text-sm text-neutral-600">Cek status dengan nomor ini dan tanggal lahir anak.</p>
+          <p className="mt-3 text-sm text-neutral-600">Simpan nomor ini untuk cek status pendaftaran.</p>
         </div>
       </section>
 

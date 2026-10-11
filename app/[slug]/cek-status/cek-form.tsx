@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { cekStatus, type Status } from "./actions";
 import Unggah from "../daftar/unggah";
-import { BadgeCheck, Clock, Hourglass, PartyPopper, Printer, Search, XCircle } from "lucide-react";
+import { MessageCircle, BadgeCheck, Clock, Hourglass, PartyPopper, Printer, Search, XCircle } from "lucide-react";
 import TeksBesar from "@/components/teks-besar";
 import Konfeti from "@/components/konfeti";
 
@@ -15,7 +15,7 @@ const INFO = {
   Ditolak: { ikon: XCircle, latar: "var(--oranye-muda)", warna: "#a2401a", judul: "Belum diterima", saran: "Baca catatan sekolah di bawah. Hubungi sekolah lewat WhatsApp bila ada pertanyaan." },
 } as const;
 
-export default function CekForm({ slug, nama, format, bisaUnggah }: { slug: string; nama: string; format: string[]; bisaUnggah: boolean }) {
+export default function CekForm({ slug, nama, format, bisaUnggah, wa }: { slug: string; nama: string; format: string[]; bisaUnggah: boolean; wa: string | null }) {
   const [nomor, setNomor] = useState("");
   const [tgl, setTgl] = useState("");
   const [hasil, setHasil] = useState<Status | null>(null);
@@ -28,12 +28,14 @@ export default function CekForm({ slug, nama, format, bisaUnggah }: { slug: stri
     setGalat(""); setHasil(null);
     start(async () => {
       try {
-        const r = await cekStatus(slug, nomor, tgl);
-        if (r) setHasil(r); else setGalat("Nomor pendaftaran atau tanggal lahir tidak cocok.");
+        const r = await cekStatus(slug, nomor);
+        if (r) setHasil(r); else setGalat("Nomor pendaftaran tidak ditemukan. Periksa lagi angkanya.");
       } catch { setGalat("Koneksi terputus. Coba lagi."); }
     });
   }
 
+  const d = (wa ?? "").replace(/\D/g, "").replace(/^0/, "62");
+  const waLink = d.length >= 9 ? `https://wa.me/${d}` : null;
   const info = hasil ? INFO[hasil.status as keyof typeof INFO] ?? INFO.Baru : null;
   return (
     <main className="mx-auto max-w-md space-y-4 p-4">
@@ -45,12 +47,15 @@ export default function CekForm({ slug, nama, format, bisaUnggah }: { slug: stri
         <h1 className="flex items-center gap-2 font-serif text-2xl font-bold"><Search className="size-6 text-[var(--biru)]" aria-hidden />Cek status pendaftaran</h1>
         <form onSubmit={cari} className="mt-4 space-y-3">
           <label className="block"><span className="mb-1 block text-sm font-semibold">Nomor pendaftaran</span>
-            <input className={`${input} font-mono uppercase`} placeholder="Contoh: 26-A1B2C3" value={nomor} onChange={(e) => setNomor(e.target.value)} autoCapitalize="characters" autoComplete="off" /></label>
-          <label className="block"><span className="mb-1 block text-sm font-semibold">Tanggal lahir anak</span>
-            <input type="date" className={input} value={tgl} onChange={(e) => setTgl(e.target.value)} /></label>
+            <input className={`${input} text-center font-mono text-2xl tracking-[0.3em]`} placeholder="482913" value={nomor} inputMode="numeric"
+              onChange={(e) => setNomor(e.target.value.toUpperCase().replace(/[^0-9A-Z-]/g, "").slice(0, 12))} autoComplete="off" /></label>
           <button disabled={pending} className="btn btn-utama w-full">{pending ? "Memeriksa…" : "Cek status"}</button>
         </form>
         {galat && <p role="alert" className="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-800">{galat}</p>}
+        <div className="mt-4 rounded-2xl bg-[var(--kuning-muda)] p-3 text-sm">
+          <p><b>Lupa nomor pendaftaran?</b> Nomor ada di bukti pendaftaran. Kalau hilang, tanyakan ke admin sekolah.</p>
+          {waLink && <a href={`${waLink}?text=${encodeURIComponent(`Halo admin ${nama}, saya lupa nomor pendaftaran anak saya. Nama anak: `)}`} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-pil mt-2 w-full"><MessageCircle className="size-4" aria-hidden />Tanya admin lewat WhatsApp</a>}
+        </div>
       </div>
       {hasil?.status === "Diterima" && (<>
         <Konfeti />
@@ -76,7 +81,9 @@ export default function CekForm({ slug, nama, format, bisaUnggah }: { slug: stri
           {hasil.catatan && <p className="rounded-2xl bg-white/70 p-3 text-sm"><b>Catatan sekolah:</b> {hasil.catatan}</p>}
           {bisaUnggah && hasil.syarat_berkas.length > 0 && hasil.status === "Baru" && (<>
             <h2 className="pt-2 font-bold">Berkas</h2>
-            <Unggah slug={slug} nomor={hasil.nomor} tglLahir={tgl} syarat={hasil.syarat_berkas} sudah={hasil.berkas} format={format} />
+            <label className="block"><span className="mb-1 block text-sm font-semibold">Tanggal lahir anak (untuk keamanan unggah berkas)</span>
+              <input type="date" className={input} value={tgl} onChange={(e) => setTgl(e.target.value)} /></label>
+            {tgl && <Unggah slug={slug} nomor={hasil.nomor} tglLahir={tgl} syarat={hasil.syarat_berkas} sudah={hasil.berkas} format={format} />}
           </>)}
         </section>
       )}

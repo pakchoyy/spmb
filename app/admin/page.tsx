@@ -2,7 +2,7 @@ import Link from "next/link";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import { bacaFilter, kueri, linkWa, STATUS, tglId, WARNA_STATUS } from "@/lib/pendaftar";
 import Cetak from "./pendaftar/[id]/cetak";
-import { Info, Lightbulb, BadgeCheck, CheckCircle2, ChevronRight, Circle, Clock, Hourglass, ListChecks, LogOut, MessageCircle, Search, Users, Download, XCircle } from "lucide-react";
+import { Lightbulb, BadgeCheck, CheckCircle2, ChevronRight, Circle, Clock, Hourglass, ListChecks, LogOut, MessageCircle, Search, Users, Download, XCircle } from "lucide-react";
 import Bagikan from "@/components/bagikan";
 import TestimoniForm from "./testimoni-form";
 
@@ -84,10 +84,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
             <p className="text-sm text-white/80">Admin sekolah</p>
             <h1 className="truncate font-serif text-2xl font-bold">{sekolah.nama}</h1>
           </div>
-          <div className="flex shrink-0 gap-2">
-            <Link href="/tentang" aria-label="Tentang SPMB Zone" className="btn btn-pil bg-white/15 px-3 text-white"><Info className="size-4" aria-hidden /></Link>
-            <form action="/keluar" method="post"><button className="btn btn-pil bg-white/15 text-white"><LogOut className="size-4" aria-hidden />Keluar</button></form>
-          </div>
+          <form action="/keluar" method="post"><button className="btn btn-pil bg-white/15 text-white"><LogOut className="size-4" aria-hidden />Keluar</button></form>
         </div>
         <div className="relative mt-4 flex flex-wrap items-center gap-2">
           <Link href="/admin/langganan" className="btn btn-pil bg-white text-[var(--biru)]">

@@ -106,7 +106,6 @@ export default async function Beranda() {
           <Logo />
           <div className="flex items-center gap-2">
             <Link href="/cara-pakai" className="btn btn-pil px-3 text-[var(--biru)]">Cara pakai</Link>
-            <Link href="/tentang" className="btn btn-pil px-3 text-[var(--biru)]">Tentang</Link>
             <Link href="/masuk" className="btn btn-garis btn-pil">Masuk</Link>
           </div>
         </div>

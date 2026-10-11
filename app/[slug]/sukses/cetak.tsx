@@ -19,7 +19,7 @@ export default function AksiBukti({ nomor, sekolah, slug, warna }: { nomor: stri
     g.fillStyle = "#55607a"; g.font = "500 34px system-ui, sans-serif"; g.fillText("Nomor pendaftaran", 540, 520);
     g.fillStyle = warna; g.font = "700 110px ui-monospace, monospace"; g.fillText(nomor, 540, 660);
     g.fillStyle = "#55607a"; g.font = "400 30px system-ui, sans-serif";
-    g.fillText("Cek status dengan nomor ini dan tanggal lahir anak", 540, 780);
+    g.fillText("Simpan nomor ini untuk cek status pendaftaran", 540, 780);
     g.fillText(`${location.host}/${slug}/cek-status`, 540, 830);
     const a = document.createElement("a");
     a.href = c.toDataURL("image/png");

@@ -239,7 +239,7 @@ const ORTU: Langkah[] = [
         <Teks y={92} t="BUKTI PENDAFTARAN" ukuran={7} tebal warna="#fff" tengah />
         <line x1="30" y1="118" x2="150" y2="118" stroke="#d6dcf0" strokeDasharray="4 3" />
         <Teks y={136} t="Nomor pendaftaran" ukuran={7} warna="#55607a" tengah />
-        <Teks y={158} t="26-A1B2C3" ukuran={16} tebal warna={MINT} tengah />
+        <Teks y={158} t="482913" ukuran={16} tebal warna={MINT} tengah />
         <Tombol y={192} teks="Simpan sebagai gambar" />
         <Ketuk x={146} y={202} />
         <Tombol y={218} teks="Kirim ke WA" warna="#1faa59" />
@@ -248,12 +248,11 @@ const ORTU: Langkah[] = [
   },
   {
     judul: "Cek status",
-    teks: "Buka halaman sekolah, ketuk Cek status pendaftaran, lalu masukkan nomor pendaftaran dan tanggal lahir anak.",
+    teks: "Buka halaman sekolah, ketuk Cek status pendaftaran, lalu masukkan nomor pendaftaran (6 angka). Lupa nomor? Tanya admin sekolah lewat WhatsApp.",
     gambar: (
       <Layar judul="Cek status" warna={MINT} label="Layar cek status">
-        <Kolom y={72} label="Nomor pendaftaran" isi="26-A1B2C3" />
-        <Kolom y={106} label="Tanggal lahir anak" isi="12 Maret 2019" />
-        <Tombol y={136} teks="Cek status" />
+        <Kolom y={72} label="Nomor pendaftaran" isi="482913" />
+        <Tombol y={104} teks="Cek status" />
         <rect x="20" y="168" width="140" height="62" rx="12" fill="var(--mint-muda)" />
         <Teks x={30} y={190} t="✓ Diterima" ukuran={13} tebal warna="#0b6b52" />
         <Teks x={30} y={208} t="Ikuti arahan sekolah untuk" ukuran={7.5} warna="#17203d" />

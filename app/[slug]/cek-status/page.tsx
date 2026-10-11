@@ -10,5 +10,5 @@ export default async function CekStatus({ params }: { params: Promise<{ slug: st
   const { data } = await supabaseAnon().rpc("sekolah_publik", { p_slug: slug });
   const s = data as SekolahPublik | null;
   if (!s) notFound();
-  return <CekForm slug={slug} nama={s.nama} format={s.format_berkas} bisaUnggah={s.status === "trial" || s.status === "aktif"} />;
+  return <CekForm slug={slug} nama={s.nama} format={s.format_berkas} bisaUnggah={s.status === "trial" || s.status === "aktif"} wa={s.kontak_wa} />;
 }
