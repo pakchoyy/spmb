@@ -92,7 +92,10 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
 
       {!awalSelesai && (
         <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 print:hidden">
-          <h2 className="font-bold">Panduan awal · {langkahAwal.filter((l) => l.ok).length}/{langkahAwal.length} selesai</h2>
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="font-bold">Panduan awal · {langkahAwal.filter((l) => l.ok).length}/{langkahAwal.length} selesai</h2>
+            <Link href="/cara-pakai" target="_blank" className="tautan text-sm">Lihat cara pakai</Link>
+          </div>
           <ul className="mt-3 space-y-2">
             {langkahAwal.map((l) => (
               <li key={l.teks}>

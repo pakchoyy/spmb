@@ -167,6 +167,7 @@ export default async function HalamanSekolah({ params }: Params) {
           <div className="mt-3 grid gap-2">
             {wa && <a className="btn btn-wa" href={wa} rel="noopener"><MessageCircle className="size-5" aria-hidden />Chat WhatsApp sekolah</a>}
             <Link className="btn btn-lembut" href={`/${s.slug}/cek-status`}><Search className="size-5" aria-hidden />Cek status pendaftaran</Link>
+            <Link className="tautan text-center text-sm" href="/cara-pakai#orang-tua">Bingung cara daftar? Lihat panduan bergambar</Link>
             <div className="grid grid-cols-2 gap-2">
               {peta && <a className="btn btn-garis btn-pil" href={peta} rel="noopener noreferrer"><MapPin className="size-4" aria-hidden />Lihat peta</a>}
               {ig && <a className="btn btn-garis btn-pil" href={ig.url} rel="noopener noreferrer"><AtSign className="size-4" aria-hidden />{ig.nama}</a>}

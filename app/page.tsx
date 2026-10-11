@@ -91,7 +91,10 @@ export default async function Beranda() {
       <header className="sticky top-0 z-20 border-b border-black/5 bg-[var(--background)]/90 backdrop-blur">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-5 py-3">
           <Logo />
-          <Link href="/masuk" className="btn btn-garis btn-pil">Masuk</Link>
+          <div className="flex items-center gap-2">
+            <Link href="/cara-pakai" className="btn btn-pil text-[var(--biru)]">Cara pakai</Link>
+            <Link href="/masuk" className="btn btn-garis btn-pil">Masuk</Link>
+          </div>
         </div>
       </header>
 
