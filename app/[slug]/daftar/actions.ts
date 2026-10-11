@@ -1,6 +1,8 @@
 "use server";
 
-import { headers } from "next/headers";
+import { after } from "next/server";
+import { hashPerangkat } from "@/lib/perangkat";
+import { kirimPushSekolah } from "@/lib/push";
 import { supabaseAnon } from "@/lib/supabase/anon";
 import { supabaseService } from "@/lib/supabase/admin";
 import { lolosTurnstile } from "@/lib/turnstile";
@@ -35,16 +37,18 @@ export async function kirimPendaftaran(slug: string, data: {
   }
 
   // perangkat = hash IP + user agent; cukup untuk pembatasan kasar
-  const h = await headers();
-  const mentah = `${h.get("x-forwarded-for") ?? ""}|${h.get("user-agent") ?? ""}`;
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(mentah));
-  const perangkat = Buffer.from(buf).toString("hex").slice(0, 32);
+  const perangkat = await hashPerangkat();
 
   const { data: nomor, error } = await db.rpc("daftar_pendaftar", {
     p_slug: slug, p_jalur: data.jalur, p_nama_anak: nama, p_tgl_lahir: data.tglLahir,
     p_isian: isian, p_perangkat: perangkat, p_setuju: data.setuju, p_wa: wa,
   });
   if (error) return { ok: false, pesan: pesanError(error.message) };
+  // notifikasi HP ke admin sekolah, setelah respons terkirim agar orang tua tidak menunggu
+  after(async () => {
+    const { data: sk } = await supabaseService().from("sekolah").select("id").eq("slug", slug).maybeSingle();
+    if (sk) await kirimPushSekolah(sk.id, { judul: "Pendaftar baru", isi: `${nama} baru saja mendaftar (${nomor}).`, url: "/admin?status=Baru" });
+  });
   return { ok: true, nomor: nomor as string };
 }
 

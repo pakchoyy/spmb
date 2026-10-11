@@ -260,3 +260,15 @@ export async function simpanPengumuman(iso: string | null): Promise<Hasil> {
   revalidatePath("/admin");
   return { ok: true };
 }
+
+export async function simpanDaftarUlang(f: { aktif: boolean; tenggat: string | null; info: string; isian: string[]; berkas: string[] }): Promise<Hasil> {
+  const t = f.tenggat ? new Date(f.tenggat) : null;
+  if (t && Number.isNaN(t.getTime())) return gagal("Tanggal batas tidak valid.");
+  const daftar = (xs: string[], maks: number) => [...new Set(xs.map((x) => bersih(x, 60)).filter(Boolean))].slice(0, maks);
+  const nilai = { aktif: f.aktif, tenggat: t?.toISOString() ?? null, info: bersih(f.info, 800), isian: daftar(f.isian, 10), berkas: daftar(f.berkas, 8) };
+  const { db, sekolah } = await wajibAdmin();
+  const { error } = await db.from("sekolah").update({ daftar_ulang: nilai }).eq("id", sekolah.id);
+  if (error) return gagal(pesanDb(error));
+  tampilkan(sekolah.slug);
+  return { ok: true };
+}

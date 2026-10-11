@@ -63,7 +63,10 @@ export async function kompres(file: File): Promise<File> {
 
 /** URL publik aset sekolah (logo, banner, galeri) dari bucket `sekolah-aset`. */
 export const urlAset = (path: string | null | undefined) =>
-  path ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/sekolah-aset/${path}` : null;
+  !path ? null
+    // aset bawaan sekolah contoh, disajikan dari public/demo/
+    : /^\/demo\/[a-z0-9-]+\.(png|webp|jpg)$/.test(path) ? path
+    : `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/sekolah-aset/${path}`;
 
 /** "0812-3456-7890" / "+62 812…" -> "628123456890"; null bila bukan nomor wajar (9–15 digit). */
 export function normalWa(mentah: string): string | null {

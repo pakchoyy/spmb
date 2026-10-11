@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import MenuAdmin from "@/components/menu-admin";
 import Toaster from "@/components/toast";
 import { wajibAdmin } from "@/lib/sekolah-saya";
+
+export const metadata: Metadata = { manifest: "/api/manifest-admin" };
 
 export default async function LayoutAdmin({ children }: { children: React.ReactNode }) {
   const { db, sekolah } = await wajibAdmin();

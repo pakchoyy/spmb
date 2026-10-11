@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import { bacaFilter, kueri, linkWa, STATUS, tglId, WARNA_STATUS } from "@/lib/pendaftar";
+import PasangApp from "@/components/pasang-app";
+import Notif from "./notif";
 import PilihMassal from "./pilih-massal";
 import Statistik from "./statistik";
 import Cetak from "./pendaftar/[id]/cetak";
@@ -24,7 +26,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
   const { db, sekolah } = await wajibAdmin();
 
   let q = db.from("pendaftar")
-    .select("id,nomor,nama_anak,status,wa_ortu,dibuat_pada,jalur(nama,syarat_berkas),berkas(id)", { count: "exact" })
+    .select("id,nomor,nama_anak,status,wa_ortu,dibuat_pada,daftar_ulang_pada,jalur(nama,syarat_berkas),berkas(id)", { count: "exact" })
     .order("dibuat_pada", { ascending: false }).range((hal - 1) * PER_HAL, hal * PER_HAL - 1);
   q = q.eq("diarsip", f.arsip === "1");
   if (f.status) q = q.eq("status", f.status);
@@ -99,6 +101,9 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
             url={`${situs}/${sekolah.slug}`} label="Bagikan ke orang tua" className="btn btn-pil btn-kuning" />
         </div>
       </header>
+
+      <PasangApp judul="Pasang aplikasi admin" teks="Buka dasbor langsung dari layar utama HP." kunci="pasang-admin" />
+      <Notif />
 
       {!awalSelesai && (
         <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 print:hidden">
@@ -196,6 +201,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
                   {perlu > 0 && <span className={`rounded-full px-2 py-0.5 ${unggah >= perlu ? "bg-green-50 text-green-800" : "bg-amber-50 text-amber-900"}`}>Berkas {unggah}/{perlu}</span>}
+                  {p.daftar_ulang_pada && <span className="rounded-full bg-[var(--mint-muda)] px-2 py-0.5 font-semibold text-[#0b6b52]">✓ Daftar ulang</span>}
                   {ganda.has(p.id) && <span className="rounded-full bg-amber-100 px-2 py-0.5 font-semibold text-amber-900">⚠ Kemungkinan ganda</span>}
                   {wa && <a href={wa} rel="noopener noreferrer" className="btn btn-wa btn-pil ml-auto !min-h-8 print:hidden"><MessageCircle className="size-3.5" aria-hidden />WhatsApp</a>}
                 </div>

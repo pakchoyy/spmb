@@ -33,7 +33,7 @@ async function ambilData(): Promise<{ harga: number | null; sekolah: SekolahPeng
   return { harga, sekolah, testimoni };
 }
 
-const contoh = process.env.NEXT_PUBLIC_CONTOH_SLUG || "sdbaru";
+const contoh = process.env.NEXT_PUBLIC_CONTOH_SLUG || "sd-harapan-bangsa";
 
 const LANGKAH = [
   { ikon: School, warna: "var(--biru-muda)", aksen: "var(--biru)", j: "Daftar dan atur sekolah", t: "Pilih alamat halaman, isi profil, lalu atur jalur dan isian form." },

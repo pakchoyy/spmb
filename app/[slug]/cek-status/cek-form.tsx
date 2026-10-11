@@ -3,9 +3,11 @@
 import { useState, useTransition } from "react";
 import { cekStatus, type Status } from "./actions";
 import Unggah from "../daftar/unggah";
-import { MessageCircle, BadgeCheck, Clock, Hourglass, PartyPopper, Printer, Search, XCircle } from "lucide-react";
+import { MessageCircle, BadgeCheck, Clock, Hourglass, PartyPopper, Search, XCircle } from "lucide-react";
 import TeksBesar from "@/components/teks-besar";
 import Konfeti from "@/components/konfeti";
+import KartuDiterima from "./kartu";
+import FormDaftarUlang from "./daftar-ulang";
 
 const sekarang = () => Date.now();
 
@@ -31,7 +33,8 @@ export default function CekForm({ slug, nama, format, bisaUnggah, wa }: { slug: 
     start(async () => {
       try {
         const r = await cekStatus(slug, nomor);
-        if (r) setHasil(r); else setGalat("Nomor pendaftaran tidak ditemukan. Periksa lagi angkanya.");
+        if (!r.ok) setGalat(r.pesan);
+        else if (r.data) setHasil(r.data); else setGalat("Nomor pendaftaran tidak ditemukan. Periksa lagi angkanya.");
       } catch { setGalat("Koneksi terputus. Coba lagi."); }
     });
   }
@@ -71,9 +74,12 @@ export default function CekForm({ slug, nama, format, bisaUnggah, wa }: { slug: 
           <div className="space-y-1 p-5">
             <p className="text-sm text-neutral-600">Nomor pendaftaran</p>
             <p className="font-mono text-2xl font-bold tracking-wider">{hasil.nomor}</p>
-            <button type="button" onClick={() => window.print()} className="btn btn-pil btn-lembut mt-3 print:hidden"><Printer className="size-4" aria-hidden />Simpan / cetak bukti</button>
+            <div className="pt-3"><KartuDiterima slug={slug} sekolah={nama} logo={hasil.logo_path ?? null} nama={hasil.nama_anak} nomor={hasil.nomor} jalur={hasil.jalur} /></div>
           </div>
         </section>
+        {hasil.daftar_ulang?.aktif && (
+          <FormDaftarUlang slug={slug} nomor={hasil.nomor} du={hasil.daftar_ulang} sudahPada={hasil.daftar_ulang_pada ?? null} berkas={hasil.berkas} format={format} />
+        )}
       </>)}
       {hasil && info && (
         <section className="muncul space-y-3 rounded-3xl p-5 print:hidden" style={{ background: info.latar }}>

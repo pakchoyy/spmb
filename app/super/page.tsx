@@ -55,6 +55,7 @@ export default async function Super({ searchParams }: { searchParams: Promise<{ 
       </header>
 
       <nav className="flex flex-wrap gap-2 text-sm"><Link className="btn btn-pil btn-lembut" href="/super/pengaturan">Pengaturan harga & komisi</Link><Link className="btn btn-pil btn-lembut" href="/super/testimoni">Testimoni</Link>
+        <Link className="btn btn-pil btn-lembut" href="/super/galat">Error</Link>
         <Link className="btn btn-pil btn-lembut" href="/super/masukan">Masukan{!!masukanBaru && <span className="rounded-full bg-red-600 px-2 text-xs font-bold text-white">{masukanBaru}</span>}</Link></nav>
 
       <section className="grid grid-cols-2 gap-2 sm:grid-cols-5">

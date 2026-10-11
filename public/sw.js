@@ -1,6 +1,6 @@
-// Service worker Gerbang. Sengaja sempit: hanya aset statis dan halaman informasi sekolah.
+// Service worker SPMB Zone. Sengaja sempit: hanya aset statis dan halaman informasi sekolah.
 // Dashboard, form, cek status, login, dan semua data pengguna TIDAK PERNAH disimpan.
-const VERSI = "v1";
+const VERSI = "v2";
 const CACHE_ASET = `aset-${VERSI}`;
 const CACHE_HALAMAN = `halaman-${VERSI}`;
 const MAKS_UMUR_HALAMAN = 24 * 60 * 60 * 1000; // 1 hari
@@ -52,4 +52,25 @@ self.addEventListener("fetch", (e) => {
       try { return await jaringan; } catch (err) { if (ada) return ada; throw err; }
     })());
   }
+});
+
+// Notifikasi HP untuk admin (pendaftar baru). Isi: { judul, isi, url }.
+self.addEventListener("push", (e) => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch { d = { isi: e.data && e.data.text() }; }
+  e.waitUntil(self.registration.showNotification(d.judul || "SPMB Zone", {
+    body: d.isi || "", icon: "/api/ikon/192", badge: "/api/ikon/192", tag: "pendaftar-baru", renotify: true,
+    data: { url: d.url || "/admin" },
+  }));
+});
+
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const tujuan = new URL(e.notification.data?.url || "/admin", self.location.origin).href;
+  e.waitUntil((async () => {
+    for (const c of await self.clients.matchAll({ type: "window", includeUncontrolled: true })) {
+      if (new URL(c.url).pathname.startsWith("/admin") && "focus" in c) { await c.navigate(tujuan).catch(() => {}); return c.focus(); }
+    }
+    return self.clients.openWindow(tujuan);
+  })());
 });

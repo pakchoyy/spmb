@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Award, BadgeCheck, Trophy, CalendarClock, CheckCircle2, FileText, AtSign, MapPin, MessageCircle, Search, Users } from "lucide-react";
 import TeksBesar from "@/components/teks-besar";
 import Bagikan from "@/components/bagikan";
+import PasangApp from "@/components/pasang-app";
 import { WaMelayang } from "@/components/wa-melayang";
 import { Footer } from "@/components/footer";
 import { cache } from "react";
@@ -143,6 +144,7 @@ export default async function HalamanSekolah({ params }: Params) {
       </header>
 
       <main className="relative mx-auto -mt-5 w-full max-w-2xl flex-1 space-y-4 px-4 pb-28">
+        <PasangApp judul="Simpan halaman sekolah di HP" teks="Buka lagi dengan sekali ketuk untuk cek status dan info terbaru." kunci={`pasang-${s.slug}`} />
         {s.keunggulan.length > 0 && (
           <section className={kartu}>
             <h2 className="font-serif text-xl font-bold">Keunggulan sekolah</h2>

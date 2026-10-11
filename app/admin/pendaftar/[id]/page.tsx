@@ -15,7 +15,7 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
   const { db, sekolah } = await wajibAdmin();
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
   const { data: p } = await db.from("pendaftar")
-    .select("id,nomor,nama_anak,tanggal_lahir,isian,status,catatan,wa_ortu,dibuat_pada,jalur(nama,syarat_berkas)")
+    .select("id,nomor,nama_anak,tanggal_lahir,isian,status,catatan,wa_ortu,dibuat_pada,daftar_ulang,daftar_ulang_pada,jalur(nama,syarat_berkas)")
     .eq("id", id).maybeSingle();
   if (!p) notFound();
   const jalur = (Array.isArray(p.jalur) ? p.jalur[0] : p.jalur) as { nama: string; syarat_berkas: string[] } | null;
@@ -25,6 +25,8 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
     db.from("pendaftar").select("id,nomor,dibuat_pada").eq("tanggal_lahir", p.tanggal_lahir).ilike("nama_anak", p.nama_anak.trim()).neq("id", id),
     db.rpc("status_saya"),
   ]);
+  const { data: du } = await db.from("sekolah").select("daftar_ulang").eq("id", sekolah.id).single();
+  const berkasDu = ((du?.daftar_ulang as { berkas?: string[] } | null)?.berkas ?? []).filter((b) => !(jalur?.syarat_berkas ?? []).includes(b));
   const bisaUbah = ["trial", "aktif"].includes((st as { status: string } | null)?.status ?? "");
   const wa = linkWa(p.wa_ortu);
   const isian = Object.entries((p.isian ?? {}) as Record<string, string>);
@@ -65,8 +67,20 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
 
       <section className="print:break-inside-avoid">
         <h2 className="mb-2 font-serif text-xl font-bold">Berkas</h2>
-        <BerkasList syarat={jalur?.syarat_berkas ?? []} berkas={berkas ?? []} />
+        <BerkasList syarat={[...(jalur?.syarat_berkas ?? []), ...(p.daftar_ulang_pada ? berkasDu : [])]} berkas={berkas ?? []} />
       </section>
+
+      {p.daftar_ulang_pada && (
+        <section className="rounded-3xl bg-[var(--mint-muda)] p-5">
+          <h2 className="font-serif text-xl font-bold">Daftar ulang ✓</h2>
+          <p className="text-sm text-neutral-700">Dikirim {tglId(p.daftar_ulang_pada, true)}</p>
+          <dl className="mt-3 divide-y divide-black/5 rounded-2xl bg-white text-sm">
+            {Object.entries((p.daftar_ulang ?? {}) as Record<string, string>).map(([k, v]) => (
+              <div key={k} className="flex justify-between gap-4 p-3"><dt className="text-neutral-600">{k}</dt><dd className="text-right font-medium">{v}</dd></div>
+            ))}
+          </dl>
+        </section>
+      )}
 
       {wa && (
         <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 print:hidden">
