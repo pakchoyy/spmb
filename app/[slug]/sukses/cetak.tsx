@@ -1,6 +1,7 @@
 "use client";
 
-import { Download, MessageCircle, Printer } from "lucide-react";
+import { IkonWa } from "@/components/ikon-merek";
+import { Download, Printer } from "lucide-react";
 
 /** Simpan bukti sebagai gambar (digambar di canvas, tanpa pustaka tambahan), kirim ke WhatsApp, atau cetak. */
 export default function AksiBukti({ nomor, sekolah, slug, warna }: { nomor: string; sekolah: string; slug: string; warna: string }) {
@@ -32,7 +33,7 @@ export default function AksiBukti({ nomor, sekolah, slug, warna }: { nomor: stri
       <button type="button" onClick={simpanGambar} className="btn btn-utama w-full"><Download className="size-5" aria-hidden />Simpan sebagai gambar</button>
       <div className="grid grid-cols-2 gap-2">
         <a href={`https://wa.me/?text=${encodeURIComponent(teksWa)}`} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-pil h-12">
-          <MessageCircle className="size-4" aria-hidden />Kirim ke WA
+          <IkonWa className="size-4" aria-hidden />Kirim ke WA
         </a>
         <button type="button" onClick={() => window.print()} className="btn btn-pil h-12 border-2 border-neutral-300 bg-white"><Printer className="size-4" aria-hidden />Cetak / PDF</button>
       </div>

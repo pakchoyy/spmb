@@ -1,9 +1,10 @@
 "use client";
 
+import { IkonWa } from "@/components/ikon-merek";
 import { useState, useTransition } from "react";
 import { cekStatus, type Status } from "./actions";
 import Unggah from "../daftar/unggah";
-import { MessageCircle, BadgeCheck, Clock, Hourglass, PartyPopper, Search, XCircle } from "lucide-react";
+import { BadgeCheck, Clock, Hourglass, PartyPopper, Search, XCircle } from "lucide-react";
 import TeksBesar from "@/components/teks-besar";
 import Konfeti from "@/components/konfeti";
 import KartuDiterima from "./kartu";
@@ -59,7 +60,7 @@ export default function CekForm({ slug, nama, format, bisaUnggah, wa }: { slug: 
         {galat && <p role="alert" className="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-800">{galat}</p>}
         <div className="mt-4 rounded-2xl bg-[var(--kuning-muda)] p-3 text-sm">
           <p><b>Lupa nomor pendaftaran?</b> Nomor ada di bukti pendaftaran. Kalau hilang, tanyakan ke admin sekolah.</p>
-          {waLink && <a href={`${waLink}?text=${encodeURIComponent(`Halo admin ${nama}, saya lupa nomor pendaftaran anak saya. Nama anak: `)}`} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-pil mt-2 w-full"><MessageCircle className="size-4" aria-hidden />Tanya admin lewat WhatsApp</a>}
+          {waLink && <a href={`${waLink}?text=${encodeURIComponent(`Halo admin ${nama}, saya lupa nomor pendaftaran anak saya. Nama anak: `)}`} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-pil mt-2 w-full"><IkonWa className="size-4" aria-hidden />Tanya admin lewat WhatsApp</a>}
         </div>
       </div>
       {hasil?.status === "Diterima" && (<>

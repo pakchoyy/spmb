@@ -1,3 +1,4 @@
+import { IkonWa } from "@/components/ikon-merek";
 import Link from "next/link";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import { bacaFilter, kueri, linkWa, STATUS, tglId, WARNA_STATUS } from "@/lib/pendaftar";
@@ -6,7 +7,7 @@ import Notif from "./notif";
 import PilihMassal from "./pilih-massal";
 import Statistik from "./statistik";
 import Cetak from "./pendaftar/[id]/cetak";
-import { Lightbulb, BadgeCheck, CheckCircle2, ChevronRight, Circle, Clock, Hourglass, ListChecks, LogOut, MessageCircle, Search, Users, Download, XCircle } from "lucide-react";
+import { Lightbulb, BadgeCheck, CheckCircle2, ChevronRight, Circle, Clock, Hourglass, ListChecks, LogOut, Search, Users, Download, XCircle } from "lucide-react";
 import Bagikan from "@/components/bagikan";
 import TestimoniForm from "./testimoni-form";
 
@@ -203,7 +204,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
                   {perlu > 0 && <span className={`rounded-full px-2 py-0.5 ${unggah >= perlu ? "bg-green-50 text-green-800" : "bg-amber-50 text-amber-900"}`}>Berkas {unggah}/{perlu}</span>}
                   {p.daftar_ulang_pada && <span className="rounded-full bg-[var(--mint-muda)] px-2 py-0.5 font-semibold text-[#0b6b52]">✓ Daftar ulang</span>}
                   {ganda.has(p.id) && <span className="rounded-full bg-amber-100 px-2 py-0.5 font-semibold text-amber-900">⚠ Kemungkinan ganda</span>}
-                  {wa && <a href={wa} rel="noopener noreferrer" className="btn btn-wa btn-pil ml-auto !min-h-8 print:hidden"><MessageCircle className="size-3.5" aria-hidden />WhatsApp</a>}
+                  {wa && <a href={wa} rel="noopener noreferrer" className="btn btn-wa btn-pil ml-auto !min-h-8 print:hidden"><IkonWa className="size-3.5" aria-hidden />WhatsApp</a>}
                 </div>
                 </div>
               </li>

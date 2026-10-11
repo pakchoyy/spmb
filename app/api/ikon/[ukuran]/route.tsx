@@ -45,6 +45,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ ukur
         </svg>
       </div>
     ),
-    { width: px, height: px, headers: { "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800" } },
+    { width: px, height: px, headers: { "Cache-Control": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=604800" } },
   );
 }

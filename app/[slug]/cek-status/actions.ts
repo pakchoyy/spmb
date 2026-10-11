@@ -1,7 +1,7 @@
 "use server";
 
 import { supabaseService } from "@/lib/supabase/admin";
-import { hashPerangkat } from "@/lib/perangkat";
+import { bolehLanjut, hashPerangkat } from "@/lib/perangkat";
 
 export type DaftarUlang = { aktif: boolean; tenggat?: string | null; info?: string; isian?: string[]; berkas?: string[] };
 export type Status = {
@@ -22,6 +22,7 @@ export async function cekStatus(slug: string, nomor: string): Promise<Hasil> {
 
 export async function kirimDaftarUlang(slug: string, nomor: string, tglLahir: string, isian: Record<string, string>): Promise<{ ok: true } | { ok: false; pesan: string }> {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(tglLahir)) return { ok: false, pesan: "Isi tanggal lahir anak." };
+  if (!(await bolehLanjut("daftar-ulang", 10, 60))) return { ok: false, pesan: "Terlalu banyak percobaan. Coba lagi 1 jam lagi." };
   const bersih = Object.fromEntries(Object.entries(isian).slice(0, 20).map(([k, v]) => [k.slice(0, 100), String(v).trim().slice(0, 500)]));
   const { error } = await supabaseService().rpc("kirim_daftar_ulang", { p_slug: slug, p_nomor: nomor, p_tgl: tglLahir, p_isian: bersih });
   if (!error) return { ok: true };

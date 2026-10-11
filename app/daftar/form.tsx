@@ -59,7 +59,7 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
             onChange={(e) => set({ nama: e.target.value, ...(slugManual ? {} : { slug: buatSlug(e.target.value) }) })} />
         </Kolom>
         <SlugField nilai={f.slug} onUbah={(s) => { setSlugManual(true); set({ slug: s }); }} />
-        <Kolom label="NPSN (opsional)" bantu={<span className="text-neutral-600">Membantu memastikan sekolah Anda asli.</span>}>
+        <Kolom label="NPSN sekolah" bantu={<span className="text-neutral-600">8 angka. Satu NPSN hanya bisa didaftarkan satu kali. Cek di referensi.data.kemdikbud.go.id bila lupa.</span>}>
           <input className={input} value={f.npsn} inputMode="numeric" maxLength={8} onChange={(e) => set({ npsn: e.target.value.replace(/\D/g, "") })} />
         </Kolom>
         <Kolom label="Email admin" bantu={<span className="text-neutral-600">Satu email untuk satu sekolah. Dipakai untuk masuk dan kode aktivasi.</span>}>

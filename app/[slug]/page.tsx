@@ -1,7 +1,8 @@
+import { IkonIg, IkonWa } from "@/components/ikon-merek";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Award, BadgeCheck, Trophy, CheckCircle2, AtSign, MapPin, MessageCircle, Search, Users } from "lucide-react";
+import { ArrowRight, Award, BadgeCheck, Trophy, CheckCircle2, MapPin, Search, Users } from "lucide-react";
 import TeksBesar from "@/components/teks-besar";
 import Bagikan from "@/components/bagikan";
 import PasangApp from "@/components/pasang-app";
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: `SPMB ${sekolah.nama}`, description: desk,
     manifest: `/${sekolah.slug}/manifest.webmanifest`,
-    icons: { icon: `/api/ikon/192?s=${sekolah.slug}`, apple: `/api/ikon/180?s=${sekolah.slug}` },
+    icons: { icon: `/api/ikon/192?s=${sekolah.slug}&v=${(sekolah.logo_path ?? "").replace(/\W/g, "").slice(-8) || "0"}`, apple: `/api/ikon/180?s=${sekolah.slug}&v=${(sekolah.logo_path ?? "").replace(/\W/g, "").slice(-8) || "0"}` },
     appleWebApp: { capable: true, title: sekolah.nama.slice(0, 20), statusBarStyle: "default" },
     alternates: { canonical: `/${sekolah.slug}` },
     openGraph: { title: `SPMB ${sekolah.nama}`, description: desk, type: "website", ...(gambar ? { images: [gambar] } : {}) },
@@ -146,7 +147,7 @@ export default async function HalamanSekolah({ params }: Params) {
           )}
           <div className="mt-5 grid grid-cols-2 gap-2 sm:max-w-sm">
             {buka && <Link href={`/${s.slug}/daftar`} className="btn bg-white font-bold" style={{ color: "var(--aksen)" }}>Daftar sekarang</Link>}
-            {wa && <a href={`${wa}?text=${encodeURIComponent(`Halo, saya ingin bertanya tentang SPMB ${s.nama}.`)}`} target="_blank" rel="noopener noreferrer" className="btn btn-wa whitespace-nowrap px-3"><MessageCircle className="size-5" aria-hidden />Tanya via WA</a>}
+            {wa && <a href={`${wa}?text=${encodeURIComponent(`Halo, saya ingin bertanya tentang SPMB ${s.nama}.`)}`} target="_blank" rel="noopener noreferrer" className="btn btn-wa whitespace-nowrap px-3"><IkonWa className="size-5" aria-hidden />Tanya via WA</a>}
           </div>
         </div>
       </header>
@@ -269,12 +270,12 @@ export default async function HalamanSekolah({ params }: Params) {
         <section className={kartu}>
           <h2 className="font-serif text-xl font-bold">Ada pertanyaan?</h2>
           <div className="mt-3 grid gap-2">
-            {wa && <a className="btn btn-wa" href={wa} rel="noopener"><MessageCircle className="size-5" aria-hidden />Chat WhatsApp sekolah</a>}
+            {wa && <a className="btn btn-wa" href={wa} rel="noopener"><IkonWa className="size-5" aria-hidden />Chat WhatsApp sekolah</a>}
             <Link className="btn btn-lembut" href={`/${s.slug}/cek-status`}><Search className="size-5" aria-hidden />Cek status pendaftaran</Link>
             <Link className="tautan text-center text-sm" href="/cara-pakai#orang-tua">Bingung cara daftar? Lihat panduan bergambar</Link>
             <div className="grid grid-cols-2 gap-2">
               {peta && <a className="btn btn-garis btn-pil" href={peta} rel="noopener noreferrer"><MapPin className="size-4" aria-hidden />Lihat peta</a>}
-              {ig && <a className="btn btn-garis btn-pil" href={ig.url} rel="noopener noreferrer"><AtSign className="size-4" aria-hidden />{ig.nama}</a>}
+              {ig && <a className="btn btn-garis btn-pil" href={ig.url} rel="noopener noreferrer"><IkonIg className="size-4" />{ig.nama}</a>}
             </div>
           </div>
           {process.env.NEXT_PUBLIC_EMAIL_LAPOR && (
@@ -305,8 +306,8 @@ export default async function HalamanSekolah({ params }: Params) {
           </div>
           {s.alamat && <p className="mt-4 flex gap-2 text-sm text-white/80"><MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />{s.alamat}</p>}
           <div className="mt-4 flex flex-wrap gap-2">
-            {wa && <a className="btn btn-pil btn-wa" href={wa} target="_blank" rel="noopener noreferrer"><MessageCircle className="size-4" aria-hidden />WhatsApp</a>}
-            {ig && <a className="btn btn-pil bg-white/10 text-white" href={ig.url} target="_blank" rel="noopener noreferrer"><AtSign className="size-4" aria-hidden />{ig.nama}</a>}
+            {wa && <a className="btn btn-pil btn-wa" href={wa} target="_blank" rel="noopener noreferrer"><IkonWa className="size-4" aria-hidden />WhatsApp</a>}
+            {ig && <a className="btn btn-pil bg-white/10 text-white" href={ig.url} target="_blank" rel="noopener noreferrer"><IkonIg className="size-4" />{ig.nama}</a>}
             {peta && <a className="btn btn-pil bg-white/10 text-white" href={peta} target="_blank" rel="noopener noreferrer"><MapPin className="size-4" aria-hidden />Peta</a>}
           </div>
           <nav className="mt-6 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/80">
@@ -314,7 +315,7 @@ export default async function HalamanSekolah({ params }: Params) {
             <Link href={`/${s.slug}/cek-status`}>Cek status</Link>
             <Link href="/privasi">Privasi</Link>
           </nav>
-          <p className="mt-6 border-t border-white/10 pt-3 text-[11px] text-white/40">© {new Date().getFullYear()} {s.nama} · <Link href="/" className="hover:text-white/70">dibuat dengan SPMB Zone</Link></p>
+          <p className="mt-6 border-t border-white/10 pt-3 text-[11px] text-white/40">© {new Date().getFullYear()} {s.nama}</p>
         </div>
       </footer>
       {wa && <WaMelayang href={wa} label={`Chat WhatsApp ${s.nama}`} naik />}

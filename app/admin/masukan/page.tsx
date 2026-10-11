@@ -1,4 +1,4 @@
-import { MessageCircle } from "lucide-react";
+import { IkonWa } from "@/components/ikon-merek";
 import { Kembali } from "@/components/kembali";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import { linkWaBantuan, PESAN_WA } from "@/lib/merek";
@@ -19,7 +19,7 @@ export default async function Masukan() {
         <p className="mt-1 text-sm text-neutral-600">Minta fitur, beri kritik, atau laporkan masalah. Semua dibaca langsung oleh pengembang.</p>
         <div className="mt-4"><FormMasukan /></div>
         <a href={linkWaBantuan(PESAN_WA.sekolah)} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-pil mt-3 w-full">
-          <MessageCircle className="size-4" aria-hidden />Butuh cepat? Chat WhatsApp
+          <IkonWa className="size-4" aria-hidden />Butuh cepat? Chat WhatsApp
         </a>
       </section>
       {!!data?.length && (

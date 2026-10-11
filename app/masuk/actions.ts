@@ -16,7 +16,7 @@ export async function masuk(email: string, sandi: string): Promise<Hasil> {
 // Jawaban selalu sama, supaya email yang terdaftar tidak bisa ditebak.
 export async function lupaSandi(email: string): Promise<Hasil> {
   const h = await headers();
-  const origin = h.get("origin") ?? `https://${h.get("host")}`;
+  const origin = (process.env.NEXT_PUBLIC_SITE_URL ?? `https://${h.get("host")}`).replace(/\/$/, "");
   const db = await supabaseServer();
   await db.auth.resetPasswordForEmail(email.trim().toLowerCase(), { redirectTo: `${origin}/auth/konfirmasi` });
   return { ok: true };

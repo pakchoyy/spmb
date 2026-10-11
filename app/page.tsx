@@ -1,8 +1,8 @@
+import { IkonWa } from "@/components/ikon-merek";
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  ArrowRight, BadgeCheck, BellRing, CalendarClock, ChevronDown, FileUp, Headset, LayoutDashboard, MessageCircle,
-  QrCode, Rocket, School, ShieldCheck, Smartphone, Sparkles, Wifi,
+  ArrowRight, BadgeCheck, BellRing, CalendarClock, ChevronDown, FileUp, Headset, LayoutDashboard, QrCode, Rocket, School, ShieldCheck, Smartphone, Sparkles, Wifi,
 } from "lucide-react";
 import { supabaseAnon } from "@/lib/supabase/anon";
 import { supabaseService } from "@/lib/supabase/admin";
@@ -182,7 +182,7 @@ export default async function Beranda() {
               ))}
             </ul>
             <div className="mt-8 flex justify-center">
-              <a href={linkWaBantuan(PESAN_WA.umum)} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-pil"><MessageCircle className="size-4" aria-hidden />Tanya admin sekarang</a>
+              <a href={linkWaBantuan(PESAN_WA.umum)} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-pil"><IkonWa className="size-4" aria-hidden />Tanya admin sekarang</a>
             </div>
           </div>
         </section>
@@ -204,7 +204,7 @@ export default async function Beranda() {
                 <TombolCoba className="btn btn-utama w-full">Daftarkan sekolah</TombolCoba>
                 {!harga && (
                   <a href={linkWaBantuan(PESAN_WA.harga)} target="_blank" rel="noopener noreferrer" className="btn btn-wa w-full">
-                    <MessageCircle className="size-5" aria-hidden /> Tanya harga lewat WhatsApp
+                    <IkonWa className="size-5" aria-hidden /> Tanya harga lewat WhatsApp
                   </a>
                 )}
               </div>

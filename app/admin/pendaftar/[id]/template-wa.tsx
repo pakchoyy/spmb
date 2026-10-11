@@ -1,7 +1,7 @@
 "use client";
 
+import { IkonWa } from "@/components/ikon-merek";
 import { useState } from "react";
-import { MessageCircle } from "lucide-react";
 import { TEMPLATE_WA, type DataTemplate } from "@/lib/template-wa";
 
 export default function TemplateWa({ wa, data, awal }: { wa: string; data: DataTemplate; awal: string }) {
@@ -19,7 +19,7 @@ export default function TemplateWa({ wa, data, awal }: { wa: string; data: DataT
       </div>
       <textarea className="min-h-44 w-full rounded-2xl border border-neutral-300 bg-white p-3 text-sm" value={teks} onChange={(e) => setTeks(e.target.value)} aria-label="Isi pesan" />
       <a className="btn btn-wa w-full" href={`${wa}?text=${encodeURIComponent(teks)}`} target="_blank" rel="noopener noreferrer">
-        <MessageCircle className="size-5" aria-hidden />Kirim lewat WhatsApp
+        <IkonWa className="size-5" aria-hidden />Kirim lewat WhatsApp
       </a>
     </div>
   );

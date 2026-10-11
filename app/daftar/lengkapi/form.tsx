@@ -44,7 +44,7 @@ export default function Lengkapi({ nama: n0, npsn: npsn0, dariGoogle, email, kod
         </Kolom>
         <SlugField nilai={slug} onUbah={(s) => { setSlugManual(true); setSlug(s); }} />
         {dariGoogle && (<>
-          <Kolom label="NPSN (boleh dikosongkan)">
+          <Kolom label="NPSN sekolah (8 angka)">
             <input className={input} value={npsn} inputMode="numeric" maxLength={8} onChange={(e) => setNpsn(e.target.value.replace(/\D/g, ""))} />
           </Kolom>
           <Kolom label="Kode ajakan (boleh dikosongkan)">

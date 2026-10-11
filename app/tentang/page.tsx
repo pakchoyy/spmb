@@ -1,6 +1,7 @@
+import { IkonWa } from "@/components/ikon-merek";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HeartHandshake, Lightbulb, MessageCircle, ShieldCheck, Smartphone } from "lucide-react";
+import { HeartHandshake, Lightbulb, ShieldCheck, Smartphone } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Footer } from "@/components/footer";
 import { linkWaBantuan, NAMA_APP, PESAN_WA, TAGLINE, TIKTOK } from "@/lib/merek";
@@ -53,7 +54,7 @@ export default function Tentang() {
         </section>
 
         <section className="grid gap-2 sm:grid-cols-2">
-          <a href={linkWaBantuan(PESAN_WA.umum)} target="_blank" rel="noopener noreferrer" className="btn btn-wa"><MessageCircle className="size-5" aria-hidden />Hubungi kami</a>
+          <a href={linkWaBantuan(PESAN_WA.umum)} target="_blank" rel="noopener noreferrer" className="btn btn-wa"><IkonWa className="size-5" aria-hidden />Hubungi kami</a>
           <a href={linkWaBantuan(PESAN_WA.saran)} target="_blank" rel="noopener noreferrer" className="btn btn-lembut"><Lightbulb className="size-5" aria-hidden />Kritik &amp; saran</a>
         </section>
       </main>

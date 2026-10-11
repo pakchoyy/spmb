@@ -2,6 +2,7 @@ import Link from "next/link";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import { supabaseService } from "@/lib/supabase/admin";
 import KodeForm from "./kode-form";
+import Ajakan, { type Ajakan as AjakanData } from "./ajakan";
 
 export const dynamic = "force-dynamic";
 
@@ -12,8 +13,8 @@ const tgl = (d: Date) => d.toLocaleDateString("id-ID", { day: "numeric", month: 
 const rupiah = (n: number) => `Rp${n.toLocaleString("id-ID")}`;
 
 export default async function Langganan() {
-  const { db } = await wajibAdmin();
-  const { data } = await db.rpc("status_saya");
+  const { db, sekolah } = await wajibAdmin();
+  const [{ data }, { data: ajakan }] = await Promise.all([db.rpc("status_saya"), db.rpc("ajakan_saya")]);
   const st = data as St | null;
   if (!st) return null;
 
@@ -27,7 +28,7 @@ export default async function Langganan() {
   const dikunci = st.dibatalkan || st.dinonaktifkan;
 
   const ringkas = {
-    trial: { judul: "Coba gratis", teks: `Berakhir ${tgl(akhir)} (sisa ${sisa} hari). Semua fitur aktif.`, warna: "bg-[var(--biru-muda)] text-[var(--biru-tua)]" },
+    trial: { judul: "Masa coba (trial)", teks: `Berakhir ${tgl(akhir)} (sisa ${sisa} hari). Semua fitur aktif.`, warna: "bg-[var(--biru-muda)] text-[var(--biru-tua)]" },
     aktif: { judul: "Langganan aktif", teks: `Berlaku sampai ${tgl(akhir)} (sisa ${sisa} hari).`, warna: "bg-[var(--mint-muda)] text-[#0b6b52]" },
     tenggang: { judul: "Masa tenggang", teks: `Masa aktif habis ${tgl(akhir)}. Beranda admin hanya bisa dibaca dan form pendaftaran ditutup. Sisa ${sisaTenggang} hari sebelum nonaktif.`, warna: "bg-[var(--kuning-muda)] text-[#8a5a00]" },
     nonaktif: { judul: "Nonaktif", teks: dikunci ? "Langganan ini dinonaktifkan oleh pemilik aplikasi." : "Beranda admin dan form pendaftaran ditutup. Halaman informasi sekolah dan cek status masih bisa dibuka, dan data Anda tetap tersimpan.", warna: "bg-[var(--oranye-muda)] text-[#a2401a]" },
@@ -37,7 +38,7 @@ export default async function Langganan() {
     <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
       <header className="rounded-3xl bg-[var(--biru)] p-5 text-white">
         <h1 className="font-serif text-2xl font-bold">Langganan</h1>
-        <p className="mt-1 text-sm text-white/85">Status paket, pembelian, dan kode aktivasi.</p>
+        <p className="mt-1 text-sm text-white/85">Status paket, pembelian, kode aktivasi, dan program ajak sekolah.</p>
       </header>
 
       <section className={`rounded-3xl p-5 ${ringkas.warna}`}>
@@ -68,6 +69,8 @@ export default async function Langganan() {
           <KodeForm />
         </section>
       </>)}
+
+      {ajakan && <Ajakan a={ajakan as AjakanData} situs={(process.env.NEXT_PUBLIC_SITE_URL ?? "https://spmbz.web.id").replace(/\/$/, "")} namaSekolah={sekolah.nama} />}
 
       {(st.status === "tenggang" || st.status === "nonaktif") && (
         <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">

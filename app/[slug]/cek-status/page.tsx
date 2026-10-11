@@ -3,7 +3,8 @@ import { supabaseAnon } from "@/lib/supabase/anon";
 import type { SekolahPublik } from "@/lib/berkas";
 import CekForm from "./cek-form";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 600; // hanya info sekolah; data pendaftar diambil lewat server action
+export const generateStaticParams = () => [];
 
 export default async function CekStatus({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { supabaseAnon } from "@/lib/supabase/anon";
 import { supabaseServer } from "@/lib/supabase/server";
+import { bolehLanjut } from "@/lib/perangkat";
 import { SLUG_RE } from "@/lib/slug";
 import { VERSI_PRIVASI, VERSI_SYARAT } from "@/lib/hukum";
 
@@ -23,6 +24,13 @@ export async function cekSlugAksi(slug: string): Promise<{ tersedia: boolean; sa
 
 type Hasil = { ok: true; langsung?: boolean } | { ok: false; pesan: string };
 
+const PESAN_NPSN = "NPSN ini sudah terdaftar. Jika ini sekolah Anda, hubungi admin sekolah yang mendaftar atau chat kami lewat WhatsApp.";
+
+async function npsnTerdaftar(npsn: string) {
+  const { data } = await supabaseAnon().rpc("npsn_terdaftar", { p_npsn: npsn });
+  return data === true;
+}
+
 export async function daftarSekolah(f: {
   nama: string; slug: string; npsn: string; email: string; sandi: string; kodeRef: string; setuju: boolean;
 }): Promise<Hasil> {
@@ -30,13 +38,16 @@ export async function daftarSekolah(f: {
   const email = f.email.trim().toLowerCase();
   if (f.nama.trim().length < 3) return { ok: false, pesan: "Isi nama sekolah." };
   if (!SLUG_RE.test(f.slug)) return { ok: false, pesan: "Alamat halaman tidak valid." };
-  if (f.npsn && !/^\d{8}$/.test(f.npsn)) return { ok: false, pesan: "NPSN terdiri dari 8 angka." };
+  if (!/^\d{8}$/.test(f.npsn)) return { ok: false, pesan: "Isi NPSN sekolah (8 angka)." };
   if (!/^\S+@\S+\.\S+$/.test(email)) return { ok: false, pesan: "Isi email yang benar." };
   if (f.sandi.length < 8) return { ok: false, pesan: "Kata sandi minimal 8 karakter." };
   if (!(await cekSlugAksi(f.slug)).tersedia) return { ok: false, pesan: "Alamat halaman sudah dipakai. Pilih yang lain." };
+  if (await npsnTerdaftar(f.npsn)) return { ok: false, pesan: PESAN_NPSN };
+  if (!(await bolehLanjut("daftar-sekolah", 5, 60))) return { ok: false, pesan: "Terlalu banyak pendaftaran dari perangkat ini. Coba lagi 1 jam lagi." };
 
+  // alamat tautan email dari env, bukan header permintaan (header bisa dipalsukan)
   const h = await headers();
-  const origin = h.get("origin") ?? `https://${h.get("host")}`;
+  const origin = (process.env.NEXT_PUBLIC_SITE_URL ?? `https://${h.get("host")}`).replace(/\/$/, "");
   const db = await supabaseServer();
   const { data, error } = await db.auth.signUp({
     email, password: f.sandi,
@@ -62,7 +73,7 @@ export async function lengkapiSekolah(f: { nama: string; slug: string; npsn: str
   if (!f.setuju) return { ok: false, pesan: "Centang persetujuan Syarat dan Ketentuan untuk melanjutkan." };
   if (f.nama.trim().length < 3) return { ok: false, pesan: "Isi nama sekolah." };
   if (!SLUG_RE.test(f.slug)) return { ok: false, pesan: "Alamat halaman tidak valid." };
-  if (f.npsn && !/^\d{8}$/.test(f.npsn)) return { ok: false, pesan: "NPSN terdiri dari 8 angka." };
+  if (!/^\d{8}$/.test(f.npsn)) return { ok: false, pesan: "Isi NPSN sekolah (8 angka)." };
   const db = await supabaseServer();
   const { data: { user } } = await db.auth.getUser();
   if (!user) return { ok: false, pesan: "Sesi berakhir. Silakan masuk lagi." };
@@ -73,6 +84,11 @@ export async function lengkapiSekolah(f: { nama: string; slug: string; npsn: str
   const { error } = await db.rpc("buat_sekolah", {
     p_slug: f.slug, p_nama: f.nama.trim(), p_npsn: f.npsn, p_kode_ref: f.kodeRef.trim().toUpperCase(),
   });
-  if (error) return { ok: false, pesan: error.message === "slug_tidak_tersedia" ? "Alamat halaman sudah dipakai. Pilih yang lain." : error.message === "sudah_punya_sekolah" ? "Akun ini sudah punya sekolah." : "Gagal membuat sekolah. Coba lagi." };
+  if (error) return { ok: false, pesan: {
+    slug_tidak_tersedia: "Alamat halaman sudah dipakai. Pilih yang lain.",
+    sudah_punya_sekolah: "Akun ini sudah punya sekolah.",
+    npsn_terdaftar: PESAN_NPSN,
+    npsn_tidak_valid: "Isi NPSN sekolah (8 angka).",
+  }[error.message] ?? "Gagal membuat sekolah. Coba lagi." };
   return { ok: true };
 }

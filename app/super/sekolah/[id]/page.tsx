@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { wajibPemilik } from "@/lib/pemilik";
 import { tglId } from "@/lib/pendaftar";
 import Aksi from "./aksi";
+import Pencairan from "./pencairan";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,16 @@ export default async function DetailSekolah({ params }: { params: Promise<{ id: 
   const { data } = await svc.rpc("ringkasan_sekolah");
   const s = ((data ?? []) as Baris[]).find((x) => x.id === id);
   if (!s) notFound();
-  const { data: verif } = await svc.from("sekolah").select("terverifikasi").eq("id", id).single();
+  const [{ data: verif }, { data: set }] = await Promise.all([
+    svc.from("sekolah").select("terverifikasi,kode_ajakan,komisi_dicairkan").eq("id", id).single(),
+    svc.from("pengaturan").select("komisi_nominal").eq("id", 1).single(),
+  ]);
+  const { data: diajak } = await svc.from("sekolah").select("id,nama,langganan(active_until,dibatalkan)").eq("diajak_oleh", verif?.kode_ajakan ?? "-").neq("id", id);
+  const berbayar = (diajak ?? []).filter((d) => {
+    const l = (Array.isArray(d.langganan) ? d.langganan[0] : d.langganan) as { active_until: string | null; dibatalkan: boolean } | null;
+    return !!l?.active_until && !l.dibatalkan;
+  }).length;
+  const komisi = berbayar * (set?.komisi_nominal ?? 0), dicairkan = verif?.komisi_dicairkan ?? 0;
   const { data: kode } = await svc.from("kode_aktivasi").select("kode,dibuat_pada,dipakai_pada").eq("sekolah_id", id).order("dibuat_pada", { ascending: false }).limit(10);
   const { data: log } = await svc.from("log_langganan").select("id,peristiwa,detail,waktu").eq("sekolah_id", id).order("waktu", { ascending: false }).limit(15);
 
@@ -38,6 +48,12 @@ export default async function DetailSekolah({ params }: { params: Promise<{ id: 
           <div key={k} className="flex justify-between gap-4 p-3"><dt className="text-neutral-600">{k}</dt><dd className="break-all text-right font-medium">{v}</dd></div>
         ))}
       </dl>
+
+      <section className="space-y-3 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+        <h2 className="font-bold">Komisi ajakan · kode {verif?.kode_ajakan}</h2>
+        <p className="text-sm">Mengajak {(diajak ?? []).length} sekolah, {berbayar} berlangganan. Komisi Rp{komisi.toLocaleString("id-ID")}, dicairkan Rp{dicairkan.toLocaleString("id-ID")}, <b>saldo Rp{Math.max(0, komisi - dicairkan).toLocaleString("id-ID")}</b>.</p>
+        {komisi - dicairkan > 0 && <Pencairan id={s.id} saldo={komisi - dicairkan} />}
+      </section>
 
       <Aksi id={s.id} slug={s.slug} email={s.email ?? ""} dibatalkan={s.dibatalkan} nonaktif={s.nonaktif} terverifikasi={!!verif?.terverifikasi} />
 

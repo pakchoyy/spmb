@@ -1,6 +1,7 @@
+import { IkonWa } from "@/components/ikon-merek";
 import Link from "next/link";
 import Script from "next/script";
-import { MessageCircle, Lightbulb } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 import { Logo } from "./logo";
 import { linkWaBantuan, NAMA_APP, PESAN_WA, TAGLINE, TIKTOK } from "@/lib/merek";
 import { WaMelayang } from "./wa-melayang";
@@ -17,7 +18,7 @@ export function Footer({ iklan = false }: { iklan?: boolean }) {
 
           <div className="mt-6 grid gap-2 sm:grid-cols-2">
             <a href={linkWaBantuan(PESAN_WA.umum)} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-pil justify-start">
-              <MessageCircle className="size-4" aria-hidden /> Ada kendala? Chat WhatsApp
+              <IkonWa className="size-4" aria-hidden /> Ada kendala? Chat WhatsApp
             </a>
             <a href={linkWaBantuan(PESAN_WA.saran)} target="_blank" rel="noopener noreferrer" className="btn btn-pil justify-start bg-white/10 text-white">
               <Lightbulb className="size-4" aria-hidden /> Kritik &amp; saran

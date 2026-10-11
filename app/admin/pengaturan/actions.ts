@@ -17,7 +17,7 @@ const PESAN: Record<string, string> = {
 const pesanDb = (e: { message: string; code?: string }) =>
   PESAN[e.message] ?? PESAN[e.code ?? ""] ?? (e.code === "42501" ? "Langganan Anda tidak aktif, data hanya bisa dibaca." : "Gagal menyimpan. Coba lagi.");
 
-const tampilkan = (slug: string) => { revalidatePath(`/${slug}`); revalidatePath("/admin/pengaturan"); };
+const tampilkan = (slug: string) => { revalidatePath(`/${slug}`); revalidatePath(`/${slug}/cek-status`); revalidatePath("/admin/pengaturan"); };
 
 const bersih = (s: string, maks: number) => s.trim().slice(0, maks);
 const nomorWa = (s: string) => s.replace(/[^\d+]/g, "").slice(0, 20);

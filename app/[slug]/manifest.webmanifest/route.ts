@@ -8,7 +8,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
   const s = data as SekolahPublik | null;
   if (!s) return new Response("Not found", { status: 404 });
 
-  const ikon = (px: number, ekstra = "") => `/api/ikon/${px}?s=${s.slug}${ekstra}`;
+  // v = penanda logo: berubah saat logo diganti, jadi HP & CDN mengambil ikon baru
+  const v = (s.logo_path ?? "").replace(/\W/g, "").slice(-8) || "0";
+  const ikon = (px: number, ekstra = "") => `/api/ikon/${px}?s=${s.slug}&v=${v}${ekstra}`;
   const body = {
     name: `SPMB ${s.nama}`,
     short_name: s.nama.slice(0, 12).trim(),

@@ -188,3 +188,17 @@ export async function setMasukanSelesai(id: string, selesai: boolean): Promise<H
   revalidatePath("/super");
   return { ok: true };
 }
+
+/** Catat komisi ajakan yang sudah dibayarkan ke sekolah (menambah total dicairkan). */
+export async function catatPencairan(id: string, jumlah: number): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  const n = Math.round(Number(jumlah));
+  if (!(n > 0 && n <= 10_000_000)) return gagal("Jumlah tidak valid.");
+  const { data: s } = await svc.from("sekolah").select("komisi_dicairkan").eq("id", id).single();
+  const { error } = await svc.from("sekolah").update({ komisi_dicairkan: (s?.komisi_dicairkan ?? 0) + n }).eq("id", id);
+  if (error) return gagal("Gagal menyimpan.");
+  await catat(svc, email, id, "komisi_dicairkan", { jumlah: n });
+  segarkan(id);
+  return { ok: true };
+}

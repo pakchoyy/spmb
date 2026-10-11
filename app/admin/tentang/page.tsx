@@ -1,7 +1,7 @@
+import { IkonWa } from "@/components/ikon-merek";
 import type { Metadata } from "next";
 import {
-  CalendarDays, Calculator, ClipboardCheck, ExternalLink, FileText, KeyRound, Layers, Lightbulb, MessageCircle,
-  NotebookPen, PencilLine, Puzzle, ScrollText, Target,
+  CalendarDays, Calculator, ClipboardCheck, ExternalLink, FileText, KeyRound, Layers, Lightbulb, NotebookPen, PencilLine, Puzzle, ScrollText, Target,
 } from "lucide-react";
 import Link from "next/link";
 import { linkWaBantuan, NAMA_APP, TIKTOK } from "@/lib/merek";
@@ -54,7 +54,7 @@ export default function Tentang() {
               @pak.choyy
             </a>
             <a href={linkWaBantuan("Halo Pak Choyy, saya admin sekolah pengguna SPMB Zone. ")} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-pil">
-              <MessageCircle className="size-4" aria-hidden />WhatsApp
+              <IkonWa className="size-4" aria-hidden />WhatsApp
             </a>
           </div>
         </div>

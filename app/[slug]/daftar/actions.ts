@@ -1,7 +1,7 @@
 "use server";
 
 import { after } from "next/server";
-import { hashPerangkat } from "@/lib/perangkat";
+import { bolehLanjut, hashPerangkat } from "@/lib/perangkat";
 import { kirimPushSekolah } from "@/lib/push";
 import { supabaseAnon } from "@/lib/supabase/anon";
 import { supabaseService } from "@/lib/supabase/admin";
@@ -39,7 +39,8 @@ export async function kirimPendaftaran(slug: string, data: {
   // perangkat = hash IP + user agent; cukup untuk pembatasan kasar
   const perangkat = await hashPerangkat();
 
-  const { data: nomor, error } = await db.rpc("daftar_pendaftar", {
+  // hanya bisa dipanggil server (service_role): Turnstile dan validasi di atas tidak bisa dilewati
+  const { data: nomor, error } = await supabaseService().rpc("daftar_pendaftar", {
     p_slug: slug, p_jalur: data.jalur, p_nama_anak: nama, p_tgl_lahir: data.tglLahir,
     p_isian: isian, p_perangkat: perangkat, p_setuju: data.setuju, p_wa: wa,
   });
@@ -56,6 +57,14 @@ export async function unggahBerkas(slug: string, nomor: string, tglLahir: string
   const file = form.get("file");
   if (!(file instanceof File)) return { ok: false, pesan: "Berkas tidak ditemukan." };
   if (file.size > MAKS_BYTE) return { ok: false, pesan: "Ukuran berkas maksimal 2 MB." };
+  if (!(await bolehLanjut("unggah", 40, 60))) return { ok: false, pesan: "Terlalu banyak unggahan. Coba lagi 1 jam lagi." };
+  // pastikan isi file sesuai jenisnya (bukan sekadar nama/tipe yang dikirim browser)
+  const awal = new Uint8Array(await file.slice(0, 8).arrayBuffer());
+  const cocok = file.type === "application/pdf" ? String.fromCharCode(...awal.slice(0, 4)) === "%PDF"
+    : file.type === "image/png" ? awal[0] === 0x89 && awal[1] === 0x50 && awal[2] === 0x4e && awal[3] === 0x47
+    : file.type === "image/jpeg" ? awal[0] === 0xff && awal[1] === 0xd8
+    : false;
+  if (!cocok) return { ok: false, pesan: "Berkas rusak atau bukan PDF/JPG/PNG. Coba foto ulang." };
 
   const svc = supabaseService();
   const { data: info, error } = await svc.rpc("siapkan_berkas", { p_slug: slug, p_nomor: nomor, p_tgl: tglLahir, p_jenis: jenis });
