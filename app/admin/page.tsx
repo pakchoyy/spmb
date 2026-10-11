@@ -4,6 +4,7 @@ import { bacaFilter, kueri, linkWa, STATUS, tglId, WARNA_STATUS } from "@/lib/pe
 import Cetak from "./pendaftar/[id]/cetak";
 import { BadgeCheck, CheckCircle2, ChevronRight, Circle, Clock, Hourglass, ListChecks, LogOut, MessageCircle, Search, Users, Download, XCircle } from "lucide-react";
 import Bagikan from "@/components/bagikan";
+import TestimoniForm from "./testimoni-form";
 
 export const dynamic = "force-dynamic";
 
@@ -28,10 +29,11 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
   if (f.jalur) q = q.eq("jalur_id", f.jalur);
   if (f.q) q = q.or(`nama_anak.ilike.%${f.q}%,nomor.ilike.%${f.q}%`);
 
-  const [{ data: st }, { data: rk }, { data: gandaIds }, { data: daftarJalur }, { data: baris, count }, { data: profil }] = await Promise.all([
+  const [{ data: st }, { data: rk }, { data: gandaIds }, { data: daftarJalur }, { data: baris, count }, { data: profil }, { data: testimoniSaya }] = await Promise.all([
     db.rpc("status_saya"), db.rpc("ringkasan_saya"), db.rpc("ganda_saya"),
     db.from("jalur").select("id,nama").order("nama"), q,
-    db.from("sekolah").select("alamat,kontak_wa,logo_path,slug_dikunci").eq("id", sekolah.id).single(),
+    db.from("sekolah").select("alamat,kontak_wa,logo_path,slug_dikunci,dibuat_pada").eq("id", sekolah.id).single(),
+    db.from("testimoni").select("nama,jabatan,rating,isi").maybeSingle(),
   ]);
   const langganan = st as Status | null;
   const r = (rk ?? { total: 0, arsip: 0, baru: 0, diterima: 0, cadangan: 0, ditolak: 0, hari_ini: 0, berkas_kurang: 0 }) as Ringkasan;
@@ -69,6 +71,9 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
     Ditolak: { latar: "var(--oranye-muda)", warna: "#a2401a", ikon: XCircle },
   };
   const situs = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  // Minta testimoni setelah ada pendaftar atau 3 hari memakai, supaya isinya dari pengalaman nyata.
+  const mintaTestimoni = !!testimoniSaya || r.total + r.arsip > 0 ||
+    (!!profil?.dibuat_pada && kini() - new Date(profil.dibuat_pada).getTime() > 3 * 86400000);
 
   return (
     <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
@@ -132,6 +137,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
           );
         })}
       </section>
+      {mintaTestimoni && <TestimoniForm awal={testimoniSaya ?? null} />}
       {r.arsip > 0 && !lihatArsip && <Link className="tautan block text-center text-sm print:hidden" href="/admin?arsip=1">Lihat arsip tahun lalu ({r.arsip})</Link>}
 
       <section id="daftar" className="space-y-3 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-black/5">

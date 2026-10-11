@@ -118,3 +118,63 @@ export async function simpanPengaturan(f: { lynk: string; harga: string; komisi:
   revalidatePath("/admin/langganan");
   return { ok: true };
 }
+
+export type TestimoniIsi = { nama: string; jabatan: string; rating: number; isi: string; namaSekolah: string };
+
+function cekTestimoni(f: TestimoniIsi): string | null {
+  if (f.nama.trim().length < 2) return "Isi nama penulis.";
+  if (!Number.isInteger(f.rating) || f.rating < 1 || f.rating > 5) return "Rating 1 sampai 5.";
+  const n = f.isi.trim().length;
+  if (n < 10 || n > 300) return "Isi testimoni 10–300 huruf.";
+  return null;
+}
+const segarkanTestimoni = () => { revalidatePath("/"); revalidatePath("/super/testimoni"); };
+
+/** Tambah testimoni dari sekolah yang sudah memberi izin (mis. lewat WhatsApp). */
+export async function tambahTestimoni(f: TestimoniIsi): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  const g = cekTestimoni(f); if (g) return gagal(g);
+  if (f.namaSekolah.trim().length < 3) return gagal("Isi nama sekolah.");
+  const { error } = await svc.from("testimoni").insert({
+    nama_sekolah: f.namaSekolah.trim().slice(0, 150), nama: f.nama.trim().slice(0, 80),
+    jabatan: f.jabatan.trim().slice(0, 60) || null, rating: f.rating, isi: f.isi.trim(),
+  });
+  if (error) return gagal("Gagal menyimpan.");
+  await catat(svc, email, null, "pemilik_tambah_testimoni", { sekolah: f.namaSekolah });
+  segarkanTestimoni();
+  return { ok: true };
+}
+
+export async function ubahTestimoni(id: string, f: TestimoniIsi): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  const g = cekTestimoni(f); if (g) return gagal(g);
+  const { error } = await svc.from("testimoni").update({
+    nama: f.nama.trim().slice(0, 80), jabatan: f.jabatan.trim().slice(0, 60) || null, rating: f.rating, isi: f.isi.trim(),
+    ...(f.namaSekolah.trim() ? { nama_sekolah: f.namaSekolah.trim().slice(0, 150) } : {}),
+  }).eq("id", id);
+  if (error) return gagal("Gagal menyimpan.");
+  await catat(svc, email, null, "pemilik_ubah_testimoni", { id });
+  segarkanTestimoni();
+  return { ok: true };
+}
+
+export async function setTampilTestimoni(id: string, tampil: boolean): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  const { error } = await svc.from("testimoni").update({ tampil }).eq("id", id);
+  if (error) return gagal("Gagal menyimpan.");
+  await catat(svc, email, null, tampil ? "pemilik_tampilkan_testimoni" : "pemilik_sembunyikan_testimoni", { id });
+  segarkanTestimoni();
+  return { ok: true };
+}
+
+export async function hapusTestimoni(id: string): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  const { error } = await svc.from("testimoni").delete().eq("id", id);
+  if (error) return gagal("Gagal menghapus.");
+  await catat(svc, email, null, "pemilik_hapus_testimoni", { id });
+  segarkanTestimoni();
+  return { ok: true };
+}

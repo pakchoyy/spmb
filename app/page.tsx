@@ -10,6 +10,7 @@ import { HOST_APP, linkWaBantuan, NAMA_APP, PESAN_WA } from "@/lib/merek";
 import { Logo } from "@/components/logo";
 import { Footer } from "@/components/footer";
 import { SekolahMarquee, type SekolahPengguna } from "@/components/sekolah-marquee";
+import { Testimoni, type TestimoniPublik } from "@/components/testimoni";
 import TombolCoba from "./tombol-coba";
 
 export const revalidate = 3600; // harga dan daftar sekolah cukup segar tiap jam
@@ -19,15 +20,17 @@ export const metadata: Metadata = {
   description: "Sekolah mendapat halaman SPMB sendiri. Orang tua daftar dari HP tanpa akun, sekolah memeriksa berkas dengan mudah. Coba gratis 7 hari.",
 };
 
-async function ambilData(): Promise<{ harga: number | null; sekolah: SekolahPengguna[] }> {
+async function ambilData(): Promise<{ harga: number | null; sekolah: SekolahPengguna[]; testimoni: TestimoniPublik[] }> {
   // Gagal ambil data (mis. saat build tanpa database) tidak boleh menggagalkan beranda.
-  const [harga, sekolah] = await Promise.all([
+  const [harga, sekolah, testimoni] = await Promise.all([
     supabaseService().from("pengaturan").select("harga_paket").eq("id", 1).maybeSingle()
       .then((r) => r.data?.harga_paket ?? null, () => null),
     supabaseAnon().rpc("sekolah_pengguna")
       .then((r) => (r.data ?? []) as SekolahPengguna[], () => []),
+    supabaseAnon().rpc("testimoni_publik")
+      .then((r) => (r.data ?? []) as TestimoniPublik[], () => []),
   ]);
-  return { harga, sekolah };
+  return { harga, sekolah, testimoni };
 }
 
 const contoh = process.env.NEXT_PUBLIC_CONTOH_SLUG;
@@ -85,7 +88,7 @@ const Judul = ({ kecil, children }: { kecil?: string; children: React.ReactNode 
 );
 
 export default async function Beranda() {
-  const { harga, sekolah } = await ambilData();
+  const { harga, sekolah, testimoni } = await ambilData();
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-20 border-b border-black/5 bg-[var(--background)]/90 backdrop-blur">
@@ -121,6 +124,7 @@ export default async function Beranda() {
         </section>
 
         <SekolahMarquee sekolah={sekolah} />
+        <Testimoni daftar={testimoni} />
 
         <section className="bg-[var(--biru)] px-5 py-10 text-white">
           <div className="mx-auto max-w-4xl">
