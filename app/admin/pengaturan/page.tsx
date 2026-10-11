@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import Link from "next/link";
+import { Archive, Building2, Eye, ImageIcon, ListPlus, QrCode, Route } from "lucide-react";
 import QRCode from "qrcode";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import ProfilForm, { type Profil } from "./profil-form";
@@ -13,12 +14,15 @@ export const dynamic = "force-dynamic";
 
 const kini = () => Date.now();
 
-const Bagian = ({ id, judul, children }: { id: string; judul: string; children: React.ReactNode }) => (
-  <section id={id} className="scroll-mt-4 border-t px-5 py-8">
-    <h2 className="mb-4 font-serif text-xl font-bold">{judul}</h2>
-    {children}
+const Bagian = ({ id, judul, bantu, children }: { id: string; judul: string; bantu?: string; children: React.ReactNode }) => (
+  <section id={id} className="scroll-mt-20 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+    <h2 className="font-serif text-xl font-bold">{judul}</h2>
+    {bantu && <p className="mt-1 text-sm text-neutral-600">{bantu}</p>}
+    <div className="mt-4">{children}</div>
   </section>
 );
+
+const TAB = [["profil", "Profil", Building2], ["gambar", "Foto", ImageIcon], ["jalur", "Jalur", Route], ["form", "Form", ListPlus], ["qr", "QR", QrCode], ["arsip", "Arsip", Archive]] as const;
 
 export default async function Pengaturan() {
   const { db, sekolah } = await wajibAdmin();
@@ -50,26 +54,29 @@ export default async function Pengaturan() {
   ]);
 
   return (
-    <main className="mx-auto w-full max-w-2xl pb-16">
-      <header className="px-5 pt-8">
-        <Link className="text-sm tautan" href="/admin">← Beranda admin</Link>
-        <h1 className="mt-2 font-serif text-2xl font-bold">Pengaturan sekolah</h1>
-        {!bisaUbah && <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">Langganan tidak aktif, pengaturan hanya bisa dibaca. <Link className="tautan" href="/admin/langganan">Kelola langganan</Link></p>}
-        <nav className="mt-4 flex flex-wrap gap-2 text-sm">
-          {[["profil", "Profil"], ["gambar", "Logo & foto"], ["jalur", "Jalur"], ["form", "Form"], ["arsip", "Arsip"], ["qr", "QR"]].map(([i, l]) => (
-            <a key={i} href={`#${i}`} className="rounded-full border px-3 py-1">{l}</a>
-          ))}
-        </nav>
+    <main className="mx-auto w-full max-w-2xl px-4 pb-6 pt-4">
+      <header className="rounded-3xl bg-[var(--biru)] p-5 text-white">
+        <h1 className="font-serif text-2xl font-bold">Pengaturan sekolah</h1>
+        <p className="mt-1 text-sm text-white/85">Atur tampilan halaman dan isi formulir pendaftaran.</p>
+        <Link href={`/${sekolah.slug}`} target="_blank" className="btn btn-pil btn-kuning mt-4"><Eye className="size-4" aria-hidden />Lihat seperti orang tua</Link>
       </header>
-      <div className="mt-6">
-        <Bagian id="profil" judul="Profil sekolah"><ProfilForm awal={s as Profil} bisaUbah={bisaUbah} /></Bagian>
+      {!bisaUbah && <p className="mt-3 rounded-2xl bg-[var(--kuning-muda)] p-3 text-sm">Langganan tidak aktif, pengaturan hanya bisa dibaca. <Link className="tautan" href="/admin/langganan">Kelola langganan</Link></p>}
+      <nav className="sticky top-0 z-20 -mx-4 mt-3 overflow-x-auto bg-[var(--background)]/95 px-4 py-2 backdrop-blur">
+        <ul className="flex gap-2">
+          {TAB.map(([i, l, Ikon]) => (
+            <li key={i}><a href={`#${i}`} className="btn btn-pil btn-lembut whitespace-nowrap"><Ikon className="size-4" aria-hidden />{l}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <div className="mt-2 space-y-4">
+        <Bagian id="profil" judul="Profil sekolah" bantu="Tampil di halaman sekolah yang dilihat orang tua."><ProfilForm awal={s as Profil} bisaUbah={bisaUbah} /></Bagian>
         <Bagian id="gambar" judul="Logo, banner, dan galeri">
           <GambarForm logo={s?.logo_path ?? null} banner={s?.banner_path ?? null} galeri={galeri ?? []} bisaUbah={bisaUbah} />
         </Bagian>
-        <Bagian id="jalur" judul="Jalur SPMB"><JalurForm jalur={jalurAdmin} bisaUbah={bisaUbah} /></Bagian>
-        <Bagian id="form" judul="Form pendaftaran"><FieldForm fields={(fields ?? []) as FieldAdmin[]} bisaUbah={bisaUbah} /></Bagian>
+        <Bagian id="jalur" judul="Jalur SPMB" bantu="Boleh dikosongkan. Tanpa jalur, form langsung menerima pendaftar."><JalurForm jalur={jalurAdmin} bisaUbah={bisaUbah} /></Bagian>
+        <Bagian id="form" judul="Isian formulir" bantu="Pertanyaan tambahan untuk orang tua."><FieldForm fields={(fields ?? []) as FieldAdmin[]} bisaUbah={bisaUbah} /></Bagian>
+        <Bagian id="qr" judul="QR dan tautan" bantu="Cetak di brosur atau spanduk, atau kirim ke grup WhatsApp."><Qr url={url} svg={svg} png={png} slug={sekolah.slug} /></Bagian>
         <Bagian id="arsip" judul="Data tahun lalu"><ArsipForm slug={sekolah.slug} aktif={ringkas.total} arsip={ringkas.arsip} bisaUbah={bisaUbah} /></Bagian>
-        <Bagian id="qr" judul="QR dan link"><Qr url={url} svg={svg} png={png} slug={sekolah.slug} /></Bagian>
       </div>
     </main>
   );

@@ -18,7 +18,7 @@ export default function Qr({ url, svg, png, slug }: { url: string; svg: string; 
         <button className="h-12 rounded-lg border font-semibold" onClick={unduh(png, `qr-${slug}.png`)}>Unduh PNG</button>
         <button className="h-12 rounded-lg border font-semibold" onClick={unduh(svgHref, `qr-${slug}.svg`)}>Unduh SVG</button>
       </div>
-      <button className="h-12 w-full rounded-lg border font-semibold" onClick={() => { void navigator.clipboard?.writeText(url); void kunciSlug().catch(() => {}); }}>Salin link</button>
+      <button className="h-12 w-full rounded-lg border font-semibold" onClick={() => { void navigator.clipboard?.writeText(url); void kunciSlug().catch(() => {}); }}>Salin tautan</button>
     </div>
   );
 }

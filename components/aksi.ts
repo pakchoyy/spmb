@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { tampilkanToast } from "./toast";
 
 type Hasil = { ok: true } | { ok: false; pesan: string };
 
@@ -14,8 +15,9 @@ export function useAksi() {
     start(async () => {
       try {
         const r = await fn();
-        if (r.ok) { setTersimpan(true); sukses?.(); } else setGalat(r.pesan);
-      } catch { setGalat("Koneksi terputus. Coba lagi."); }
+        if (r.ok) { setTersimpan(true); tampilkanToast("Tersimpan"); sukses?.(); }
+        else { setGalat(r.pesan); tampilkanToast(r.pesan, true); }
+      } catch { setGalat("Koneksi terputus. Coba lagi."); tampilkanToast("Koneksi terputus. Coba lagi.", true); }
     });
   };
   return { pending, galat, tersimpan, jalankan };

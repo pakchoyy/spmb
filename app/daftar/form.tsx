@@ -35,7 +35,7 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
   if (selesai) {
     return (
       <Halaman ikon={MailCheck} judul="Cek email Anda" sub={`Kami mengirim tautan konfirmasi ke ${f.email}.`}>
-        <p>Klik link di email itu untuk mengaktifkan akun. Masa coba gratis 7 hari mulai setelah akun aktif. Tidak ada email? Periksa folder spam.</p>
+        <p>Klik tautan di email itu untuk mengaktifkan akun. Masa coba gratis 7 hari mulai setelah akun aktif. Tidak ada email? Periksa folder spam.</p>
         <Link className="tautan" href="/masuk">Sudah konfirmasi? Masuk</Link>
       </Halaman>
     );
