@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Award, BadgeCheck, Trophy, CalendarClock, CheckCircle2, FileText, AtSign, MapPin, MessageCircle, Search, Users } from "lucide-react";
+import { ArrowRight, Award, BadgeCheck, Trophy, CheckCircle2, AtSign, MapPin, MessageCircle, Search, Users } from "lucide-react";
 import TeksBesar from "@/components/teks-besar";
 import Bagikan from "@/components/bagikan";
 import PasangApp from "@/components/pasang-app";
@@ -33,6 +33,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: `SPMB ${sekolah.nama}`, description: desk,
     manifest: `/${sekolah.slug}/manifest.webmanifest`,
+    icons: { icon: `/api/ikon/192?s=${sekolah.slug}`, apple: `/api/ikon/180?s=${sekolah.slug}` },
+    appleWebApp: { capable: true, title: sekolah.nama.slice(0, 20), statusBarStyle: "default" },
     alternates: { canonical: `/${sekolah.slug}` },
     openGraph: { title: `SPMB ${sekolah.nama}`, description: desk, type: "website", ...(gambar ? { images: [gambar] } : {}) },
   };
@@ -57,6 +59,11 @@ const igLink = (h: string | null) => {
   return /^[A-Za-z0-9._]{1,30}$/.test(u) ? { url: `https://instagram.com/${u}`, nama: `@${u}` } : null;
 };
 const petaLink = (u: string | null) => (u && /^https:\/\//.test(u) ? u : null);
+
+/** Nomor langkah bulat di depan judul bagian (alur: jadwal → jalur → berkas). */
+const Langkah = ({ n }: { n: number }) => (
+  <span className="mr-2 inline-grid size-7 place-items-center rounded-full align-[3px] font-sans text-sm text-white" style={{ background: "var(--aksen)" }}>{n}</span>
+);
 
 function KartuPrestasi({ p, salinan = false }: { p: Prestasi; salinan?: boolean }) {
   return (
@@ -83,6 +90,7 @@ export default async function HalamanSekolah({ params }: Params) {
 
   const buka = s.status === "trial" || s.status === "aktif";
   const logo = urlAset(s.logo_path), banner = urlAset(s.banner_path);
+  const ba = { x: 50, y: 50, z: 100, ...s.banner_atur };
   const wa = waLink(s.kontak_wa), ig = igLink(s.instagram), peta = petaLink(s.peta_url);
   const jadwal = s.jadwal ?? [], prestasi = s.prestasi ?? [];
   const berkas = [...new Set(s.jalur.flatMap((j) => j.syarat_berkas))];
@@ -104,7 +112,8 @@ export default async function HalamanSekolah({ params }: Params) {
       className="flex min-h-screen flex-col">
       <header className="relative overflow-hidden px-5 pb-10 pt-5 text-white"
         style={{ background: "linear-gradient(160deg, var(--aksen), color-mix(in srgb, var(--aksen) 65%, black))" }}>
-        {banner && <Image src={banner} alt="" fill priority sizes="100vw" className="object-cover opacity-25" />}
+        {banner && <Image src={banner} alt="" fill priority sizes="100vw" className="object-cover opacity-25"
+          style={{ objectPosition: `${ba.x}% ${ba.y}%`, transform: `scale(${ba.z / 100})`, transformOrigin: `${ba.x}% ${ba.y}%` }} />}
         <div aria-hidden className="absolute -right-10 -top-10 size-40 rounded-full bg-white/10" />
         <div className="relative mx-auto max-w-2xl">
           <div className="flex justify-end gap-2">
@@ -144,23 +153,33 @@ export default async function HalamanSekolah({ params }: Params) {
       </header>
 
       <main className="relative mx-auto -mt-5 w-full max-w-2xl flex-1 space-y-4 px-4 pb-28">
-        <PasangApp judul="Simpan halaman sekolah di HP" teks="Buka lagi dengan sekali ketuk untuk cek status dan info terbaru." kunci={`pasang-${s.slug}`} />
-        {s.keunggulan.length > 0 && (
+        {jadwal.length > 0 && (
           <section className={kartu}>
-            <h2 className="font-serif text-xl font-bold">Keunggulan sekolah</h2>
-            <ul className="mt-3 grid gap-2">
-              {s.keunggulan.map((k) => (
-                <li key={k} className="flex gap-3 rounded-2xl p-3" style={{ background: "var(--muda)" }}>
-                  <CheckCircle2 className="mt-0.5 size-5 shrink-0" style={{ color: "var(--aksen)" }} aria-hidden />{k}
-                </li>
-              ))}
-            </ul>
+            <h2 className="font-serif text-xl font-bold"><Langkah n={1} />Jadwal SPMB</h2>
+            <ol className="mt-4">
+              {jadwal.map((j, i) => {
+                const t = hariIni(), lewat = (j.selesai ?? j.mulai) < t, berjalan = !lewat && j.mulai <= t;
+                return (
+                  <li key={i} className="relative flex gap-4 pb-5 last:pb-0">
+                    {i < jadwal.length - 1 && <span aria-hidden className="absolute left-[11px] top-6 h-full w-0.5" style={{ background: lewat ? "var(--aksen)" : "#e5e7eb" }} />}
+                    <span aria-hidden className="relative z-[1] mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border-2"
+                      style={lewat ? { background: "var(--aksen)", borderColor: "var(--aksen)" } : berjalan ? { borderColor: "var(--aksen)", background: "white" } : { borderColor: "#d1d5db", background: "white" }}>
+                      {lewat ? <CheckCircle2 className="size-4 text-white" /> : berjalan && <span className="size-2.5 rounded-full" style={{ background: "var(--aksen)" }} />}
+                    </span>
+                    <div className={lewat ? "opacity-60" : ""}>
+                      <p className="font-bold">{j.judul}{berjalan && <span className="ml-2 rounded-full px-2 py-0.5 text-xs font-bold text-white" style={{ background: "var(--aksen)" }}>Sedang berjalan</span>}</p>
+                      <p className="text-sm text-neutral-600">{fmtPendek(j.mulai)}{j.selesai && j.selesai !== j.mulai ? ` – ${fmtPendek(j.selesai)}` : ""}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
           </section>
         )}
 
         {s.jalur.length > 0 && (
           <section className={kartu}>
-            <h2 className="flex items-center gap-2 font-serif text-xl font-bold"><CalendarClock className="size-5" style={{ color: "var(--aksen)" }} aria-hidden />Jalur dan jadwal</h2>
+            <h2 className="font-serif text-xl font-bold"><Langkah n={jadwal.length ? 2 : 1} />Pilih jalur pendaftaran</h2>
             <div className="mt-3 grid gap-2">
               {s.jalur.map((j) => {
                 const k = keadaan(j);
@@ -188,27 +207,26 @@ export default async function HalamanSekolah({ params }: Params) {
           </section>
         )}
 
-        {jadwal.length > 0 && (
+        {berkas.length > 0 && (
           <section className={kartu}>
-            <h2 className="font-serif text-xl font-bold">Jadwal SPMB</h2>
-            <ol className="mt-4">
-              {jadwal.map((j, i) => {
-                const t = hariIni(), lewat = (j.selesai ?? j.mulai) < t, berjalan = !lewat && j.mulai <= t;
-                return (
-                  <li key={i} className="relative flex gap-4 pb-5 last:pb-0">
-                    {i < jadwal.length - 1 && <span aria-hidden className="absolute left-[11px] top-6 h-full w-0.5" style={{ background: lewat ? "var(--aksen)" : "#e5e7eb" }} />}
-                    <span aria-hidden className="relative z-[1] mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border-2"
-                      style={lewat ? { background: "var(--aksen)", borderColor: "var(--aksen)" } : berjalan ? { borderColor: "var(--aksen)", background: "white" } : { borderColor: "#d1d5db", background: "white" }}>
-                      {lewat ? <CheckCircle2 className="size-4 text-white" /> : berjalan && <span className="size-2.5 rounded-full" style={{ background: "var(--aksen)" }} />}
-                    </span>
-                    <div className={lewat ? "opacity-60" : ""}>
-                      <p className="font-bold">{j.judul}{berjalan && <span className="ml-2 rounded-full px-2 py-0.5 text-xs font-bold text-white" style={{ background: "var(--aksen)" }}>Sedang berjalan</span>}</p>
-                      <p className="text-sm text-neutral-600">{fmtPendek(j.mulai)}{j.selesai && j.selesai !== j.mulai ? ` – ${fmtPendek(j.selesai)}` : ""}</p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
+            <h2 className="font-serif text-xl font-bold"><Langkah n={(jadwal.length ? 1 : 0) + (s.jalur.length ? 1 : 0) + 1} />Siapkan berkas ini</h2>
+            <p className="mt-1 text-sm text-neutral-600">Foto langsung dari HP juga boleh, maksimal 2 MB per berkas. Diunggah setelah mengisi formulir.</p>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {berkas.map((b) => <li key={b} className="rounded-full px-3 py-1 text-sm font-semibold" style={{ background: "var(--muda)" }}>{b}</li>)}
+            </ul>
+          </section>
+        )}
+
+        {s.keunggulan.length > 0 && (
+          <section className={kartu}>
+            <h2 className="font-serif text-xl font-bold">Keunggulan sekolah</h2>
+            <ul className="mt-3 grid gap-2">
+              {s.keunggulan.map((k) => (
+                <li key={k} className="flex gap-3 rounded-2xl p-3" style={{ background: "var(--muda)" }}>
+                  <CheckCircle2 className="mt-0.5 size-5 shrink-0" style={{ color: "var(--aksen)" }} aria-hidden />{k}
+                </li>
+              ))}
+            </ul>
           </section>
         )}
 
@@ -228,16 +246,6 @@ export default async function HalamanSekolah({ params }: Params) {
                 {prestasi.map((p, i) => <KartuPrestasi key={i} p={p} />)}
               </ul>
             )}
-          </section>
-        )}
-
-        {berkas.length > 0 && (
-          <section className={kartu}>
-            <h2 className="flex items-center gap-2 font-serif text-xl font-bold"><FileText className="size-5" style={{ color: "var(--aksen)" }} aria-hidden />Siapkan berkas ini</h2>
-            <p className="mt-1 text-sm text-neutral-600">Boleh foto dari HP, maksimal 2 MB per berkas.</p>
-            <ul className="mt-3 flex flex-wrap gap-2">
-              {berkas.map((b) => <li key={b} className="rounded-full px-3 py-1 text-sm font-semibold" style={{ background: "var(--muda)" }}>{b}</li>)}
-            </ul>
           </section>
         )}
 
@@ -270,6 +278,8 @@ export default async function HalamanSekolah({ params }: Params) {
             </a>
           )}
         </section>
+
+        <PasangApp ikon={`/api/ikon/192?s=${s.slug}`} nama={s.nama} judul="Simpan halaman sekolah di HP" teks="Buka lagi dengan sekali ketuk untuk cek status dan info terbaru." kunci={`pasang-${s.slug}`} />
       </main>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

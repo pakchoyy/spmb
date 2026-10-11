@@ -44,7 +44,7 @@ function Baris({ j, nama, bisaUbah, dipakai }: { j?: JalurAdmin; nama?: string; 
           <Kolom label="Buka (WIB)"><input type="datetime-local" className={input} disabled={terkunci} value={f.buka} onChange={(e) => set({ buka: e.target.value })} /></Kolom>
           <Kolom label="Tutup (WIB)"><input type="datetime-local" className={input} disabled={terkunci} value={f.tutup} onChange={(e) => set({ tutup: e.target.value })} /></Kolom>
         </div>
-        <Kolom label="Syarat berkas (satu per baris)" bantu={<span className="text-neutral-600">Contoh: Kartu Keluarga, Akta Kelahiran.</span>}>
+        <Kolom label="Syarat berkas (satu per baris)" bantu={<span className="text-neutral-600">Contoh: Kartu Keluarga, Akta Kelahiran. Setelah mengisi formulir, orang tua diminta memotret/mengunggah setiap berkas ini dari HP (JPG/PNG/PDF, maks. 2 MB).</span>}>
           <textarea className="min-h-24 w-full rounded-xl border border-neutral-300 bg-white p-3 outline-none focus:border-[var(--biru)] focus:ring-4 focus:ring-[var(--biru-muda)]" value={f.syarat} onChange={(e) => set({ syarat: e.target.value })} />
         </Kolom>
       </fieldset>
@@ -67,7 +67,10 @@ export default function JalurForm({ jalur, bisaUbah }: { jalur: JalurAdmin[]; bi
   const dipakai = jalur.map((j) => j.nama);
   return (
     <div className="space-y-3">
-      <p className="text-sm text-neutral-600">Jalur bersifat opsional. Jika tidak ada jalur aktif, form langsung menerima pendaftar.</p>
+      <div className="space-y-1 rounded-2xl bg-[var(--biru-muda)] p-3 text-sm text-[var(--biru-tua)]">
+        <p><b>Di sinilah berkas diatur.</b> Setiap jalur punya daftar &ldquo;Syarat berkas&rdquo; yang wajib diunggah orang tua.</p>
+        <p>Tidak memakai jalur? Tetap buat satu jalur (mis. Domisili) supaya bisa meminta berkas. Tanpa jalur, formulir hanya berisi isian teks.</p>
+      </div>
       {jalur.map((j) => <Baris key={`${j.id}-${j.nama}`} j={j} bisaUbah={bisaUbah} dipakai={dipakai} />)}
       {bisaUbah && dipakai.length < NAMA.length && <Baris key={`baru-${dipakai.length}`} bisaUbah dipakai={dipakai} />}
     </div>

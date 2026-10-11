@@ -46,7 +46,7 @@ export default function Tentang() {
             </div>
           </div>
           <p className="mt-4 text-sm text-white/85">
-            {NAMA_APP} adalah bagian dari <b>Bantu Guru Yuk</b>: alat digital gratis untuk meringankan pekerjaan guru, dari menyiapkan modul sampai administrasi kelas.
+            {NAMA_APP} adalah bagian dari <b>Bantu Guru Yuk</b>: kumpulan alat digital untuk meringankan pekerjaan guru, dari menyiapkan modul sampai administrasi kelas.
           </p>
           <div className="mt-4 grid grid-cols-2 gap-2">
             <a href={TIKTOK} target="_blank" rel="noopener noreferrer" className="btn btn-pil bg-white text-[#14204a]">

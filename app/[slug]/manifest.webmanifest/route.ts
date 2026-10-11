@@ -8,8 +8,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
   const s = data as SekolahPublik | null;
   if (!s) return new Response("Not found", { status: 404 });
 
-  const w = s.warna_aksen.replace("#", "");
-  const ikon = (px: number, ekstra = "") => `/api/ikon/${px}?w=${w}&h=${encodeURIComponent(s.nama[0] ?? "G")}${ekstra}`;
+  const ikon = (px: number, ekstra = "") => `/api/ikon/${px}?s=${s.slug}${ekstra}`;
   const body = {
     name: `SPMB ${s.nama}`,
     short_name: s.nama.slice(0, 12).trim(),

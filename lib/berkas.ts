@@ -16,6 +16,7 @@ export type SekolahPublik = {
   alamat: string | null;
   logo_path: string | null;
   banner_path: string | null;
+  banner_atur?: { x: number; y: number; z: number };
   keunggulan: string[];
   kontak_wa: string | null;
   peta_url: string | null;

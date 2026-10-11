@@ -10,14 +10,22 @@ export default function MenuAdmin({ slug, baru = 0 }: { slug: string; baru?: num
   const item = [
     { href: "/admin", label: "Beranda", ikon: House, badge: baru, aktif: p === "/admin" || p.startsWith("/admin/pendaftar") },
     { href: "/admin/pengaturan", label: "Pengaturan", ikon: Settings, badge: 0, aktif: p.startsWith("/admin/pengaturan") },
+    { href: `/${slug}`, label: "Halaman", ikon: Eye, badge: 0, aktif: false },
     { href: "/admin/langganan", label: "Langganan", ikon: CreditCard, badge: 0, aktif: p.startsWith("/admin/langganan") },
     { href: "/admin/tentang", label: "Tentang", ikon: Info, badge: 0, aktif: p.startsWith("/admin/tentang") },
-    { href: `/${slug}`, label: "Halaman", ikon: Eye, badge: 0, aktif: false },
   ];
   return (
     <nav aria-label="Menu admin" className="fixed inset-x-0 bottom-0 z-30 border-t bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur print:hidden">
       <ul className="mx-auto grid max-w-2xl grid-cols-5">
-        {item.map((i) => (
+        {item.map((i) => i.label === "Halaman" ? (
+          <li key={i.href} className="flex justify-center">
+            {/* tombol tengah menonjol: lihat halaman sekolah seperti orang tua */}
+            <Link href={i.href} target="_blank" className="-mt-5 flex flex-col items-center gap-0.5 text-xs font-semibold text-[var(--biru)]">
+              <span className="grid size-14 place-items-center rounded-full bg-[var(--biru)] text-white shadow-lg shadow-[var(--biru)]/30 ring-4 ring-white"><i.ikon className="size-6" aria-hidden /></span>
+              {i.label}
+            </Link>
+          </li>
+        ) : (
           <li key={i.href}>
             <Link href={i.href} target={i.label === "Halaman" ? "_blank" : undefined} aria-current={i.aktif ? "page" : undefined}
               className={`flex h-16 flex-col items-center justify-center gap-0.5 text-xs font-semibold ${i.aktif ? "text-[var(--biru)]" : "text-neutral-500"}`}>

@@ -11,6 +11,11 @@ export function GET() {
     lang: "id",
     background_color: "#f4f6ff",
     theme_color: "#2449d8",
+    categories: ["education", "productivity"],
+    shortcuts: [
+      { name: "Pendaftar baru", url: "/admin?status=Baru", icons: [{ src: "/api/ikon/192", sizes: "192x192" }] },
+      { name: "Pengaturan", url: "/admin/pengaturan", icons: [{ src: "/api/ikon/192", sizes: "192x192" }] },
+    ],
     icons: [
       { src: "/api/ikon/192", sizes: "192x192", type: "image/png" },
       { src: "/api/ikon/512", sizes: "512x512", type: "image/png" },

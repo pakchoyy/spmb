@@ -19,7 +19,7 @@ function Editor({ fd, bisaUbah, onSelesai }: { fd?: FieldAdmin; bisaUbah: boolea
     }}>
       <fieldset disabled={!bisaUbah || pending} className="space-y-3">
         <Kolom label="Nama isian"><input className={input} value={f.label} maxLength={80} placeholder="Contoh: Nama orang tua" onChange={(e) => set({ label: e.target.value })} /></Kolom>
-        <Kolom label="Jenis">
+        <Kolom label="Jenis" bantu={<span className="text-neutral-600">Untuk foto/berkas (KK, akta, rapor), jangan buat di sini: atur di bagian <a href="#jalur" className="tautan">Jalur &amp; syarat berkas</a>.</span>}>
           <select className={input} value={f.tipe} onChange={(e) => set({ tipe: e.target.value })}>
             {Object.entries(TIPE).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
@@ -40,7 +40,7 @@ export default function FieldForm({ fields, bisaUbah }: { fields: FieldAdmin[]; 
   const aksi = useAksi();
   return (
     <div className="space-y-3">
-      <p className="text-sm text-neutral-600">Nama dan tanggal lahir anak sudah ada di form. Tambahkan isian lain yang sekolah butuhkan, tanpa batas jumlah.</p>
+      <p className="text-sm text-neutral-600">Nama anak, tanggal lahir, dan WhatsApp orang tua sudah otomatis ada. Tambahkan pertanyaan lain yang sekolah butuhkan, mis. nama ayah/ibu, asal TK, alamat.</p>
       <ul className="space-y-2">
         {fields.map((fd, i) => (
           <li key={fd.id}>

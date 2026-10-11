@@ -272,3 +272,14 @@ export async function simpanDaftarUlang(f: { aktif: boolean; tenggat: string | n
   tampilkan(sekolah.slug);
   return { ok: true };
 }
+
+/** Titik fokus (x,y 0–100) dan perbesaran (z 100–250) banner di halaman sekolah. */
+export async function simpanBannerAtur(a: { x: number; y: number; z: number }): Promise<Hasil> {
+  const batas = (v: number, min: number, maks: number) => Math.round(Math.min(maks, Math.max(min, Number(v) || 0)));
+  const nilai = { x: batas(a.x, 0, 100), y: batas(a.y, 0, 100), z: batas(a.z, 100, 250) };
+  const { db, sekolah } = await wajibAdmin();
+  const { error } = await db.from("sekolah").update({ banner_atur: nilai }).eq("id", sekolah.id);
+  if (error) return gagal(pesanDb(error));
+  tampilkan(sekolah.slug);
+  return { ok: true };
+}

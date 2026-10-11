@@ -5,6 +5,7 @@ import { Galat } from "@/components/ui";
 import { useAksi } from "@/components/aksi";
 import { urlAset } from "@/lib/berkas";
 import { hapusGambar, unggahGambar } from "./actions";
+import AturBanner, { type BannerAtur } from "./atur-banner";
 
 type Jenis = "logo" | "banner" | "galeri";
 
@@ -50,8 +51,8 @@ function Pilih({ jenis, label, sisi, aksi, maks = 1 }: { jenis: Jenis; label: st
   );
 }
 
-export default function GambarForm({ logo, banner, galeri, bisaUbah }: {
-  logo: string | null; banner: string | null; galeri: { id: string; path: string }[]; bisaUbah: boolean;
+export default function GambarForm({ logo, banner, bannerAtur, warna, galeri, bisaUbah }: {
+  logo: string | null; banner: string | null; bannerAtur: BannerAtur; warna: string; galeri: { id: string; path: string }[]; bisaUbah: boolean;
 }) {
   const aLogo = useAksi(), aBanner = useAksi(), aGaleri = useAksi(), aHapus = useAksi();
 
@@ -74,10 +75,11 @@ export default function GambarForm({ logo, banner, galeri, bisaUbah }: {
 
       <div>
         <h3 className="font-semibold">Banner foto (1)</h3>
-        {banner && (
+        <p className="text-sm text-neutral-600">Foto gedung atau kegiatan sekolah. Tampil samar di belakang nama sekolah.</p>
+        {banner && (bisaUbah
+          ? <div className="mt-2"><AturBanner key={banner} src={urlAset(banner)!} awal={bannerAtur} warna={warna} /></div>
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={urlAset(banner)!} alt="Banner" className="mt-2 aspect-[16/7] w-full rounded-2xl object-cover ring-1 ring-black/10" />
-        )}
+          : <img src={urlAset(banner)!} alt="Banner" className="mt-2 aspect-[16/7] w-full rounded-2xl object-cover ring-1 ring-black/10" />)}
         {bisaUbah && (
           <div className="mt-2 grid gap-2">
             <Pilih jenis="banner" label={banner ? "Ganti banner" : "Pasang banner"} sisi={1600} aksi={aBanner} />
