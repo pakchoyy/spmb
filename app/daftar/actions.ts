@@ -57,11 +57,22 @@ export async function daftarSekolah(f: {
   return { ok: true, langsung: !!data.session };
 }
 
-/** Untuk admin yang sudah login tetapi sekolahnya belum terbentuk (slug keburu terpakai). */
-export async function lengkapiSekolah(f: { nama: string; slug: string; npsn: string }): Promise<Hasil> {
+/** Untuk admin yang sudah login tetapi belum punya sekolah: masuk lewat Google, atau alamat keburu dipakai. */
+export async function lengkapiSekolah(f: { nama: string; slug: string; npsn: string; kodeRef: string; setuju: boolean }): Promise<Hasil> {
+  if (!f.setuju) return { ok: false, pesan: "Centang persetujuan Syarat dan Ketentuan untuk melanjutkan." };
+  if (f.nama.trim().length < 3) return { ok: false, pesan: "Isi nama sekolah." };
   if (!SLUG_RE.test(f.slug)) return { ok: false, pesan: "Alamat halaman tidak valid." };
+  if (f.npsn && !/^\d{8}$/.test(f.npsn)) return { ok: false, pesan: "NPSN terdiri dari 8 angka." };
   const db = await supabaseServer();
-  const { error } = await db.rpc("buat_sekolah", { p_slug: f.slug, p_nama: f.nama.trim(), p_npsn: f.npsn, p_kode_ref: "" });
-  if (error) return { ok: false, pesan: error.message === "slug_tidak_tersedia" ? "Alamat halaman sudah dipakai. Pilih yang lain." : "Gagal membuat sekolah. Coba lagi." };
+  const { data: { user } } = await db.auth.getUser();
+  if (!user) return { ok: false, pesan: "Sesi berakhir. Silakan masuk lagi." };
+  // versi dokumen yang disetujui ikut tercatat untuk akun Google
+  if (!user.user_metadata?.setuju_syarat) {
+    await db.auth.updateUser({ data: { setuju_syarat: VERSI_SYARAT, setuju_privasi: VERSI_PRIVASI, setuju_pada: new Date().toISOString() } });
+  }
+  const { error } = await db.rpc("buat_sekolah", {
+    p_slug: f.slug, p_nama: f.nama.trim(), p_npsn: f.npsn, p_kode_ref: f.kodeRef.trim().toUpperCase(),
+  });
+  if (error) return { ok: false, pesan: error.message === "slug_tidak_tersedia" ? "Alamat halaman sudah dipakai. Pilih yang lain." : error.message === "sudah_punya_sekolah" ? "Akun ini sudah punya sekolah." : "Gagal membuat sekolah. Coba lagi." };
   return { ok: true };
 }

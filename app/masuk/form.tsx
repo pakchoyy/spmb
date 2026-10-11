@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { KeyRound, LogIn, MailCheck } from "lucide-react";
 import { Galat, Halaman, Kolom, input, tombol } from "@/components/ui";
 import { BantuanWa } from "@/components/bantuan-wa";
+import TombolGoogle from "@/components/tombol-google";
 import { lupaSandi, masuk } from "./actions";
 
 export default function FormMasuk({ awal }: { awal: string }) {
@@ -37,6 +38,10 @@ export default function FormMasuk({ awal }: { awal: string }) {
   }
   return (
     <Halaman ikon={mode === "lupa" ? KeyRound : LogIn} judul={mode === "lupa" ? "Lupa kata sandi" : "Masuk admin sekolah"} sub={mode === "lupa" ? "Isi email admin, kami kirim tautan untuk membuat kata sandi baru." : "Kelola halaman SPMB dan periksa pendaftar."}>
+      {mode === "masuk" && (<>
+        <TombolGoogle label="Masuk dengan Google" />
+        <p className="flex items-center gap-3 text-xs font-semibold text-neutral-500 before:h-px before:flex-1 before:bg-neutral-200 after:h-px after:flex-1 after:bg-neutral-200">atau pakai email</p>
+      </>)}
       <form onSubmit={kirim} className="space-y-4">
         <Kolom label="Email"><input className={input} type="email" value={email} autoComplete="email" required onChange={(e) => setEmail(e.target.value)} /></Kolom>
         {mode === "masuk" && (

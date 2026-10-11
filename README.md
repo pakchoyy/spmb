@@ -27,3 +27,12 @@ update auth.users set raw_app_meta_data = raw_app_meta_data || '{"role":"owner"}
 
 Login lewat `/masuk`; pemilik otomatis diarahkan ke `/super`. Halaman itu menampilkan 404 untuk akun lain.
 Akun pemilik sebaiknya tidak dipakai mendaftarkan sekolah.
+
+## Masuk dengan Google
+
+1. Google Cloud Console → APIs & Services → Credentials → Create OAuth client ID (Web application).
+   Authorized redirect URI: `https://srjcsdjzrkmgaqwjwrhk.supabase.co/auth/v1/callback`.
+2. Supabase → Authentication → Sign In / Providers → Google: aktifkan, isi Client ID dan Client Secret.
+3. Supabase → Authentication → URL Configuration → Redirect URLs: tambahkan `https://<domain-aplikasi>/auth/callback`.
+
+Akun Google baru diarahkan ke `/daftar/lengkapi` untuk mengisi nama dan alamat halaman sekolah.

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { MailCheck, School } from "lucide-react";
 import { Galat, Halaman, Kolom, input, tombol } from "@/components/ui";
 import { BantuanWa } from "@/components/bantuan-wa";
+import TombolGoogle from "@/components/tombol-google";
 import SlugField from "@/components/slug-field";
 import { buatSlug } from "@/lib/slug";
 import { daftarSekolah } from "./actions";
@@ -48,6 +49,8 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
           <li key={t} className="rounded-xl bg-[var(--biru-muda)] px-2 py-2 text-[var(--biru-tua)]"><span className="block text-base font-bold">{i + 1}</span>{t}</li>
         ))}
       </ol>
+      <TombolGoogle label="Daftar cepat dengan Google" />
+      <p className="flex items-center gap-3 text-xs font-semibold text-neutral-500 before:h-px before:flex-1 before:bg-neutral-200 after:h-px after:flex-1 after:bg-neutral-200">atau isi formulir</p>
       <form onSubmit={kirim} className="space-y-4">
         <Kolom label="Nama sekolah">
           <input className={input} value={f.nama} maxLength={150} autoComplete="organization" required
