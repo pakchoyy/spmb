@@ -1,5 +1,6 @@
 "use client";
 
+import { InfoTrial } from "@/components/info-trial";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -43,7 +44,8 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
   }
 
   return (
-    <Halaman ikon={School} judul="Daftarkan sekolah" sub="Buat halaman SPMB sekolah Anda. Tanpa kartu kredit.">
+    <Halaman ikon={School} judul="Daftarkan sekolah" sub="Buat halaman SPMB sekolah Anda. Mulai dengan masa coba 7 hari.">
+      <InfoTrial />
       <ol className="grid grid-cols-3 gap-2 text-center text-xs font-semibold">
         {["Isi data sekolah", "Atur halaman", "Bagikan ke orang tua"].map((t, i) => (
           <li key={t} className="rounded-xl bg-[var(--biru-muda)] px-2 py-2 text-[var(--biru-tua)]"><span className="block text-base font-bold">{i + 1}</span>{t}</li>

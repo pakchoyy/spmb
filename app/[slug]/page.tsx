@@ -6,7 +6,6 @@ import TeksBesar from "@/components/teks-besar";
 import Bagikan from "@/components/bagikan";
 import PasangApp from "@/components/pasang-app";
 import { WaMelayang } from "@/components/wa-melayang";
-import { Footer } from "@/components/footer";
 import { cache } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import { supabaseAnon } from "@/lib/supabase/anon";
@@ -152,7 +151,57 @@ export default async function HalamanSekolah({ params }: Params) {
         </div>
       </header>
 
-      <main className="relative mx-auto -mt-5 w-full max-w-2xl flex-1 space-y-4 px-4 pb-28">
+      <main className="relative mx-auto -mt-5 w-full max-w-2xl flex-1 space-y-4 px-4 pb-10">
+        {s.keunggulan.length > 0 && (
+          <section className={kartu}>
+            <h2 className="font-serif text-xl font-bold">Keunggulan sekolah</h2>
+            <ul className="mt-3 grid gap-2">
+              {s.keunggulan.map((k) => (
+                <li key={k} className="flex gap-3 rounded-2xl p-3" style={{ background: "var(--muda)" }}>
+                  <CheckCircle2 className="mt-0.5 size-5 shrink-0" style={{ color: "var(--aksen)" }} aria-hidden />{k}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {prestasi.length > 0 && (
+          <section className="py-1">
+            <h2 className="flex items-center gap-2 px-1 font-serif text-xl font-bold"><Trophy className="size-5" style={{ color: "var(--aksen)" }} aria-hidden />Prestasi siswa</h2>
+            {s.prestasi_gerak && prestasi.length > 1 ? (
+              <div className="marquee -mx-4 mt-3 overflow-hidden pb-2">
+                <ul className="marquee-isi gap-3 px-2" style={{ "--durasi": `${Math.max(18, prestasi.length * 7)}s` } as React.CSSProperties}>
+                  {[...prestasi, ...prestasi].map((p, i) => (
+                    <KartuPrestasi key={i} p={p} salinan={i >= prestasi.length} />
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <ul className="-mx-4 mt-3 flex snap-x gap-3 overflow-x-auto px-4 pb-2">
+                {prestasi.map((p, i) => <KartuPrestasi key={i} p={p} />)}
+              </ul>
+            )}
+          </section>
+        )}
+
+        {s.galeri.length > 0 && (
+          <section className={kartu}>
+            <h2 className="font-serif text-xl font-bold">Galeri</h2>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {s.galeri.map((g) => (
+                <Image key={g} src={urlAset(g)!} alt="" width={400} height={300} sizes="(max-width: 640px) 50vw, 320px" className="aspect-[4/3] w-full rounded-2xl object-cover" />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {(jadwal.length > 0 || s.jalur.length > 0 || berkas.length > 0) && (
+          <div className="px-1 pt-4">
+            <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--aksen)" }}>Penerimaan siswa baru</p>
+            <h2 className="font-serif text-2xl font-bold">Cara mendaftar</h2>
+          </div>
+        )}
+
         {jadwal.length > 0 && (
           <section className={kartu}>
             <h2 className="font-serif text-xl font-bold"><Langkah n={1} />Jadwal SPMB</h2>
@@ -217,49 +266,6 @@ export default async function HalamanSekolah({ params }: Params) {
           </section>
         )}
 
-        {s.keunggulan.length > 0 && (
-          <section className={kartu}>
-            <h2 className="font-serif text-xl font-bold">Keunggulan sekolah</h2>
-            <ul className="mt-3 grid gap-2">
-              {s.keunggulan.map((k) => (
-                <li key={k} className="flex gap-3 rounded-2xl p-3" style={{ background: "var(--muda)" }}>
-                  <CheckCircle2 className="mt-0.5 size-5 shrink-0" style={{ color: "var(--aksen)" }} aria-hidden />{k}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {prestasi.length > 0 && (
-          <section className="py-1">
-            <h2 className="flex items-center gap-2 px-1 font-serif text-xl font-bold"><Trophy className="size-5" style={{ color: "var(--aksen)" }} aria-hidden />Prestasi siswa</h2>
-            {s.prestasi_gerak && prestasi.length > 1 ? (
-              <div className="marquee marquee-kanan -mx-4 mt-3 overflow-hidden pb-2">
-                <ul className="marquee-isi gap-3 px-2" style={{ "--durasi": `${Math.max(18, prestasi.length * 7)}s` } as React.CSSProperties}>
-                  {[...prestasi, ...prestasi].map((p, i) => (
-                    <KartuPrestasi key={i} p={p} salinan={i >= prestasi.length} />
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <ul className="-mx-4 mt-3 flex snap-x gap-3 overflow-x-auto px-4 pb-2">
-                {prestasi.map((p, i) => <KartuPrestasi key={i} p={p} />)}
-              </ul>
-            )}
-          </section>
-        )}
-
-        {s.galeri.length > 0 && (
-          <section className={kartu}>
-            <h2 className="font-serif text-xl font-bold">Galeri</h2>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              {s.galeri.map((g) => (
-                <Image key={g} src={urlAset(g)!} alt="" width={400} height={300} sizes="(max-width: 640px) 50vw, 320px" className="aspect-[4/3] w-full rounded-2xl object-cover" />
-              ))}
-            </div>
-          </section>
-        )}
-
         <section className={kartu}>
           <h2 className="font-serif text-xl font-bold">Ada pertanyaan?</h2>
           <div className="mt-3 grid gap-2">
@@ -286,7 +292,31 @@ export default async function HalamanSekolah({ params }: Params) {
         "@context": "https://schema.org", "@type": "School", name: s.nama,
         ...(s.alamat ? { address: s.alamat } : {}), ...(logo ? { logo } : {}),
       }).replace(/</g, "\\u003c") }} />
-      <Footer />
+      <footer className="px-5 pb-28 pt-10 text-white" style={{ background: "color-mix(in srgb, var(--aksen) 30%, #0f1733)" }}>
+        <div className="mx-auto max-w-2xl">
+          <div className="flex items-center gap-3">
+            {logo
+              ? <Image src={logo} alt="" width={96} height={96} className="size-12 rounded-2xl bg-white object-contain p-1" />
+              : <span className="grid size-12 place-items-center rounded-2xl bg-white font-serif text-xl font-bold" style={{ color: "var(--aksen)" }}>{s.nama[0]}</span>}
+            <div>
+              <p className="font-serif text-lg font-bold leading-tight">{s.nama}</p>
+              {s.akreditasi && <p className="text-xs text-white/70">Terakreditasi {s.akreditasi}</p>}
+            </div>
+          </div>
+          {s.alamat && <p className="mt-4 flex gap-2 text-sm text-white/80"><MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />{s.alamat}</p>}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {wa && <a className="btn btn-pil btn-wa" href={wa} target="_blank" rel="noopener noreferrer"><MessageCircle className="size-4" aria-hidden />WhatsApp</a>}
+            {ig && <a className="btn btn-pil bg-white/10 text-white" href={ig.url} target="_blank" rel="noopener noreferrer"><AtSign className="size-4" aria-hidden />{ig.nama}</a>}
+            {peta && <a className="btn btn-pil bg-white/10 text-white" href={peta} target="_blank" rel="noopener noreferrer"><MapPin className="size-4" aria-hidden />Peta</a>}
+          </div>
+          <nav className="mt-6 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/80">
+            <Link href={`/${s.slug}/daftar`}>Daftar</Link>
+            <Link href={`/${s.slug}/cek-status`}>Cek status</Link>
+            <Link href="/privasi">Privasi</Link>
+          </nav>
+          <p className="mt-6 border-t border-white/10 pt-3 text-[11px] text-white/40">© {new Date().getFullYear()} {s.nama} · <Link href="/" className="hover:text-white/70">dibuat dengan SPMB Zone</Link></p>
+        </div>
+      </footer>
       {wa && <WaMelayang href={wa} label={`Chat WhatsApp ${s.nama}`} naik />}
 
       <div className="fixed inset-x-0 bottom-0 z-10 border-t bg-white/95 p-3 backdrop-blur">

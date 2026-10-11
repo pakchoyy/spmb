@@ -107,7 +107,7 @@ export async function simpanJalur(f: {
   id?: string; nama: string; aktif: boolean; kuota: string; buka: string; tutup: string; syarat: string[];
 }): Promise<Hasil> {
   const { db, sekolah } = await wajibAdmin();
-  if (!["Domisili", "Afirmasi", "Prestasi", "Mutasi"].includes(f.nama)) return gagal("Nama jalur tidak valid.");
+  if (!["Reguler", "Domisili", "Afirmasi", "Prestasi", "Mutasi"].includes(f.nama)) return gagal("Nama jalur tidak valid.");
   const kuota = f.kuota.trim() === "" ? null : Number.parseInt(f.kuota, 10);
   if (kuota !== null && (!Number.isInteger(kuota) || kuota < 0)) return gagal("Kuota harus angka 0 atau lebih.");
   const syarat = [...new Set(f.syarat.map((s) => bersih(s, 60)).filter(Boolean))].slice(0, 15);

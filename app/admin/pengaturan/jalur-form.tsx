@@ -9,7 +9,7 @@ export type JalurAdmin = {
   id: string; nama: string; aktif: boolean; kuota: number | null; buka: string | null; tutup: string | null;
   syarat_berkas: string[]; terkunci: boolean;
 };
-const NAMA = ["Domisili", "Afirmasi", "Prestasi", "Mutasi"];
+const NAMA = ["Reguler", "Domisili", "Afirmasi", "Prestasi", "Mutasi"];
 
 // Waktu diisi dalam WIB (UTC+7), disimpan sebagai waktu absolut.
 const keWib = (iso: string | null) => (iso ? new Date(new Date(iso).getTime() + 7 * 3600e3).toISOString().slice(0, 16) : "");
@@ -69,7 +69,7 @@ export default function JalurForm({ jalur, bisaUbah }: { jalur: JalurAdmin[]; bi
     <div className="space-y-3">
       <div className="space-y-1 rounded-2xl bg-[var(--biru-muda)] p-3 text-sm text-[var(--biru-tua)]">
         <p><b>Di sinilah berkas diatur.</b> Setiap jalur punya daftar &ldquo;Syarat berkas&rdquo; yang wajib diunggah orang tua.</p>
-        <p>Tidak memakai jalur? Tetap buat satu jalur (mis. Domisili) supaya bisa meminta berkas. Tanpa jalur, formulir hanya berisi isian teks.</p>
+        <p>Tidak memakai jalur? Pilih jalur <b>Reguler</b> supaya tetap bisa meminta berkas. Tanpa jalur, formulir hanya berisi isian teks.</p>
       </div>
       {jalur.map((j) => <Baris key={`${j.id}-${j.nama}`} j={j} bisaUbah={bisaUbah} dipakai={dipakai} />)}
       {bisaUbah && dipakai.length < NAMA.length && <Baris key={`baru-${dipakai.length}`} bisaUbah dipakai={dipakai} />}

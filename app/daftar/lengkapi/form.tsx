@@ -1,5 +1,6 @@
 "use client";
 
+import { InfoTrial } from "@/components/info-trial";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -35,6 +36,7 @@ export default function Lengkapi({ nama: n0, npsn: npsn0, dariGoogle, email, kod
   return (
     <Halaman ikon={School} judul={dariGoogle ? "Satu langkah lagi" : "Lengkapi sekolah"}
       sub={dariGoogle ? `Masuk sebagai ${email}. Isi data sekolah untuk membuat halaman SPMB.` : "Alamat halaman yang Anda pilih tadi sudah dipakai sekolah lain. Pilih alamat baru."}>
+      {dariGoogle && <InfoTrial />}
       <form onSubmit={kirim} className="space-y-4">
         <Kolom label="Nama sekolah">
           <input className={input} value={nama} required maxLength={150} placeholder="Contoh: SD Negeri 1 Menteng"

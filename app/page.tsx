@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  ArrowRight, BadgeCheck, Check, CalendarClock, ChevronDown, FileUp, LayoutDashboard, MessageCircle,
-  PencilRuler, QrCode, School, ShieldCheck, Smartphone, Wifi,
+  ArrowRight, BadgeCheck, BellRing, CalendarClock, ChevronDown, FileUp, Headset, LayoutDashboard, MessageCircle,
+  QrCode, Rocket, School, ShieldCheck, Smartphone, Sparkles, Wifi,
 } from "lucide-react";
 import { supabaseAnon } from "@/lib/supabase/anon";
 import { supabaseService } from "@/lib/supabase/admin";
@@ -41,23 +41,21 @@ const LANGKAH = [
   { ikon: BadgeCheck, warna: "var(--mint-muda)", aksen: "var(--mint)", j: "Periksa dari HP", t: "Lihat pendaftar baru, buka berkasnya, lalu tetapkan Diterima, Cadangan, atau Ditolak." },
 ];
 
+// Empat fitur yang paling membuat sekolah tertarik (detail lengkap ada di Cara pakai).
 const FITUR = [
-  { ikon: School, warna: "var(--biru-muda)", aksen: "var(--biru)", j: "Halaman sekolah sendiri", t: `Alamat ${HOST_APP}/nama-sekolah, lengkap dengan logo, warna, keunggulan, jalur, jadwal, dan galeri.` },
-  { ikon: PencilRuler, warna: "var(--ungu-muda)", aksen: "var(--ungu)", j: "Form sesuai kebutuhan", t: "Tambah, ubah, dan urutkan isian sesuka sekolah. Jalur Domisili, Afirmasi, Prestasi, dan Mutasi bisa dipakai atau tidak." },
-  { ikon: FileUp, warna: "var(--oranye-muda)", aksen: "var(--oranye)", j: "Berkas dari HP", t: "Foto dikecilkan otomatis. Kalau gagal terkirim, cukup unggah ulang tanpa mengisi form dari awal." },
-  { ikon: LayoutDashboard, warna: "var(--mint-muda)", aksen: "var(--mint)", j: "Mudah diperiksa", t: "Daftar tugas hari ini, pencarian, catatan alasan, peringatan data ganda, tombol WhatsApp, cetak, dan unduh ke Excel." },
-  { ikon: ShieldCheck, warna: "var(--kuning-muda)", aksen: "#b7780a", j: "Data anak lebih aman", t: "Berkas disimpan tertutup dan hanya dibuka sekolah lewat tautan sementara. Sekolah hanya melihat datanya sendiri." },
-  { ikon: Wifi, warna: "var(--biru-muda)", aksen: "var(--biru)", j: "Ringan di sinyal lemah", t: "Isian tersimpan di HP orang tua bila sinyal putus, dan halaman sekolah dibuat ringan." },
+  { ikon: School, warna: "var(--biru-muda)", aksen: "var(--biru)", j: "Halaman SPMB sekolah sendiri", t: `${HOST_APP}/nama-sekolah dengan logo, warna, jadwal, jalur, prestasi, dan galeri sekolah.` },
+  { ikon: FileUp, warna: "var(--oranye-muda)", aksen: "var(--oranye)", j: "Orang tua daftar & unggah berkas dari HP", t: "Tanpa akun. Foto berkas dikecilkan otomatis, aman walau sinyal putus." },
+  { ikon: LayoutDashboard, warna: "var(--mint-muda)", aksen: "var(--mint)", j: "Periksa dan umumkan dari HP", t: "Tetapkan hasil sekaligus, umumkan serentak, kirim pesan WA siap pakai, unduh ke Excel." },
+  { ikon: BellRing, warna: "var(--ungu-muda)", aksen: "var(--ungu)", j: "Notifikasi pendaftar baru", t: "HP admin langsung berbunyi setiap ada pendaftar. Tidak perlu bolak-balik membuka dasbor." },
 ];
 
-const DAPAT = [
-  <>Halaman SPMB sendiri: <b>{HOST_APP}/nama-sekolah</b></>,
-  <>Orang tua <b>unggah berkas langsung dari HP</b>, tanpa akun</>,
-  <>Jalur pendaftaran bebas diatur (domisili, afirmasi, prestasi, mutasi)</>,
-  <><b>Tanpa batas</b> jumlah pendaftar</>,
-  <>Garis waktu jadwal SPMB, prestasi siswa, dan galeri di halaman sekolah</>,
-  <>Tombol <b>WhatsApp sekolah</b> untuk konsultasi orang tua</>,
-  <>Unduh data pendaftar ke <b>Excel</b> kapan saja</>,
+const KENAPA = [
+  { ikon: Headset, j: "Dukungan admin 24/7", t: "Ada kendala? Chat WhatsApp kapan saja, dibantu sampai beres." },
+  { ikon: Rocket, j: "Siap dalam 10 menit", t: "Tanpa server, tanpa instalasi. Daftar, isi profil, bagikan tautan." },
+  { ikon: ShieldCheck, j: "Data anak terjaga", t: "Berkas tersimpan tertutup; sekolah hanya melihat datanya sendiri." },
+  { ikon: Wifi, j: "Ringan di sinyal lemah", t: "Cepat dibuka di HP biasa dan bisa dipasang seperti aplikasi." },
+  { ikon: BadgeCheck, j: "Satu harga, semua fitur", t: "Tanpa batas jumlah pendaftar, tanpa biaya tambahan." },
+  { ikon: Sparkles, j: "Terus berkembang", t: "Fitur baru lahir dari masukan sekolah pengguna." },
 ];
 
 const FAQ = [
@@ -125,7 +123,7 @@ export default async function Beranda() {
                 {contoh && <Link href={`/${contoh}`} className="btn btn-lembut h-14">Lihat contoh halaman</Link>}
               </div>
               <ul className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-neutral-600 sm:justify-start">
-                <li className="flex items-center gap-1"><BadgeCheck className="size-4 text-[var(--mint)]" aria-hidden /> Tanpa kartu kredit</li>
+                <li className="flex items-center gap-1"><BadgeCheck className="size-4 text-[var(--mint)]" aria-hidden /> Coba dulu 7 hari (trial)</li>
                 <li className="flex items-center gap-1"><Smartphone className="size-4 text-[var(--mint)]" aria-hidden /> Cukup pakai HP</li>
               </ul>
             </div>
@@ -171,16 +169,21 @@ export default async function Beranda() {
           </div>
         </section>
 
-        <section className="bg-[#14204a] px-5 py-10">
-          <div className="mx-auto max-w-2xl rounded-[2rem] bg-white p-6 sm:p-8">
-            <h2 className="font-serif text-2xl font-bold">Apa yang sekolah dapatkan</h2>
-            <ul className="mt-5 space-y-4">
-              {DAPAT.map((x, i) => (
-                <li key={i} className="flex gap-3 text-lg leading-snug">
-                  <Check className="mt-0.5 size-6 shrink-0 text-[var(--mint)]" strokeWidth={3} aria-hidden /><span>{x}</span>
+        <section className="bg-[#14204a] px-5 py-12 text-white">
+          <div className="mx-auto max-w-4xl">
+            <p className="text-center text-sm font-bold uppercase tracking-wider text-[var(--kuning)]">Kenapa kami</p>
+            <h2 className="mt-1 text-center font-serif text-3xl font-bold">Kenapa memilih {NAMA_APP}?</h2>
+            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+              {KENAPA.map((k) => (
+                <li key={k.j} className="flex gap-4 rounded-3xl bg-white/[.06] p-5 ring-1 ring-white/10">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[var(--kuning)] text-[#14204a]"><k.ikon className="size-6" aria-hidden /></span>
+                  <div><h3 className="font-bold">{k.j}</h3><p className="mt-0.5 text-sm text-white/75">{k.t}</p></div>
                 </li>
               ))}
             </ul>
+            <div className="mt-8 flex justify-center">
+              <a href={linkWaBantuan(PESAN_WA.umum)} target="_blank" rel="noopener noreferrer" className="btn btn-wa btn-pil"><MessageCircle className="size-4" aria-hidden />Tanya admin sekarang</a>
+            </div>
           </div>
         </section>
 
