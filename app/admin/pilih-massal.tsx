@@ -32,7 +32,7 @@ export default function PilihMassal({ batal }: { batal: string }) {
   const perluCatatan = status === "Ditolak" || status === "Cadangan";
 
   return (
-    <form id="massal" className="fixed inset-x-0 bottom-16 z-30 border-t bg-white/95 p-3 shadow-[0_-8px_24px_-12px_rgb(0_0_0/.25)] backdrop-blur print:hidden"
+    <form id="massal" className="fixed inset-x-0 bottom-16 z-30 lg:bottom-0 lg:left-60 border-t bg-white/95 p-3 shadow-[0_-8px_24px_-12px_rgb(0_0_0/.25)] backdrop-blur print:hidden"
       onSubmit={(e) => {
         e.preventDefault();
         const ids = new FormData(e.currentTarget).getAll("id").map(String);

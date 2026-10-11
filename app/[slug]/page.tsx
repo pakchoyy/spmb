@@ -115,7 +115,7 @@ export default async function HalamanSekolah({ params }: Params) {
         {banner && <Image src={banner} alt="" fill priority sizes="100vw" className="object-cover opacity-25"
           style={{ objectPosition: `${ba.x}% ${ba.y}%`, transform: `scale(${ba.z / 100})`, transformOrigin: `${ba.x}% ${ba.y}%` }} />}
         <div aria-hidden className="absolute -right-10 -top-10 size-40 rounded-full bg-white/10" />
-        <div className="relative mx-auto max-w-2xl">
+        <div className="relative mx-auto max-w-2xl lg:max-w-6xl lg:py-6">
           <div className="flex justify-end gap-2">
             <TeksBesar />
             <Bagikan judul={`SPMB ${s.nama}`} teks={`Pendaftaran siswa baru ${s.nama} sudah bisa lewat HP:`} className="btn btn-pil bg-white/15 text-white" />
@@ -152,7 +152,9 @@ export default async function HalamanSekolah({ params }: Params) {
         </div>
       </header>
 
-      <main className="relative mx-auto -mt-5 w-full max-w-2xl flex-1 space-y-4 px-4 pb-10">
+      <main className="relative mx-auto -mt-5 w-full max-w-2xl flex-1 px-4 pb-10 lg:grid lg:max-w-6xl lg:grid-cols-12 lg:items-start lg:gap-6">
+        {/* layar lebar: kiri = kenali sekolah, kanan = cara mendaftar */}
+        <div className="min-w-0 space-y-4 lg:col-span-7">
         {s.keunggulan.length > 0 && (
           <section className={kartu}>
             <h2 className="font-serif text-xl font-bold">Keunggulan sekolah</h2>
@@ -196,8 +198,10 @@ export default async function HalamanSekolah({ params }: Params) {
           </section>
         )}
 
+        </div>
+        <div className="mt-4 min-w-0 space-y-4 lg:col-span-5 lg:mt-0 lg:pt-10">
         {(jadwal.length > 0 || s.jalur.length > 0 || berkas.length > 0) && (
-          <div className="px-1 pt-4">
+          <div className="px-1 pt-4 lg:pt-0">
             <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--aksen)" }}>Penerimaan siswa baru</p>
             <h2 className="font-serif text-2xl font-bold">Cara mendaftar</h2>
           </div>
@@ -287,14 +291,15 @@ export default async function HalamanSekolah({ params }: Params) {
         </section>
 
         <PasangApp ikon={`/api/ikon/192?s=${s.slug}`} nama={s.nama} judul="Simpan halaman sekolah di HP" teks="Buka lagi dengan sekali ketuk untuk cek status dan info terbaru." kunci={`pasang-${s.slug}`} />
+        </div>
       </main>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "School", name: s.nama,
         ...(s.alamat ? { address: s.alamat } : {}), ...(logo ? { logo } : {}),
       }).replace(/</g, "\\u003c") }} />
-      <footer className="px-5 pb-28 pt-10 text-white" style={{ background: "color-mix(in srgb, var(--aksen) 30%, #0f1733)" }}>
-        <div className="mx-auto max-w-2xl">
+      <footer className="px-5 pb-28 pt-10 text-white lg:pb-10" style={{ background: "color-mix(in srgb, var(--aksen) 30%, #0f1733)" }}>
+        <div className="mx-auto max-w-2xl lg:max-w-6xl">
           <div className="flex items-center gap-3">
             {logo
               ? <Image src={logo} alt="" width={96} height={96} className="size-12 rounded-2xl bg-white object-contain p-1" />
@@ -320,7 +325,7 @@ export default async function HalamanSekolah({ params }: Params) {
       </footer>
       {wa && <WaMelayang href={wa} label={`Chat WhatsApp ${s.nama}`} naik />}
 
-      <div className="fixed inset-x-0 bottom-0 z-10 border-t bg-white/95 p-3 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-10 border-t bg-white/95 p-3 backdrop-blur lg:hidden">
         <div className="mx-auto max-w-2xl">
           {buka
             ? <Link href={`/${s.slug}/daftar`} className="btn h-14 w-full text-lg text-white" style={{ background: "var(--aksen)" }}>Daftar sekarang</Link>

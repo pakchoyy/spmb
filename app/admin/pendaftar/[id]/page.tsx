@@ -32,7 +32,7 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
   const isian = Object.entries((p.isian ?? {}) as Record<string, string>);
 
   return (
-    <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
+    <main className="mx-auto w-full max-w-2xl lg:max-w-3xl lg:pt-8 space-y-4 px-4 pb-6 pt-4">
       <div className="flex items-center justify-between print:hidden">
         <Kembali href="/admin">Daftar pendaftar</Kembali>
         <Cetak label="Cetak / simpan PDF" />

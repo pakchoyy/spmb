@@ -10,7 +10,7 @@ export default async function LayoutAdmin({ children }: { children: React.ReactN
   // jumlah pendaftar yang belum diperiksa, untuk tanda merah di menu
   const { count: baru } = await db.from("pendaftar").select("id", { count: "exact", head: true }).eq("status", "Baru").eq("diarsip", false);
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-20 lg:pb-8 lg:pl-60">
       {children}
       <Toaster />
       <MenuAdmin slug={sekolah.slug} baru={baru ?? 0} />

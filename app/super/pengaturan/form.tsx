@@ -11,8 +11,8 @@ export default function Form({ awal }: { awal: { lynk: string; harga: string; ko
   const num = (k: "harga" | "komisi" | "batas") => (e: React.ChangeEvent<HTMLInputElement>) => setF({ ...f, [k]: e.target.value.replace(/\D/g, "") });
   return (
     <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); jalankan(() => simpanPengaturan(f)); }}>
-      <Kolom label="Link produk Lynk" bantu={<span className="text-neutral-600">Tombol Beli di halaman langganan sekolah.</span>}>
-        <input className={input} inputMode="url" value={f.lynk} placeholder="https://lynk.id/…" onChange={(e) => setF({ ...f, lynk: e.target.value })} />
+      <Kolom label="Link produk di BGY Store" bantu={<span className="text-neutral-600">Tombol Beli di halaman langganan sekolah, mis. https://bgy-store.vercel.app/produk/…</span>}>
+        <input className={input} inputMode="url" value={f.lynk} placeholder="https://bgy-store.vercel.app/produk/…" onChange={(e) => setF({ ...f, lynk: e.target.value })} />
       </Kolom>
       <Kolom label="Harga paket 1 tahun (Rp)"><input className={input} inputMode="numeric" value={f.harga} onChange={num("harga")} /></Kolom>
       <Kolom label="Komisi per sekolah berlangganan (Rp)" bantu={<span className="text-neutral-600">Nominal dikunci per transaksi; perubahan hanya berlaku untuk pembayaran berikutnya.</span>}>

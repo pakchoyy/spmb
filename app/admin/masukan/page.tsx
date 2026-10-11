@@ -12,7 +12,7 @@ export default async function Masukan() {
   const { db } = await wajibAdmin();
   const { data } = await db.from("masukan").select("id,jenis,isi,selesai,dibuat_pada").order("dibuat_pada", { ascending: false }).limit(20);
   return (
-    <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
+    <main className="mx-auto w-full max-w-2xl lg:max-w-3xl lg:pt-8 space-y-4 px-4 pb-6 pt-4">
       <Kembali href="/admin">Beranda</Kembali>
       <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
         <h1 className="font-serif text-2xl font-bold">Bantu kami jadi lebih baik</h1>

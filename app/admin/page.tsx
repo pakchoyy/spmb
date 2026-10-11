@@ -84,7 +84,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
     (!!profil?.dibuat_pada && kini() - new Date(profil.dibuat_pada).getTime() > 3 * 86400000);
 
   return (
-    <main className={`mx-auto w-full max-w-2xl space-y-4 px-4 pt-4 ${pilih ? "pb-72" : "pb-6"}`}>
+    <main className={`mx-auto w-full max-w-2xl lg:max-w-3xl lg:pt-8 space-y-4 px-4 pt-4 ${pilih ? "pb-72" : "pb-6"}`}>
       <header className="relative overflow-hidden rounded-3xl bg-[var(--biru)] p-5 text-white print:hidden">
         <div aria-hidden className="absolute -right-8 -top-8 size-32 rounded-full bg-white/10" />
         <div className="relative flex items-start justify-between gap-3">

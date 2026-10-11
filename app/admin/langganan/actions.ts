@@ -13,7 +13,9 @@ export async function pakaiKode(kode: string): Promise<Hasil> {
   if (error) {
     return { ok: false, pesan: error.message === "langganan_dibatalkan"
       ? "Langganan ini dinonaktifkan. Hubungi pemilik aplikasi."
-      : "Kode tidak valid atau sudah dipakai." };
+      : error.message === "kode_kedaluwarsa"
+        ? "Kode sudah lewat 1 jam. Buka lagi tautan aktivasi dari bgy-store untuk minta kode baru."
+        : "Kode tidak valid atau sudah dipakai." };
   }
   revalidatePath("/admin", "layout");
   return { ok: true, berakhir: data as string };

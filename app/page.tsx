@@ -119,8 +119,8 @@ export default async function Beranda() {
               <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl">Web SPMB <span className="relative whitespace-nowrap text-[var(--biru)]">Custom<svg aria-hidden viewBox="0 0 120 10" preserveAspectRatio="none" className="absolute -bottom-1 left-0 h-2.5 w-full text-[var(--kuning)]"><path d="M2 7c30-5 80-6 116-2" stroke="currentColor" strokeWidth="5" fill="none" strokeLinecap="round" /></svg></span> untuk sekolah anda</h1>
               <p className="mt-3 text-lg text-neutral-700">Orang tua daftar dari HP tanpa akun. Sekolah memeriksa berkas dengan mudah.</p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <TombolCoba className="btn btn-utama h-14 text-lg">Daftarkan sekolah <ArrowRight className="size-5" aria-hidden /></TombolCoba>
-                {contoh && <Link href={`/${contoh}`} className="btn btn-lembut h-14">Lihat contoh halaman</Link>}
+                <TombolCoba className="btn btn-utama h-14 whitespace-nowrap text-lg">Daftarkan sekolah <ArrowRight className="size-5" aria-hidden /></TombolCoba>
+                {contoh && <Link href={`/${contoh}`} className="btn btn-lembut h-14 whitespace-nowrap">Lihat contoh halaman</Link>}
               </div>
               <ul className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-neutral-600 sm:justify-start">
                 <li className="flex items-center gap-1"><BadgeCheck className="size-4 text-[var(--mint)]" aria-hidden /> Coba dulu 7 hari (trial)</li>
@@ -173,7 +173,7 @@ export default async function Beranda() {
           <div className="mx-auto max-w-4xl">
             <p className="text-center text-sm font-bold uppercase tracking-wider text-[var(--kuning)]">Kenapa kami</p>
             <h2 className="mt-1 text-center font-serif text-3xl font-bold">Kenapa memilih {NAMA_APP}?</h2>
-            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+            <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {KENAPA.map((k) => (
                 <li key={k.j} className="flex gap-4 rounded-3xl bg-white/[.06] p-5 ring-1 ring-white/10">
                   <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[var(--kuning)] text-[#14204a]"><k.ikon className="size-6" aria-hidden /></span>

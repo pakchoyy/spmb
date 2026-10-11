@@ -34,7 +34,7 @@ const ALAT = [
 
 export default function Tentang() {
   return (
-    <main className="mx-auto w-full max-w-2xl space-y-5 px-4 pb-6 pt-4">
+    <main className="mx-auto w-full max-w-2xl lg:max-w-3xl lg:pt-8 space-y-5 px-4 pb-6 pt-4">
       <section className="overflow-hidden rounded-3xl bg-[#14204a] text-white">
         <div className="p-5">
           <p className="text-sm text-white/70">{NAMA_APP} dibuat oleh</p>

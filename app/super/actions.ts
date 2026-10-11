@@ -99,7 +99,7 @@ export async function gantiEmail(id: string, emailBaru: string): Promise<Hasil> 
 export async function simpanPengaturan(f: { lynk: string; harga: string; komisi: string; batas: string }): Promise<Hasil> {
   const { svc, email } = await wajibPemilik();
   const lynk = f.lynk.trim();
-  if (lynk && !/^https:\/\//.test(lynk)) return gagal("Link Lynk harus diawali https://");
+  if (lynk && !/^https:\/\//.test(lynk)) return gagal("Link produk harus diawali https://");
   const angka = (s: string) => (s.trim() === "" ? null : Number(s));
   const harga = angka(f.harga), komisi = angka(f.komisi), batas = angka(f.batas);
   for (const n of [harga, komisi, batas]) if (n !== null && (!Number.isInteger(n) || n < 0)) return gagal("Nominal harus angka bulat 0 atau lebih.");
@@ -200,5 +200,16 @@ export async function catatPencairan(id: string, jumlah: number): Promise<Hasil>
   if (error) return gagal("Gagal menyimpan.");
   await catat(svc, email, id, "komisi_dicairkan", { jumlah: n });
   segarkan(id);
+  return { ok: true };
+}
+
+/** Ganti token tautan aktivasi (bila tautan setelah-bayar bocor). Tautan lama langsung tidak berlaku. */
+export async function gantiTokenAktivasi(): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  const token = Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => b.toString(16).padStart(2, "0")).join("");
+  const { error } = await svc.from("pengaturan").update({ token_aktivasi: token }).eq("id", 1);
+  if (error) return gagal("Gagal mengganti token.");
+  await catat(svc, email, null, "token_aktivasi_diganti", {});
+  revalidatePath("/super/pengaturan");
   return { ok: true };
 }

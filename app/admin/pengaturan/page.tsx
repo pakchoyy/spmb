@@ -67,7 +67,7 @@ export default async function Pengaturan() {
   ]);
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 pb-6 pt-4">
+    <main className="mx-auto w-full max-w-2xl lg:max-w-3xl lg:pt-8 px-4 pb-6 pt-4">
       <header className="rounded-3xl bg-[var(--biru)] p-5 text-white">
         <h1 className="font-serif text-2xl font-bold">Pengaturan sekolah</h1>
         <p className="mt-1 text-sm text-white/85">Atur tampilan halaman dan isi formulir pendaftaran.</p>

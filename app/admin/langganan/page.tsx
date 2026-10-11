@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { linkWaBantuan } from "@/lib/merek";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import { supabaseService } from "@/lib/supabase/admin";
 import KodeForm from "./kode-form";
@@ -35,7 +35,7 @@ export default async function Langganan() {
   }[st.status];
 
   return (
-    <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
+    <main className="mx-auto w-full max-w-2xl lg:max-w-3xl lg:pt-8 space-y-4 px-4 pb-6 pt-4">
       <header className="rounded-3xl bg-[var(--biru)] p-5 text-white">
         <h1 className="font-serif text-2xl font-bold">Langganan</h1>
         <p className="mt-1 text-sm text-white/85">Status paket, pembelian, kode aktivasi, dan program ajak sekolah.</p>
@@ -53,15 +53,15 @@ export default async function Langganan() {
           <h2 className="font-bold">{st.status === "aktif" ? "Perpanjang langganan" : "Beli paket 1 tahun"}</h2>
           {p?.harga_paket ? <p className="text-2xl font-bold">{rupiah(p.harga_paket)}<span className="text-sm font-normal text-neutral-600"> / tahun</span></p> : null}
           <ol className="list-decimal space-y-1 pl-5 text-sm">
-            <li>Beli di Lynk memakai email admin: <b className="break-all">{st.email}</b>.</li>
-            <li>Setelah bayar, Anda diarahkan ke halaman aktivasi. Kode dikirim ke email itu.</li>
-            <li>Masukkan kode di bawah.</li>
+            <li>Ketuk <b>Beli sekarang</b> dan bayar paket di BGY Store.</li>
+            <li>Setelah bayar, buka tautan aktivasi yang diberikan, lalu isi email admin: <b className="break-all">{st.email}</b>.</li>
+            <li>Salin kode yang muncul (berlaku 1 jam, sekali pakai) dan masukkan di bawah.</li>
           </ol>
           {st.status === "aktif" && <p className="text-xs text-neutral-600">Perpanjangan menambah 1 tahun dari tanggal berakhir, sisa hari tidak hangus.</p>}
           {lynk
             ? <a href={lynk} target="_blank" rel="noopener noreferrer" className="btn btn-kuning w-full">Beli sekarang</a>
             : <p className="rounded-2xl bg-[var(--biru-muda)] p-3 text-sm">Tautan pembelian belum diatur. Hubungi pemilik aplikasi.</p>}
-          <Link className="block text-center text-sm tautan" href="/aktivasi">Sudah bayar tetapi belum dapat kode?</Link>
+          <a className="block text-center text-sm tautan" href={linkWaBantuan(`Halo, saya admin ${sekolah.nama} (${st.email}). Saya sudah bayar paket SPMB Zone tetapi belum mendapat kode aktivasi.`)} target="_blank" rel="noopener noreferrer">Sudah bayar tetapi belum dapat kode? Chat kami</a>
         </section>
 
         <section className="space-y-3 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
