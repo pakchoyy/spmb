@@ -12,15 +12,32 @@ const WARNA: Record<string, string> = {
   trial: "bg-blue-100 text-blue-800", aktif: "bg-green-100 text-green-800",
   tenggang: "bg-amber-100 text-amber-900", nonaktif: "bg-red-100 text-red-800",
 };
+type Pemakaian = { db_mb: number; file_mb: number; sekolah: { id: string; nama: string; mb: number; berkas: number }[] };
+// Batas paket gratis Supabase. Ubah bila sudah naik ke paket Pro (8 GB database, 100 GB file).
+const BATAS = { db: 500, file: 1024 };
+
+function Meter({ label, mb, batas }: { label: string; mb: number; batas: number }) {
+  const persen = Math.min(100, Math.round((mb / batas) * 100));
+  const warna = persen >= 80 ? "bg-red-600" : persen >= 60 ? "bg-amber-500" : "bg-[var(--mint)]";
+  return (
+    <div>
+      <div className="flex justify-between text-sm"><span className="font-semibold">{label}</span><span>{mb} / {batas} MB ({persen}%)</span></div>
+      <div className="mt-1 h-3 overflow-hidden rounded-full bg-neutral-100"><div className={`h-full ${warna}`} style={{ width: `${Math.max(2, persen)}%` }} /></div>
+    </div>
+  );
+}
+
 const STATUS = ["trial", "aktif", "tenggang", "nonaktif"];
 
 export default async function Super({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
   const { status, q } = await searchParams;
   const { svc } = await wajibPemilik();
-  const [{ data }, { data: log }] = await Promise.all([
+  const [{ data }, { data: log }, { data: pakai }] = await Promise.all([
     svc.rpc("ringkasan_sekolah"),
     svc.from("log_langganan").select("id,sekolah_id,peristiwa,detail,waktu").order("waktu", { ascending: false }).limit(25),
+    svc.rpc("pemakaian_penyimpanan"),
   ]);
+  const p = (pakai ?? { db_mb: 0, file_mb: 0, sekolah: [] }) as Pemakaian;
   const semua = (data ?? []) as Baris[];
   const hitung = (s: string) => semua.filter((x) => x.status === s).length;
   const kata = (q ?? "").trim().toLowerCase();
@@ -69,6 +86,23 @@ export default async function Super({ searchParams }: { searchParams: Promise<{ 
         ))}
         {tampil.length === 0 && <li className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 text-center text-sm text-neutral-600">Tidak ada sekolah.</li>}
       </ul>
+
+      <section className="space-y-3 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+        <h2 className="font-serif text-xl font-bold">Penyimpanan</h2>
+        <Meter label="Berkas & foto" mb={p.file_mb} batas={BATAS.file} />
+        <Meter label="Database" mb={p.db_mb} batas={BATAS.db} />
+        {p.file_mb >= BATAS.file * 0.8 && <p className="rounded-2xl bg-red-50 p-3 text-sm text-red-800">Hampir penuh. Naikkan Supabase ke paket Pro, atau minta sekolah mengarsipkan dan menghapus data tahun lalu.</p>}
+        {p.sekolah.length > 0 && (
+          <details className="text-sm">
+            <summary className="cursor-pointer font-semibold text-[var(--biru)]">Pemakaian per sekolah</summary>
+            <ul className="mt-2 divide-y divide-neutral-100">
+              {p.sekolah.slice(0, 20).map((x) => (
+                <li key={x.id} className="flex justify-between gap-2 py-2"><Link className="tautan truncate" href={`/super/sekolah/${x.id}`}>{x.nama}</Link><span className="shrink-0 text-neutral-600">{x.mb} MB · {x.berkas} file</span></li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </section>
 
       <section>
         <h2 className="mb-2 font-serif text-xl font-bold">Catatan terbaru</h2>

@@ -1,3 +1,4 @@
+import { Kembali } from "@/components/kembali";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { wajibAdmin } from "@/lib/sekolah-saya";
@@ -30,7 +31,7 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
   return (
     <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
       <div className="flex items-center justify-between print:hidden">
-        <Link className="text-sm tautan" href="/admin">← Daftar pendaftar</Link>
+        <Kembali href="/admin">Daftar pendaftar</Kembali>
         <Cetak />
       </div>
 

@@ -9,7 +9,7 @@ import { Footer } from "@/components/footer";
 import { cache } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import { supabaseAnon } from "@/lib/supabase/anon";
-import { urlAset, type SekolahPublik } from "@/lib/berkas";
+import { urlAset, type Prestasi, type SekolahPublik } from "@/lib/berkas";
 
 export const revalidate = 600; // cache 10 menit; dihapus saat admin mengubah profil
 export const generateStaticParams = () => []; // aktifkan ISR: halaman dibuat saat pertama dibuka lalu di-cache
@@ -50,6 +50,21 @@ const igLink = (h: string | null) => {
   return /^[A-Za-z0-9._]{1,30}$/.test(u) ? { url: `https://instagram.com/${u}`, nama: `@${u}` } : null;
 };
 const petaLink = (u: string | null) => (u && /^https:\/\//.test(u) ? u : null);
+
+function KartuPrestasi({ p, salinan = false }: { p: Prestasi; salinan?: boolean }) {
+  return (
+    <li aria-hidden={salinan || undefined} className="w-60 shrink-0 snap-start overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5">
+      {p.foto
+        ? <Image src={urlAset(p.foto)!} alt={`Foto ${p.nama}`} width={480} height={360} sizes="240px" className="aspect-[4/3] w-full object-cover" />
+        : <div className="grid aspect-[4/3] place-items-center" style={{ background: "var(--muda)" }}><Trophy className="size-12" style={{ color: "var(--aksen)" }} aria-hidden /></div>}
+      <div className="p-4">
+        <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "var(--aksen)" }}>{p.judul}</p>
+        <p className="mt-0.5 font-bold leading-snug">{p.nama}</p>
+        {p.ket && <p className="mt-1 text-sm text-neutral-600">{p.ket}</p>}
+      </div>
+    </li>
+  );
+}
 
 export default async function HalamanSekolah({ params }: Params) {
   const { slug } = await params;
@@ -192,20 +207,19 @@ export default async function HalamanSekolah({ params }: Params) {
         {prestasi.length > 0 && (
           <section className="py-1">
             <h2 className="flex items-center gap-2 px-1 font-serif text-xl font-bold"><Trophy className="size-5" style={{ color: "var(--aksen)" }} aria-hidden />Prestasi siswa</h2>
-            <ul className="-mx-4 mt-3 flex snap-x gap-3 overflow-x-auto px-4 pb-2">
-              {prestasi.map((p, i) => (
-                <li key={i} className="w-60 shrink-0 snap-start overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5">
-                  {p.foto
-                    ? <Image src={urlAset(p.foto)!} alt={`Foto ${p.nama}`} width={480} height={360} sizes="240px" className="aspect-[4/3] w-full object-cover" />
-                    : <div className="grid aspect-[4/3] place-items-center" style={{ background: "var(--muda)" }}><Trophy className="size-12" style={{ color: "var(--aksen)" }} aria-hidden /></div>}
-                  <div className="p-4">
-                    <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "var(--aksen)" }}>{p.judul}</p>
-                    <p className="mt-0.5 font-bold leading-snug">{p.nama}</p>
-                    {p.ket && <p className="mt-1 text-sm text-neutral-600">{p.ket}</p>}
-                  </div>
-                </li>
-              ))}
-            </ul>
+            {s.prestasi_gerak && prestasi.length > 1 ? (
+              <div className="marquee marquee-kanan -mx-4 mt-3 overflow-hidden pb-2">
+                <ul className="marquee-isi gap-3 px-2" style={{ "--durasi": `${Math.max(18, prestasi.length * 7)}s` } as React.CSSProperties}>
+                  {[...prestasi, ...prestasi].map((p, i) => (
+                    <KartuPrestasi key={i} p={p} salinan={i >= prestasi.length} />
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <ul className="-mx-4 mt-3 flex snap-x gap-3 overflow-x-auto px-4 pb-2">
+                {prestasi.map((p, i) => <KartuPrestasi key={i} p={p} />)}
+              </ul>
+            )}
           </section>
         )}
 

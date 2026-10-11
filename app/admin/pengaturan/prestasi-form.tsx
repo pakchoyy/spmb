@@ -6,10 +6,10 @@ import { Galat, Kolom, input, tombol } from "@/components/ui";
 import { useAksi } from "@/components/aksi";
 import { urlAset, type Prestasi } from "@/lib/berkas";
 import { siapkan } from "./gambar-form";
-import { hapusPrestasi, tambahPrestasi } from "./actions";
+import { hapusPrestasi, setPrestasiGerak, tambahPrestasi } from "./actions";
 
-export default function PrestasiForm({ daftar, bisaUbah }: { daftar: Prestasi[]; bisaUbah: boolean }) {
-  const tambah = useAksi(), hapus = useAksi();
+export default function PrestasiForm({ daftar, gerak, bisaUbah }: { daftar: Prestasi[]; gerak: boolean; bisaUbah: boolean }) {
+  const tambah = useAksi(), hapus = useAksi(), mode = useAksi();
   const formRef = useRef<HTMLFormElement>(null);
 
   return (
@@ -32,6 +32,19 @@ export default function PrestasiForm({ daftar, bisaUbah }: { daftar: Prestasi[];
         </ul>
       )}
       <Galat>{hapus.galat}</Galat>
+
+      <fieldset disabled={!bisaUbah || mode.pending}>
+        <legend className="mb-1 text-sm font-semibold">Tampilan di halaman sekolah</legend>
+        <div className="grid grid-cols-2 gap-2">
+          {([[false, "Geser manual", "Orang tua menggeser sendiri"], [true, "Bergerak otomatis", "Berjalan pelan ke kanan"]] as const).map(([v, j, t]) => (
+            <button key={j} type="button" aria-pressed={gerak === v} onClick={() => gerak !== v && mode.jalankan(() => setPrestasiGerak(v))}
+              className={`rounded-2xl p-3 text-left ring-2 ${gerak === v ? "bg-[var(--biru-muda)] ring-[var(--biru)]" : "ring-black/10"}`}>
+              <span className="block font-bold">{j}</span><span className="block text-xs text-neutral-600">{t}</span>
+            </button>
+          ))}
+        </div>
+      </fieldset>
+      <Galat>{mode.galat}</Galat>
 
       {bisaUbah && daftar.length < 12 && (
         <form ref={formRef} className="space-y-3 rounded-2xl bg-[var(--kuning-muda)]/60 p-4"

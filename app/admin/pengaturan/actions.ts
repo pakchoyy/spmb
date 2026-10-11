@@ -240,3 +240,11 @@ export async function hapusPrestasi(i: number): Promise<Hasil> {
   tampilkan(sekolah.slug);
   return { ok: true };
 }
+
+export async function setPrestasiGerak(gerak: boolean): Promise<Hasil> {
+  const { db, sekolah } = await wajibAdmin();
+  const { error } = await db.from("sekolah").update({ prestasi_gerak: gerak }).eq("id", sekolah.id);
+  if (error) return gagal(pesanDb(error));
+  tampilkan(sekolah.slug);
+  return { ok: true };
+}

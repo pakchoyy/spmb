@@ -1,3 +1,4 @@
+import { Kembali } from "@/components/kembali";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { wajibPemilik } from "@/lib/pemilik";
@@ -24,7 +25,7 @@ export default async function DetailSekolah({ params }: { params: Promise<{ id: 
 
   return (
     <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
-      <Link className="text-sm tautan" href="/super">← Semua sekolah</Link>
+      <Kembali href="/super">Semua sekolah</Kembali>
       <header>
         <h1 className="font-serif text-2xl font-bold">{s.nama}</h1>
         <p className="text-sm text-neutral-600"><Link className="tautan" href={`/${s.slug}`}>/{s.slug}</Link> · NPSN {s.npsn ?? "-"}</p>

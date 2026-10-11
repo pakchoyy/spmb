@@ -50,15 +50,15 @@ export default function Aksi({ id, slug, email, dibatalkan, nonaktif, terverifik
 
       <Kartu judul="Ganti alamat halaman" bantu="Atas permintaan sekolah. Alamat lama dialihkan otomatis supaya QR yang sudah tercetak tetap hidup.">
         <input className={input} value={sl} autoCapitalize="none" spellCheck={false} onChange={(e) => setSl(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))} />
-        <button className="btn btn-garis w-full" disabled={aSlug.pending || sl === slug}
-          onClick={() => confirm(`Ganti /${slug} menjadi /${sl}?`) && aSlug.jalankan(() => gantiSlug(id, sl))}>Ganti alamat</button>
+        <button className="btn btn-garis w-full" disabled={aSlug.pending}
+          onClick={() => sl === slug ? alert("Ketik alamat baru dulu di kolom atas.") : confirm(`Ganti /${slug} menjadi /${sl}?`) && aSlug.jalankan(() => gantiSlug(id, sl))}>Ganti alamat</button>
         <Galat>{aSlug.galat}</Galat>{aSlug.tersimpan && <p className="text-sm font-semibold text-green-700">Tersimpan ✓</p>}
       </Kartu>
 
       <Kartu judul="Ganti email admin" bantu="Pastikan permintaan benar dari pihak sekolah. Email baru langsung aktif tanpa konfirmasi, dan kata sandi tidak berubah.">
         <input className={input} type="email" value={em} onChange={(e) => setEm(e.target.value)} />
-        <button className="btn btn-garis w-full" disabled={aEmail.pending || em.trim().toLowerCase() === email}
-          onClick={() => confirm(`Ganti email admin menjadi ${em}?`) && aEmail.jalankan(() => gantiEmail(id, em))}>Ganti email</button>
+        <button className="btn btn-garis w-full" disabled={aEmail.pending}
+          onClick={() => em.trim().toLowerCase() === email ? alert("Ketik email baru dulu di kolom atas.") : confirm(`Ganti email admin menjadi ${em}?`) && aEmail.jalankan(() => gantiEmail(id, em))}>Ganti email</button>
         <Galat>{aEmail.galat}</Galat>{aEmail.tersimpan && <p className="text-sm font-semibold text-green-700">Tersimpan ✓</p>}
       </Kartu>
     </div>

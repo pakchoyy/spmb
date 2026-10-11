@@ -16,7 +16,7 @@ function Editor({ awal, manual, onSimpan, onBatal }: { awal: TestimoniIsi; manua
   const [f, setF] = useState(awal);
   const { pending, galat, jalankan } = useAksi();
   return (
-    <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); jalankan(() => onSimpan(f), () => { if (!onBatal) setF({ nama: "", jabatan: "", rating: 0, isi: "", namaSekolah: "" }); onBatal?.(); }); }}>
+    <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); jalankan(() => onSimpan(f), () => { if (!onBatal) setF({ nama: "", jabatan: "", rating: 5, isi: "", namaSekolah: "" }); onBatal?.(); }); }}>
       {manual && <Kolom label="Nama sekolah"><input className={input} value={f.namaSekolah} onChange={(e) => setF({ ...f, namaSekolah: e.target.value })} /></Kolom>}
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
@@ -32,7 +32,7 @@ function Editor({ awal, manual, onSimpan, onBatal }: { awal: TestimoniIsi; manua
       </div>
       <Galat>{galat}</Galat>
       <div className="flex gap-2">
-        <button className="btn btn-utama flex-1" disabled={pending || !f.rating}>{pending ? "Menyimpan…" : "Simpan"}</button>
+        <button className="btn btn-utama flex-1" disabled={pending}>{pending ? "Menyimpan…" : "Simpan"}</button>
         {onBatal && <button type="button" className="btn btn-pil h-12 border-2 border-neutral-300 bg-white" onClick={onBatal}>Batal</button>}
       </div>
     </form>
@@ -49,7 +49,7 @@ export default function KelolaTestimoni({ daftar }: { daftar: BarisTestimoni[] }
         <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
           <h2 className="mb-3 font-bold">Tambah testimoni</h2>
           <p className="mb-3 text-sm text-neutral-600">Hanya dari sekolah yang sudah memberi izin, misalnya lewat WhatsApp.</p>
-          <Editor awal={{ nama: "", jabatan: "", rating: 0, isi: "", namaSekolah: "" }} manual onSimpan={tambahTestimoni} onBatal={() => setTambah(false)} />
+          <Editor awal={{ nama: "", jabatan: "", rating: 5, isi: "", namaSekolah: "" }} manual onSimpan={tambahTestimoni} onBatal={() => setTambah(false)} />
         </section>
       ) : (
         <button className="btn btn-lembut w-full" onClick={() => setTambah(true)}><Plus className="size-5" aria-hidden />Tambah testimoni</button>

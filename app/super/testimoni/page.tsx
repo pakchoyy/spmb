@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Kembali } from "@/components/kembali";
 import { wajibPemilik } from "@/lib/pemilik";
 import { tglId } from "@/lib/pendaftar";
 import KelolaTestimoni, { type BarisTestimoni } from "./kelola";
@@ -19,7 +19,7 @@ export default async function TestimoniSuper() {
   });
   return (
     <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-10 pt-4">
-      <Link className="tautan text-sm" href="/super">← Pantau sekolah</Link>
+      <Kembali href="/super">Pantau sekolah</Kembali>
       <header className="rounded-3xl bg-[var(--ungu)] p-5 text-white">
         <h1 className="font-serif text-2xl font-bold">Testimoni</h1>
         <p className="mt-1 text-sm text-white/85">Testimoni dari admin sekolah langsung tampil di beranda. Ubah, sembunyikan, atau hapus bila perlu.</p>

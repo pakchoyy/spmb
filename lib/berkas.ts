@@ -29,6 +29,7 @@ export type SekolahPublik = {
   jumlah?: number | null;
   jadwal?: Jadwal[];
   prestasi?: Prestasi[];
+  prestasi_gerak?: boolean;
   jalur: { id: string; nama: string; kuota: number | null; sisa?: number | null; buka: string | null; tutup: string | null; syarat_berkas: string[] }[];
   form: { id: string; label: string; tipe: "teks" | "angka" | "tanggal" | "pilihan" | "paragraf"; opsi: string[] | null; wajib: boolean }[];
 };
