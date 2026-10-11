@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  ArrowRight, BadgeCheck, CalendarClock, ChevronDown, FileUp, LayoutDashboard, MessageCircle,
+  ArrowRight, BadgeCheck, Check, CalendarClock, ChevronDown, FileUp, LayoutDashboard, MessageCircle,
   PencilRuler, QrCode, School, ShieldCheck, Smartphone, Wifi,
 } from "lucide-react";
 import { supabaseAnon } from "@/lib/supabase/anon";
@@ -48,6 +48,16 @@ const FITUR = [
   { ikon: LayoutDashboard, warna: "var(--mint-muda)", aksen: "var(--mint)", j: "Mudah diperiksa", t: "Daftar tugas hari ini, pencarian, catatan alasan, peringatan data ganda, tombol WhatsApp, cetak, dan unduh ke Excel." },
   { ikon: ShieldCheck, warna: "var(--kuning-muda)", aksen: "#b7780a", j: "Data anak lebih aman", t: "Berkas disimpan tertutup dan hanya dibuka sekolah lewat tautan sementara. Sekolah hanya melihat datanya sendiri." },
   { ikon: Wifi, warna: "var(--biru-muda)", aksen: "var(--biru)", j: "Ringan di sinyal lemah", t: "Isian tersimpan di HP orang tua bila sinyal putus, dan halaman sekolah dibuat ringan." },
+];
+
+const DAPAT = [
+  <>Halaman SPMB sendiri: <b>{HOST_APP}/nama-sekolah</b></>,
+  <>Orang tua <b>unggah berkas langsung dari HP</b>, tanpa akun</>,
+  <>Jalur pendaftaran bebas diatur (domisili, afirmasi, prestasi, mutasi)</>,
+  <><b>Tanpa batas</b> jumlah pendaftar</>,
+  <>Garis waktu jadwal SPMB, prestasi siswa, dan galeri di halaman sekolah</>,
+  <>Tombol <b>WhatsApp sekolah</b> untuk konsultasi orang tua</>,
+  <>Unduh data pendaftar ke <b>Excel</b> kapan saja</>,
 ];
 
 const FAQ = [
@@ -155,6 +165,19 @@ export default async function Beranda() {
                     <h3 className="font-bold">{f.j}</h3>
                     <p className="mt-1 text-sm text-neutral-700">{f.t}</p>
                   </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section className="bg-[#14204a] px-5 py-10">
+          <div className="mx-auto max-w-2xl rounded-[2rem] bg-white p-6 sm:p-8">
+            <h2 className="font-serif text-2xl font-bold">Apa yang sekolah dapatkan</h2>
+            <ul className="mt-5 space-y-4">
+              {DAPAT.map((x, i) => (
+                <li key={i} className="flex gap-3 text-lg leading-snug">
+                  <Check className="mt-0.5 size-6 shrink-0 text-[var(--mint)]" strokeWidth={3} aria-hidden /><span>{x}</span>
                 </li>
               ))}
             </ul>

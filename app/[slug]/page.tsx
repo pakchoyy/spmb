@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { BadgeCheck, CalendarClock, CheckCircle2, FileText, AtSign, MapPin, MessageCircle, Search, Users } from "lucide-react";
+import { ArrowRight, Award, BadgeCheck, Trophy, CalendarClock, CheckCircle2, FileText, AtSign, MapPin, MessageCircle, Search, Users } from "lucide-react";
 import TeksBesar from "@/components/teks-besar";
 import Bagikan from "@/components/bagikan";
 import { WaMelayang } from "@/components/wa-melayang";
@@ -34,6 +34,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 // Halaman di-cache 10 menit, jadi status jalur bisa terlambat sampai selama itu.
 const kini = () => Date.now();
 
+const fmtPendek = (t: string) => new Date(`${t}T00:00:00+07:00`).toLocaleDateString("id-ID", { day: "numeric", month: "short", timeZone: "Asia/Jakarta" });
+const hariIni = () => new Date(kini() + 7 * 3600000).toISOString().slice(0, 10); // tanggal WIB
+
 const fmt = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta" }) : null;
 
@@ -59,6 +62,7 @@ export default async function HalamanSekolah({ params }: Params) {
   const buka = s.status === "trial" || s.status === "aktif";
   const logo = urlAset(s.logo_path), banner = urlAset(s.banner_path);
   const wa = waLink(s.kontak_wa), ig = igLink(s.instagram), peta = petaLink(s.peta_url);
+  const jadwal = s.jadwal ?? [], prestasi = s.prestasi ?? [];
   const berkas = [...new Set(s.jalur.flatMap((j) => j.syarat_berkas))];
   const periode = (j: SekolahPublik["jalur"][number]) =>
     j.buka || j.tutup ? `${fmt(j.buka) ?? "…"} – ${fmt(j.tutup) ?? "…"}` : "Mengikuti jadwal sekolah";
@@ -96,10 +100,19 @@ export default async function HalamanSekolah({ params }: Params) {
             {s.terverifikasi && <BadgeCheck className="ml-1 inline size-6 align-[-0.1em] text-[var(--kuning)]" aria-label="Sekolah terverifikasi" />}
           </h1>
           {s.alamat && <p className="mt-1 flex gap-1 text-sm opacity-90"><MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />{s.alamat}</p>}
+          {s.akreditasi && (
+            <p className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-white px-3 py-1.5 text-sm font-bold text-neutral-900 shadow">
+              <Award className="size-5" style={{ color: "var(--aksen)" }} aria-hidden />Terakreditasi {s.akreditasi}
+            </p>
+          )}
           <p className={`mt-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold ${buka ? "bg-[var(--kuning)] text-black" : "bg-white/20"}`}>
             <span className={`size-2 rounded-full ${buka ? "bg-green-700" : "bg-white/60"}`} aria-hidden />
             {buka ? "Pendaftaran dibuka" : "Pendaftaran ditutup"}
           </p>
+          <div className="mt-5 grid grid-cols-2 gap-2 sm:max-w-sm">
+            {buka && <Link href={`/${s.slug}/daftar`} className="btn bg-white font-bold" style={{ color: "var(--aksen)" }}>Daftar sekarang</Link>}
+            {wa && <a href={`${wa}?text=${encodeURIComponent(`Halo, saya ingin bertanya tentang SPMB ${s.nama}.`)}`} target="_blank" rel="noopener noreferrer" className="btn btn-wa whitespace-nowrap px-3"><MessageCircle className="size-5" aria-hidden />Tanya via WA</a>}
+          </div>
         </div>
       </header>
 
@@ -135,10 +148,59 @@ export default async function HalamanSekolah({ params }: Params) {
                         Kuota {j.kuota}{j.sisa != null && <b className="ml-1" style={{ color: "var(--aksen)" }}>· tersisa {j.sisa}</b>}
                       </p>
                     )}
+                    {buka && k.teks !== "Sudah ditutup" && !k.teks.startsWith("Dibuka ") && (
+                      <Link href={`/${s.slug}/daftar?jalur=${j.id}`} className="btn btn-pil mt-3 text-white" style={{ background: "var(--aksen)" }}>
+                        Daftar jalur ini <ArrowRight className="size-4" aria-hidden />
+                      </Link>
+                    )}
                   </article>
                 );
               })}
             </div>
+          </section>
+        )}
+
+        {jadwal.length > 0 && (
+          <section className={kartu}>
+            <h2 className="font-serif text-xl font-bold">Jadwal SPMB</h2>
+            <ol className="mt-4">
+              {jadwal.map((j, i) => {
+                const t = hariIni(), lewat = (j.selesai ?? j.mulai) < t, berjalan = !lewat && j.mulai <= t;
+                return (
+                  <li key={i} className="relative flex gap-4 pb-5 last:pb-0">
+                    {i < jadwal.length - 1 && <span aria-hidden className="absolute left-[11px] top-6 h-full w-0.5" style={{ background: lewat ? "var(--aksen)" : "#e5e7eb" }} />}
+                    <span aria-hidden className="relative z-[1] mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border-2"
+                      style={lewat ? { background: "var(--aksen)", borderColor: "var(--aksen)" } : berjalan ? { borderColor: "var(--aksen)", background: "white" } : { borderColor: "#d1d5db", background: "white" }}>
+                      {lewat ? <CheckCircle2 className="size-4 text-white" /> : berjalan && <span className="size-2.5 rounded-full" style={{ background: "var(--aksen)" }} />}
+                    </span>
+                    <div className={lewat ? "opacity-60" : ""}>
+                      <p className="font-bold">{j.judul}{berjalan && <span className="ml-2 rounded-full px-2 py-0.5 text-xs font-bold text-white" style={{ background: "var(--aksen)" }}>Sedang berjalan</span>}</p>
+                      <p className="text-sm text-neutral-600">{fmtPendek(j.mulai)}{j.selesai && j.selesai !== j.mulai ? ` – ${fmtPendek(j.selesai)}` : ""}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        )}
+
+        {prestasi.length > 0 && (
+          <section className="py-1">
+            <h2 className="flex items-center gap-2 px-1 font-serif text-xl font-bold"><Trophy className="size-5" style={{ color: "var(--aksen)" }} aria-hidden />Prestasi siswa</h2>
+            <ul className="-mx-4 mt-3 flex snap-x gap-3 overflow-x-auto px-4 pb-2">
+              {prestasi.map((p, i) => (
+                <li key={i} className="w-60 shrink-0 snap-start overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5">
+                  {p.foto
+                    ? <Image src={urlAset(p.foto)!} alt={`Foto ${p.nama}`} width={480} height={360} sizes="240px" className="aspect-[4/3] w-full object-cover" />
+                    : <div className="grid aspect-[4/3] place-items-center" style={{ background: "var(--muda)" }}><Trophy className="size-12" style={{ color: "var(--aksen)" }} aria-hidden /></div>}
+                  <div className="p-4">
+                    <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "var(--aksen)" }}>{p.judul}</p>
+                    <p className="mt-0.5 font-bold leading-snug">{p.nama}</p>
+                    {p.ket && <p className="mt-1 text-sm text-neutral-600">{p.ket}</p>}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </section>
         )}
 

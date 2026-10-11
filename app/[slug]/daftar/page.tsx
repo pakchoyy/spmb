@@ -6,8 +6,9 @@ import FormDaftar from "./form";
 
 export const dynamic = "force-dynamic"; // status langganan harus selalu segar
 
-export default async function Daftar({ params }: { params: Promise<{ slug: string }> }) {
+export default async function Daftar({ params, searchParams }: PageProps<"/[slug]/daftar">) {
   const { slug } = await params;
+  const { jalur } = await searchParams;
   const { data } = await supabaseAnon().rpc("sekolah_publik", { p_slug: slug });
   const sekolah = data as SekolahPublik | null;
   if (!sekolah) notFound();
@@ -21,5 +22,5 @@ export default async function Daftar({ params }: { params: Promise<{ slug: strin
       </main>
     );
   }
-  return <FormDaftar sekolah={sekolah} sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY ?? null} />;
+  return <FormDaftar sekolah={sekolah} jalurAwal={typeof jalur === "string" ? jalur : null} sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY ?? null} />;
 }

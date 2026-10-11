@@ -18,7 +18,7 @@ const baca = <T,>(k: string): T | null => {
 const simpan = (k: string, v: unknown) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const hapus = (k: string) => { try { localStorage.removeItem(k); } catch {} };
 
-export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPublik; sitekey: string | null }) {
+export default function FormDaftar({ sekolah, sitekey, jalurAwal = null }: { sekolah: SekolahPublik; sitekey: string | null; jalurAwal?: string | null }) {
   const router = useRouter();
   const kd = `draft:${sekolah.slug}`, kr = `reg:${sekolah.slug}`;
   const [d, setD] = useState<Draft>(KOSONG);
@@ -34,12 +34,14 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
     /* eslint-disable react-hooks/set-state-in-effect -- membaca localStorage hanya bisa di klien */
     // nomor WA dari pendaftaran sebelumnya di HP ini (mis. adik-kakak) diisikan otomatis
     const waLama = baca<string>("yukmasuk:wa");
-    if (dr) setD({ ...KOSONG, ...dr });
-    else if (waLama) setD({ ...KOSONG, wa: waLama });
+    // jalur dari tombol "Daftar jalur ini" di halaman sekolah
+    const pilih = sekolah.jalur.some((j) => j.id === jalurAwal) ? { jalur: jalurAwal! } : {};
+    if (dr) setD({ ...KOSONG, ...dr, ...pilih });
+    else setD({ ...KOSONG, ...(waLama ? { wa: waLama } : {}), ...pilih });
     if (rg) setTerkirim(rg);
     /* eslint-enable react-hooks/set-state-in-effect */
     siap.current = true;
-  }, [kd, kr]);
+  }, [kd, kr, jalurAwal, sekolah.jalur]);
   useEffect(() => { if (siap.current) simpan(kd, d); }, [d, kd]);
 
   useEffect(() => {

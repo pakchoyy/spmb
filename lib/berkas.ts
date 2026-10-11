@@ -5,6 +5,11 @@ export const MIME: Record<string, string> = {
   png: "image/png",
 };
 
+/** Satu tahap di garis waktu SPMB (tanggal format YYYY-MM-DD). */
+export type Jadwal = { judul: string; mulai: string; selesai: string | null };
+/** Satu prestasi siswa; foto di bucket sekolah-aset. */
+export type Prestasi = { judul: string; nama: string; ket: string; foto: string | null };
+
 export type SekolahPublik = {
   slug: string;
   nama: string;
@@ -20,6 +25,9 @@ export type SekolahPublik = {
   format_berkas: string[];
   status: "trial" | "aktif" | "tenggang" | "nonaktif";
   terverifikasi?: boolean;
+  akreditasi?: string | null;
+  jadwal?: Jadwal[];
+  prestasi?: Prestasi[];
   jalur: { id: string; nama: string; kuota: number | null; sisa?: number | null; buka: string | null; tutup: string | null; syarat_berkas: string[] }[];
   form: { id: string; label: string; tipe: "teks" | "angka" | "tanggal" | "pilihan" | "paragraf"; opsi: string[] | null; wajib: boolean }[];
 };

@@ -7,13 +7,13 @@ import { simpanProfil } from "./actions";
 
 export type Profil = {
   nama: string; alamat: string | null; warna_aksen: string; kontak_wa: string | null; peta_url: string | null;
-  instagram: string | null; keunggulan: string[]; format_berkas: string[]; tampil_kuota: boolean; tampil_di_beranda: boolean;
+  instagram: string | null; keunggulan: string[]; format_berkas: string[]; tampil_kuota: boolean; tampil_di_beranda: boolean; akreditasi: string | null;
 };
 
 export default function ProfilForm({ awal, bisaUbah }: { awal: Profil; bisaUbah: boolean }) {
   const [f, setF] = useState({
     nama: awal.nama, alamat: awal.alamat ?? "", warna: awal.warna_aksen, wa: awal.kontak_wa ?? "",
-    peta: awal.peta_url ?? "", instagram: awal.instagram ?? "", format: awal.format_berkas, tampilKuota: awal.tampil_kuota, tampilDiBeranda: awal.tampil_di_beranda,
+    peta: awal.peta_url ?? "", instagram: awal.instagram ?? "", format: awal.format_berkas, tampilKuota: awal.tampil_kuota, tampilDiBeranda: awal.tampil_di_beranda, akreditasi: awal.akreditasi ?? "",
     keunggulan: [...awal.keunggulan, "", "", "", "", ""].slice(0, 5),
   });
   const { pending, galat, tersimpan, jalankan } = useAksi();
@@ -24,6 +24,9 @@ export default function ProfilForm({ awal, bisaUbah }: { awal: Profil; bisaUbah:
       <fieldset disabled={!bisaUbah || pending} className="space-y-4">
         <Kolom label="Nama sekolah"><input className={input} value={f.nama} maxLength={150} onChange={(e) => set({ nama: e.target.value })} /></Kolom>
         <Kolom label="Alamat"><input className={input} value={f.alamat} maxLength={300} onChange={(e) => set({ alamat: e.target.value })} /></Kolom>
+        <Kolom label="Akreditasi (boleh kosong)" bantu={<span className="text-neutral-600">Contoh: A (Unggul). Tampil sebagai lencana di halaman sekolah.</span>}>
+          <input className={input} value={f.akreditasi} maxLength={40} placeholder="A (Unggul)" onChange={(e) => set({ akreditasi: e.target.value })} />
+        </Kolom>
         <Kolom label="Warna utama halaman" bantu={<span className="text-neutral-600">Ambil dari warna logo sekolah.</span>}>
           <div className="flex items-center gap-3">
             <input type="color" className="size-12 cursor-pointer rounded-xl border-2 border-neutral-200" value={f.warna} onChange={(e) => set({ warna: e.target.value })} />

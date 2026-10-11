@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { wajibAdmin } from "@/lib/sekolah-saya";
+import type { Jadwal, Prestasi } from "@/lib/berkas";
 
 type Hasil = { ok: true } | { ok: false; pesan: string };
 const gagal = (pesan: string): Hasil => ({ ok: false, pesan });
@@ -23,7 +24,7 @@ const nomorWa = (s: string) => s.replace(/[^\d+]/g, "").slice(0, 20);
 
 export async function simpanProfil(f: {
   nama: string; alamat: string; warna: string; wa: string; peta: string; instagram: string;
-  keunggulan: string[]; format: string[]; tampilKuota: boolean; tampilDiBeranda: boolean;
+  keunggulan: string[]; format: string[]; tampilKuota: boolean; tampilDiBeranda: boolean; akreditasi: string;
 }): Promise<Hasil> {
   const { db, sekolah } = await wajibAdmin();
   if (bersih(f.nama, 150).length < 3) return gagal("Isi nama sekolah.");
@@ -39,6 +40,7 @@ export async function simpanProfil(f: {
     nama: bersih(f.nama, 150), alamat: bersih(f.alamat, 300) || null, warna_aksen: f.warna,
     kontak_wa: nomorWa(f.wa) || null, peta_url: bersih(f.peta, 500) || null, instagram: ig || null,
     keunggulan, format_berkas: format, tampil_kuota: f.tampilKuota, tampil_di_beranda: f.tampilDiBeranda,
+    akreditasi: bersih(f.akreditasi, 40) || null,
   }).eq("id", sekolah.id);
   if (error) return gagal(pesanDb(error));
   tampilkan(sekolah.slug);
@@ -179,5 +181,62 @@ export async function geserField(id: string, arah: -1 | 1): Promise<Hasil> {
 export async function kunciSlug(): Promise<Hasil> {
   const { db, sekolah } = await wajibAdmin();
   await db.from("sekolah").update({ slug_dikunci: true }).eq("id", sekolah.id);
+  return { ok: true };
+}
+
+const tanggal = (s: string | null | undefined) => (s && /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null);
+
+export async function simpanJadwal(daftar: Jadwal[]): Promise<Hasil> {
+  const { db, sekolah } = await wajibAdmin();
+  const jadwal: Jadwal[] = [];
+  for (const j of daftar.slice(0, 8)) {
+    const judul = bersih(j.judul ?? "", 80), mulai = tanggal(j.mulai), selesai = tanggal(j.selesai);
+    if (!judul && !mulai) continue;
+    if (!judul || !mulai) return gagal("Setiap tahap perlu nama dan tanggal mulai.");
+    if (selesai && selesai < mulai) return gagal(`Tanggal selesai "${judul}" harus setelah tanggal mulai.`);
+    jadwal.push({ judul, mulai, selesai });
+  }
+  jadwal.sort((a, b) => a.mulai.localeCompare(b.mulai));
+  const { error } = await db.from("sekolah").update({ jadwal }).eq("id", sekolah.id);
+  if (error) return gagal(pesanDb(error));
+  tampilkan(sekolah.slug);
+  return { ok: true };
+}
+
+const ambilPrestasi = async (db: Awaited<ReturnType<typeof wajibAdmin>>["db"], id: string) =>
+  ((await db.from("sekolah").select("prestasi").eq("id", id).single()).data?.prestasi ?? []) as Prestasi[];
+
+export async function tambahPrestasi(form: FormData): Promise<Hasil> {
+  const { db, sekolah } = await wajibAdmin();
+  const judul = bersih(String(form.get("judul") ?? ""), 60), nama = bersih(String(form.get("nama") ?? ""), 80);
+  const ket = bersih(String(form.get("ket") ?? ""), 160);
+  if (!judul || !nama) return gagal("Isi gelar prestasi dan nama siswa.");
+  const daftar = await ambilPrestasi(db, sekolah.id);
+  if (daftar.length >= 12) return gagal("Prestasi maksimal 12.");
+
+  let foto: string | null = null;
+  const file = form.get("file");
+  if (file instanceof File && file.size > 0) {
+    if (!TIPE.includes(file.type)) return gagal("Gunakan gambar JPG, PNG, atau WebP.");
+    if (file.size > 2 * 1024 * 1024) return gagal("Ukuran gambar maksimal 2 MB.");
+    foto = `${sekolah.id}/prestasi-${crypto.randomUUID().slice(0, 8)}.${file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg"}`;
+    const { error } = await db.storage.from("sekolah-aset").upload(foto, file, { contentType: file.type });
+    if (error) return gagal("Gagal mengunggah foto. Coba lagi.");
+  }
+  const { error } = await db.from("sekolah").update({ prestasi: [...daftar, { judul, nama, ket, foto }] }).eq("id", sekolah.id);
+  if (error) { if (foto) await db.storage.from("sekolah-aset").remove([foto]); return gagal(pesanDb(error)); }
+  tampilkan(sekolah.slug);
+  return { ok: true };
+}
+
+export async function hapusPrestasi(i: number): Promise<Hasil> {
+  const { db, sekolah } = await wajibAdmin();
+  const daftar = await ambilPrestasi(db, sekolah.id);
+  const p = daftar[i];
+  if (!p) return gagal("Prestasi tidak ditemukan.");
+  const { error } = await db.from("sekolah").update({ prestasi: daftar.filter((_, n) => n !== i) }).eq("id", sekolah.id);
+  if (error) return gagal(pesanDb(error));
+  if (p.foto) await db.storage.from("sekolah-aset").remove([p.foto]);
+  tampilkan(sekolah.slug);
   return { ok: true };
 }

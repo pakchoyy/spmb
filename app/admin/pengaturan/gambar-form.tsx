@@ -9,7 +9,7 @@ import { hapusGambar, unggahGambar } from "./actions";
 type Jenis = "logo" | "banner" | "galeri";
 
 /** Perkecil dan ubah ke WebP di browser sebelum diunggah, supaya ringan di HP orang tua. */
-async function siapkan(file: File, sisiMaks: number): Promise<File> {
+export async function siapkan(file: File, sisiMaks: number): Promise<File> {
   // Format yang tidak bisa dibaca browser (mis. HEIC) dikirim apa adanya; server yang menolak dengan pesan jelas.
   const bmp = await createImageBitmap(file).catch(() => null);
   if (!bmp) return file;
