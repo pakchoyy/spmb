@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import Link from "next/link";
-import { Archive, Building2, CalendarRange, ChevronDown, Eye, ImageIcon, ListPlus, QrCode, Route, Trophy, type LucideIcon } from "lucide-react";
+import { Archive, Building2, CalendarRange, ChevronDown, Eye, ImageIcon, ListPlus, QrCode, Megaphone, Route, Trophy, type LucideIcon } from "lucide-react";
 import QRCode from "qrcode";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import ProfilForm, { type Profil } from "./profil-form";
@@ -9,6 +9,7 @@ import JalurForm, { type JalurAdmin } from "./jalur-form";
 import FieldForm, { type FieldAdmin } from "./field-form";
 import Qr from "./qr";
 import ArsipForm from "./arsip-form";
+import PengumumanForm from "./pengumuman-form";
 import JadwalForm from "./jadwal-form";
 import PrestasiForm from "./prestasi-form";
 import type { Jadwal, Prestasi } from "@/lib/berkas";
@@ -80,6 +81,7 @@ export default async function Pengaturan() {
         </Bagian>
         <Bagian id="jalur" ikon={Route} warna="var(--mint-muda)" judul="Jalur SPMB" bantu="Zonasi, prestasi, dll. Boleh dikosongkan."><JalurForm jalur={jalurAdmin} bisaUbah={bisaUbah} /></Bagian>
         <Bagian id="jadwal" ikon={CalendarRange} warna="var(--biru-muda)" judul="Garis waktu SPMB" bantu="Tahap pendaftaran sampai daftar ulang."><JadwalForm awal={(s?.jadwal ?? []) as Jadwal[]} bisaUbah={bisaUbah} /></Bagian>
+        <Bagian id="pengumuman" ikon={Megaphone} warna="var(--mint-muda)" judul="Pengumuman hasil" bantu="Langsung, atau serentak pada tanggal tertentu."><PengumumanForm awal={s?.umumkan_pada ?? null} bisaUbah={bisaUbah} /></Bagian>
         <Bagian id="prestasi" ikon={Trophy} warna="var(--kuning-muda)" judul="Prestasi siswa" bantu="Kartu prestasi di halaman sekolah."><PrestasiForm daftar={(s?.prestasi ?? []) as Prestasi[]} gerak={!!s?.prestasi_gerak} bisaUbah={bisaUbah} /></Bagian>
         <Bagian id="form" ikon={ListPlus} warna="var(--ungu-muda)" judul="Isian formulir" bantu="Pertanyaan tambahan untuk orang tua."><FieldForm fields={(fields ?? []) as FieldAdmin[]} bisaUbah={bisaUbah} /></Bagian>
         <Bagian id="qr" ikon={QrCode} warna="var(--oranye-muda)" judul="QR dan tautan" bantu="Untuk brosur, spanduk, atau grup WhatsApp."><Qr url={url} svg={svg} png={png} slug={sekolah.slug} /></Bagian>

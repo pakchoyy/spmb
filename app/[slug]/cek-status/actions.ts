@@ -4,7 +4,7 @@ import { supabaseAnon } from "@/lib/supabase/anon";
 
 export type Status = {
   nomor: string; nama_anak: string; status: string; catatan: string | null; sekolah: string;
-  jalur: string | null; syarat_berkas: string[]; berkas: string[];
+  jalur: string | null; syarat_berkas: string[]; berkas: string[]; umumkan_pada?: string | null;
 };
 
 export async function cekStatus(slug: string, nomor: string): Promise<Status | null> {

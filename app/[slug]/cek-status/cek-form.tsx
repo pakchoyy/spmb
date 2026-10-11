@@ -7,6 +7,8 @@ import { MessageCircle, BadgeCheck, Clock, Hourglass, PartyPopper, Printer, Sear
 import TeksBesar from "@/components/teks-besar";
 import Konfeti from "@/components/konfeti";
 
+const sekarang = () => Date.now();
+
 // Warna, ikon, dan langkah berikutnya per status, dengan bahasa untuk orang tua.
 const INFO = {
   Baru: { ikon: Clock, latar: "var(--biru-muda)", warna: "var(--biru-tua)", judul: "Sedang diperiksa", saran: "Sekolah sedang memeriksa data dan berkas. Pastikan semua berkas sudah diunggah." },
@@ -78,6 +80,12 @@ export default function CekForm({ slug, nama, format, bisaUnggah, wa }: { slug: 
           <p className="text-sm font-semibold text-neutral-700">{hasil.nomor} · {hasil.nama_anak}</p>
           <p className="flex items-center gap-2 font-serif text-2xl font-bold" style={{ color: info.warna }}><info.ikon className="size-7" aria-hidden />{info.judul}</p>
           <p>{info.saran}</p>
+          {hasil.umumkan_pada && (
+            <p className="rounded-2xl bg-white/80 p-3 text-sm">
+              📣 Hasil seleksi diumumkan serentak pada <b>{new Date(hasil.umumkan_pada).toLocaleString("id-ID", { dateStyle: "long", timeStyle: "short", timeZone: "Asia/Jakarta" })} WIB</b>
+              {" "}({Math.max(1, Math.ceil((new Date(hasil.umumkan_pada).getTime() - sekarang()) / 86400000))} hari lagi). Cek kembali halaman ini pada waktu itu.
+            </p>
+          )}
           {hasil.catatan && <p className="rounded-2xl bg-white/70 p-3 text-sm"><b>Catatan sekolah:</b> {hasil.catatan}</p>}
           {bisaUnggah && hasil.syarat_berkas.length > 0 && hasil.status === "Baru" && (<>
             <h2 className="pt-2 font-bold">Berkas</h2>

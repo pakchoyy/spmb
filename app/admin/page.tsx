@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import { bacaFilter, kueri, linkWa, STATUS, tglId, WARNA_STATUS } from "@/lib/pendaftar";
+import PilihMassal from "./pilih-massal";
+import Statistik from "./statistik";
 import Cetak from "./pendaftar/[id]/cetak";
 import { Lightbulb, BadgeCheck, CheckCircle2, ChevronRight, Circle, Clock, Hourglass, ListChecks, LogOut, MessageCircle, Search, Users, Download, XCircle } from "lucide-react";
 import Bagikan from "@/components/bagikan";
@@ -31,10 +33,11 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
 
   const [{ data: st }, { data: rk }, { data: gandaIds }, { data: daftarJalur }, { data: baris, count }, { data: profil }, { data: testimoniSaya }] = await Promise.all([
     db.rpc("status_saya"), db.rpc("ringkasan_saya"), db.rpc("ganda_saya"),
-    db.from("jalur").select("id,nama").order("nama"), q,
-    db.from("sekolah").select("alamat,kontak_wa,logo_path,slug_dikunci,dibuat_pada").eq("id", sekolah.id).single(),
+    db.from("jalur").select("id,nama,kuota").order("nama"), q,
+    db.from("sekolah").select("alamat,kontak_wa,logo_path,slug_dikunci,dibuat_pada,umumkan_pada").eq("id", sekolah.id).single(),
     db.from("testimoni").select("nama,jabatan,rating,isi").maybeSingle(),
   ]);
+  const { data: stat } = await db.from("pendaftar").select("dibuat_pada,status,jalur_id").eq("diarsip", false).limit(5000);
   const langganan = st as Status | null;
   const r = (rk ?? { total: 0, arsip: 0, baru: 0, diterima: 0, cadangan: 0, ditolak: 0, hari_ini: 0, berkas_kurang: 0 }) as Ringkasan;
   const ganda = new Set((gandaIds ?? []) as string[]);
@@ -48,6 +51,8 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
   };
   const adaFilter = !!(f.status || f.jalur || f.q);
   const lihatArsip = f.arsip === "1";
+  const pilih = sp.pilih === "1" && !lihatArsip;
+  const dgn = (u: string, x: string) => `${u}${u.includes("?") && !u.endsWith("?") ? "&" : ""}${x}`;
 
   const tugas = [
     { n: r.baru, teks: "pendaftar baru menunggu diperiksa", href: tautan({ status: "Baru" }) },
@@ -76,7 +81,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
     (!!profil?.dibuat_pada && kini() - new Date(profil.dibuat_pada).getTime() > 3 * 86400000);
 
   return (
-    <main className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-6 pt-4">
+    <main className={`mx-auto w-full max-w-2xl space-y-4 px-4 pt-4 ${pilih ? "pb-72" : "pb-6"}`}>
       <header className="relative overflow-hidden rounded-3xl bg-[var(--biru)] p-5 text-white print:hidden">
         <div aria-hidden className="absolute -right-8 -top-8 size-32 rounded-full bg-white/10" />
         <div className="relative flex items-start justify-between gap-3">
@@ -125,6 +130,12 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
                 <ChevronRight className="ml-auto size-4" aria-hidden /></Link></li>))}</ul>}
       </section>
 
+      {profil?.umumkan_pada && new Date(profil.umumkan_pada).getTime() > kini() && (
+        <Link href="/admin/pengaturan#pengumuman" className="block rounded-2xl bg-[var(--kuning-muda)] p-3 text-sm print:hidden">
+          🔒 Hasil seleksi disembunyikan dari orang tua sampai <b>{tglId(profil.umumkan_pada, true)}</b>. Ketuk untuk mengubah.
+        </Link>
+      )}
+
       <section className="grid grid-cols-2 gap-2 print:hidden" aria-label="Ringkasan status">
         {STATUS.map((s) => {
           const k = KARTU[s];
@@ -137,6 +148,8 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
           );
         })}
       </section>
+
+      <Statistik baris={stat ?? []} jalur={(daftarJalur ?? []) as { id: string; nama: string; kuota: number | null }[]} kini={kini()} />
       {mintaTestimoni && <TestimoniForm awal={testimoniSaya ?? null} />}
       {r.arsip > 0 && !lihatArsip && <Link className="tautan block text-center text-sm print:hidden" href="/admin?arsip=1">Lihat arsip tahun lalu ({r.arsip})</Link>}
 
@@ -159,6 +172,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
         <div className="flex items-center justify-between gap-2">
           <p className="text-sm text-neutral-600">{total} pendaftar{adaFilter && " (terfilter)"}{adaFilter && <> · <Link className="tautan print:hidden" href="/admin">hapus filter</Link></>}</p>
           <div className="flex gap-2 print:hidden">
+            {!lihatArsip && total > 0 && !pilih && <Link className="btn btn-pil btn-lembut" href={dgn(tautan({}, hal), "pilih=1")}><ListChecks className="size-4" aria-hidden />Pilih banyak</Link>}
             <Cetak />
             <a className="btn btn-pil btn-lembut" href={`/admin/pendaftar/unduh?${kueri(f)}`}><Download className="size-4" aria-hidden />Excel</a>
           </div>
@@ -170,7 +184,9 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
             const wa = linkWa(p.wa_ortu);
             const unggah = (p.berkas as unknown[]).length, perlu = j?.syarat_berkas.length ?? 0;
             return (
-              <li key={p.id} className="rounded-2xl bg-neutral-50 p-3 ring-1 ring-black/5">
+              <li key={p.id} className="flex gap-3 rounded-2xl bg-neutral-50 p-3 ring-1 ring-black/5 has-[:checked]:bg-[var(--biru-muda)] has-[:checked]:ring-[var(--biru)]">
+                {pilih && <input type="checkbox" name="id" value={p.id} form="massal" aria-label={`Pilih ${p.nama_anak}`} className="mt-1 size-6 shrink-0 accent-[var(--biru)]" />}
+                <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-3">
                   <Link href={`/admin/pendaftar/${p.id}`} className="min-w-0">
                     <p className="truncate font-semibold">{p.nama_anak}</p>
@@ -182,6 +198,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
                   {perlu > 0 && <span className={`rounded-full px-2 py-0.5 ${unggah >= perlu ? "bg-green-50 text-green-800" : "bg-amber-50 text-amber-900"}`}>Berkas {unggah}/{perlu}</span>}
                   {ganda.has(p.id) && <span className="rounded-full bg-amber-100 px-2 py-0.5 font-semibold text-amber-900">⚠ Kemungkinan ganda</span>}
                   {wa && <a href={wa} rel="noopener noreferrer" className="btn btn-wa btn-pil ml-auto !min-h-8 print:hidden"><MessageCircle className="size-3.5" aria-hidden />WhatsApp</a>}
+                </div>
                 </div>
               </li>
             );
@@ -197,6 +214,8 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
           </nav>
         )}
       </section>
+
+      {pilih && <PilihMassal batal={tautan({}, hal)} />}
 
       <Link href="/admin/masukan" className="flex items-center gap-3 rounded-3xl bg-[var(--ungu-muda)] p-4 print:hidden">
         <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-white"><Lightbulb className="size-6 text-[var(--ungu)]" aria-hidden /></span>

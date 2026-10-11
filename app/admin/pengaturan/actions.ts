@@ -248,3 +248,15 @@ export async function setPrestasiGerak(gerak: boolean): Promise<Hasil> {
   tampilkan(sekolah.slug);
   return { ok: true };
 }
+
+/** Tanggal pengumuman hasil (ISO) atau null agar hasil langsung terlihat. */
+export async function simpanPengumuman(iso: string | null): Promise<Hasil> {
+  const t = iso ? new Date(iso) : null;
+  if (t && Number.isNaN(t.getTime())) return gagal("Tanggal tidak valid.");
+  const { db, sekolah } = await wajibAdmin();
+  const { error } = await db.from("sekolah").update({ umumkan_pada: t?.toISOString() ?? null }).eq("id", sekolah.id);
+  if (error) return gagal(pesanDb(error));
+  tampilkan(sekolah.slug);
+  revalidatePath("/admin");
+  return { ok: true };
+}

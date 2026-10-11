@@ -6,6 +6,7 @@ import { linkWa, tglId, WARNA_STATUS } from "@/lib/pendaftar";
 import StatusForm from "./status-form";
 import BerkasList from "./berkas-list";
 import Cetak from "./cetak";
+import TemplateWa from "./template-wa";
 
 export const dynamic = "force-dynamic";
 
@@ -66,6 +67,17 @@ export default async function Detail({ params }: { params: Promise<{ id: string 
         <h2 className="mb-2 font-serif text-xl font-bold">Berkas</h2>
         <BerkasList syarat={jalur?.syarat_berkas ?? []} berkas={berkas ?? []} />
       </section>
+
+      {wa && (
+        <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5 print:hidden">
+          <h2 className="mb-3 font-serif text-xl font-bold">Kirim pesan ke orang tua</h2>
+          <TemplateWa wa={wa} awal={{ Diterima: "diterima", Cadangan: "cadangan", Ditolak: "ditolak" }[p.status as string] ?? "berkas"} data={{
+            anak: p.nama_anak, nomor: p.nomor, sekolah: sekolah.nama, catatan: p.catatan,
+            tautanCek: `${(process.env.NEXT_PUBLIC_SITE_URL ?? "https://spmbz.web.id").replace(/\/$/, "")}/${sekolah.slug}/cek-status`,
+            berkasKurang: (jalur?.syarat_berkas ?? []).filter((j) => !(berkas ?? []).some((b) => b.jenis === j)),
+          }} />
+        </section>
+      )}
 
       <section className="print:hidden">
         <h2 className="mb-2 font-serif text-xl font-bold">Keputusan</h2>

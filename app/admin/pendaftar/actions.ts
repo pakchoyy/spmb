@@ -29,3 +29,19 @@ export async function tautBerkas(berkasId: string): Promise<{ ok: true; url: str
   if (error || !data) return { ok: false, pesan: "Gagal membuka berkas. Coba lagi." };
   return { ok: true, url: data.signedUrl };
 }
+
+/** Ubah status banyak pendaftar sekaligus (maks. 200). RLS membatasi ke sekolah sendiri. */
+export async function ubahStatusMassal(ids: string[], status: string, catatan: string): Promise<Hasil> {
+  if (!(STATUS as readonly string[]).includes(status)) return { ok: false, pesan: "Status tidak valid." };
+  const daftar = [...new Set(ids)].filter((x) => /^[0-9a-f-]{36}$/.test(x)).slice(0, 200);
+  if (!daftar.length) return { ok: false, pesan: "Pilih minimal satu pendaftar." };
+  const cat = catatan.trim().slice(0, 500);
+  if ((status === "Ditolak" || status === "Cadangan") && !cat) return { ok: false, pesan: "Isi catatan alasan untuk status ini." };
+  const { db } = await wajibAdmin();
+  const ubah: { status: string; catatan?: string | null } = { status };
+  if (cat || status === "Diterima" || status === "Baru") ubah.catatan = cat || null;
+  const { data, error } = await db.from("pendaftar").update(ubah).in("id", daftar).select("id");
+  if (error || !data?.length) return { ok: false, pesan: "Langganan tidak aktif atau data tidak ditemukan." };
+  revalidatePath("/admin");
+  return { ok: true };
+}
