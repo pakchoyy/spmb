@@ -1,5 +1,5 @@
 export const SLUG_RE = /^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/;
-export const SLUG_DIPESAN = ["admin", "masuk", "daftar", "aktivasi", "super", "api", "auth", "keluar", "syarat", "privasi", "cara-pakai"];
+export const SLUG_DIPESAN = ["admin", "masuk", "daftar", "aktivasi", "super", "api", "auth", "keluar", "syarat", "privasi", "cara-pakai", "tentang"];
 
 /** "SD Negeri 1 Menteng" -> "sd-negeri-1-menteng" */
 export const buatSlug = (s: string) =>

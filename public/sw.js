@@ -4,7 +4,7 @@ const VERSI = "v1";
 const CACHE_ASET = `aset-${VERSI}`;
 const CACHE_HALAMAN = `halaman-${VERSI}`;
 const MAKS_UMUR_HALAMAN = 24 * 60 * 60 * 1000; // 1 hari
-const DIPESAN = ["admin", "masuk", "daftar", "aktivasi", "super", "api", "auth", "keluar", "syarat", "privasi", "cara-pakai"];
+const DIPESAN = ["admin", "masuk", "daftar", "aktivasi", "super", "api", "auth", "keluar", "syarat", "privasi", "cara-pakai", "tentang"];
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => {

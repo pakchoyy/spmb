@@ -24,8 +24,9 @@ export function Footer({ iklan = false }: { iklan?: boolean }) {
             </a>
           </div>
 
-          <nav className="mt-8 grid grid-cols-2 gap-y-2 text-sm sm:grid-cols-5">
+          <nav className="mt-8 grid grid-cols-2 gap-y-2 text-sm sm:grid-cols-3">
             <Link href="/cara-pakai" className="hover:text-white">Cara pakai</Link>
+            <Link href="/tentang" className="hover:text-white">Tentang</Link>
             <Link href="/daftar" className="hover:text-white">Daftar sekolah</Link>
             <Link href="/masuk" className="hover:text-white">Masuk admin</Link>
             <Link href="/syarat" className="hover:text-white">Syarat &amp; Ketentuan</Link>
