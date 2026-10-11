@@ -23,7 +23,7 @@ const nomorWa = (s: string) => s.replace(/[^\d+]/g, "").slice(0, 20);
 
 export async function simpanProfil(f: {
   nama: string; alamat: string; warna: string; wa: string; peta: string; instagram: string;
-  keunggulan: string[]; format: string[];
+  keunggulan: string[]; format: string[]; tampilKuota: boolean; tampilDiBeranda: boolean;
 }): Promise<Hasil> {
   const { db, sekolah } = await wajibAdmin();
   if (bersih(f.nama, 150).length < 3) return gagal("Isi nama sekolah.");
@@ -38,7 +38,7 @@ export async function simpanProfil(f: {
   const { error } = await db.from("sekolah").update({
     nama: bersih(f.nama, 150), alamat: bersih(f.alamat, 300) || null, warna_aksen: f.warna,
     kontak_wa: nomorWa(f.wa) || null, peta_url: bersih(f.peta, 500) || null, instagram: ig || null,
-    keunggulan, format_berkas: format,
+    keunggulan, format_berkas: format, tampil_kuota: f.tampilKuota, tampil_di_beranda: f.tampilDiBeranda,
   }).eq("id", sekolah.id);
   if (error) return gagal(pesanDb(error));
   tampilkan(sekolah.slug);

@@ -19,7 +19,8 @@ export type SekolahPublik = {
   warna_aksen: string;
   format_berkas: string[];
   status: "trial" | "aktif" | "tenggang" | "nonaktif";
-  jalur: { id: string; nama: string; kuota: number | null; buka: string | null; tutup: string | null; syarat_berkas: string[] }[];
+  terverifikasi?: boolean;
+  jalur: { id: string; nama: string; kuota: number | null; sisa?: number | null; buka: string | null; tutup: string | null; syarat_berkas: string[] }[];
   form: { id: string; label: string; tipe: "teks" | "angka" | "tanggal" | "pilihan" | "paragraf"; opsi: string[] | null; wajib: boolean }[];
 };
 

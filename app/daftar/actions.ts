@@ -21,7 +21,7 @@ export async function cekSlugAksi(slug: string): Promise<{ tersedia: boolean; sa
   return { tersedia: false, saran };
 }
 
-type Hasil = { ok: true } | { ok: false; pesan: string };
+type Hasil = { ok: true; langsung?: boolean } | { ok: false; pesan: string };
 
 export async function daftarSekolah(f: {
   nama: string; slug: string; npsn: string; email: string; sandi: string; kodeRef: string; setuju: boolean;
@@ -38,21 +38,23 @@ export async function daftarSekolah(f: {
   const h = await headers();
   const origin = h.get("origin") ?? `https://${h.get("host")}`;
   const db = await supabaseServer();
-  const { error } = await db.auth.signUp({
+  const { data, error } = await db.auth.signUp({
     email, password: f.sandi,
     options: {
       emailRedirectTo: `${origin}/auth/konfirmasi`,
-      // sekolah dibuat setelah email dikonfirmasi (lihat lib/sekolah-saya.ts)
+      // sekolah dibuat saat pertama masuk ke /admin (lihat lib/sekolah-saya.ts)
       data: { nama: f.nama.trim(), slug: f.slug, npsn: f.npsn, kode_ref: f.kodeRef.trim().toUpperCase(),
         // versi dokumen yang disetujui, tercatat di akun
         setuju_syarat: VERSI_SYARAT, setuju_privasi: VERSI_PRIVASI, setuju_pada: new Date().toISOString() },
     },
   });
-  // Email yang sudah terdaftar tidak dibedakan, supaya tidak bisa dipakai menebak email orang.
   if (error?.code === "email_address_invalid") return { ok: false, pesan: "Email ini ditolak. Pastikan alamat email benar dan masih aktif." };
   if (error?.code === "over_email_send_rate_limit") return { ok: false, pesan: "Terlalu banyak percobaan. Coba lagi beberapa menit lagi." };
-  if (error && error.status !== 422) return { ok: false, pesan: "Pendaftaran belum berhasil. Coba lagi sebentar lagi." };
-  return { ok: true };
+  if (error?.code === "user_already_exists" || error?.status === 422) return { ok: false, pesan: "Email ini sudah terdaftar. Silakan masuk." };
+  if (error) return { ok: false, pesan: "Pendaftaran belum berhasil. Coba lagi sebentar lagi." };
+  // Konfirmasi email dimatikan di Supabase: sesi langsung ada, admin langsung masuk.
+  // Bila suatu saat konfirmasi dinyalakan lagi, sesi kosong dan form menampilkan "Cek email".
+  return { ok: true, langsung: !!data.session };
 }
 
 /** Untuk admin yang sudah login tetapi sekolahnya belum terbentuk (slug keburu terpakai). */

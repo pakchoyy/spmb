@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { Galat, input } from "@/components/ui";
 import { useAksi } from "@/components/aksi";
-import { beriMasaAktif, gantiEmail, gantiSlug, setBatal, setNonaktif } from "../../actions";
+import { beriMasaAktif, gantiEmail, gantiSlug, setBatal, setNonaktif, setVerifikasi } from "../../actions";
 
 function Kartu({ judul, bantu, children }: { judul: string; bantu?: string; children: React.ReactNode }) {
   return <section className="space-y-3 rounded-xl border bg-white p-4"><div><h2 className="font-bold">{judul}</h2>{bantu && <p className="text-sm text-neutral-600">{bantu}</p>}</div>{children}</section>;
 }
 const tbl = "h-12 w-full rounded-lg border-2 font-semibold disabled:opacity-50";
 
-export default function Aksi({ id, slug, email, dibatalkan, nonaktif }: { id: string; slug: string; email: string; dibatalkan: boolean; nonaktif: boolean }) {
+export default function Aksi({ id, slug, email, dibatalkan, nonaktif, terverifikasi }: { id: string; slug: string; email: string; dibatalkan: boolean; nonaktif: boolean; terverifikasi: boolean }) {
   const [sl, setSl] = useState(slug);
   const [em, setEm] = useState(email);
   const [hari, setHari] = useState("30");
@@ -18,6 +18,13 @@ export default function Aksi({ id, slug, email, dibatalkan, nonaktif }: { id: st
 
   return (
     <div className="space-y-4">
+      <Kartu judul="Sekolah terverifikasi" bantu="Centang biru di halaman sekolah. Beri setelah NPSN dan kontak sekolah dicek.">
+        <button className={`${tbl} ${terverifikasi ? "border-neutral-400" : "border-[var(--biru)] text-[var(--biru)]"}`} disabled={status.pending}
+          onClick={() => status.jalankan(() => setVerifikasi(id, !terverifikasi))}>
+          {terverifikasi ? "Cabut tanda terverifikasi" : "Tandai terverifikasi"}
+        </button>
+      </Kartu>
+
       <Kartu judul="Status sekolah" bantu="Batalkan bila email pembelian di Lynk tidak cocok. Sekolah tidak bisa membuka dirinya sendiri dengan kode baru.">
         <div className="grid gap-2">
           <button className={`${tbl} ${dibatalkan ? "border-green-700 text-green-800" : "border-red-700 text-red-800"}`} disabled={status.pending}

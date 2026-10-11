@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { normalWa, type SekolahPublik } from "@/lib/berkas";
 import { kirimPendaftaran } from "./actions";
 import Unggah from "./unggah";
+import { Check, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
+import TeksBesar from "@/components/teks-besar";
 
 type Draft = { step: number; jalur: string; namaAnak: string; tglLahir: string; wa: string; isian: Record<string, string>; setuju: boolean };
 type Terkirim = { nomor: string; tglLahir: string };
@@ -30,7 +32,10 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
   useEffect(() => {
     const dr = baca<Draft>(kd), rg = baca<Terkirim>(kr);
     /* eslint-disable react-hooks/set-state-in-effect -- membaca localStorage hanya bisa di klien */
+    // nomor WA dari pendaftaran sebelumnya di HP ini (mis. adik-kakak) diisikan otomatis
+    const waLama = baca<string>("yukmasuk:wa");
     if (dr) setD({ ...KOSONG, ...dr });
+    else if (waLama) setD({ ...KOSONG, wa: waLama });
     if (rg) setTerkirim(rg);
     /* eslint-enable react-hooks/set-state-in-effect */
     siap.current = true;
@@ -81,6 +86,7 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
         if (!r.ok) return setGalat(r.pesan);
         const t = { nomor: r.nomor!, tglLahir: d.tglLahir };
         hapus(kd);
+        simpan("yukmasuk:wa", d.wa);
         if (syarat.length) { simpan(kr, t); setTerkirim(t); } else selesai(t.nomor);
       } catch {
         setGalat("Koneksi terputus. Data Anda aman di HP ini, coba kirim lagi.");
@@ -90,58 +96,89 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
   function selesai(nomor: string) { hapus(kr); router.push(`/${sekolah.slug}/sukses?nomor=${encodeURIComponent(nomor)}`); }
 
   const gaya = { "--aksen": sekolah.warna_aksen } as React.CSSProperties;
-  const input = "h-12 w-full rounded-lg border px-3 text-base";
+  const input = "h-12 w-full rounded-xl border border-neutral-300 bg-white px-3 text-base outline-none focus:border-[var(--aksen)] focus:ring-4 focus:ring-[color-mix(in_srgb,var(--aksen)_15%,white)]";
+  const kepala = (
+    <div className="px-4 pb-6 pt-4 text-white" style={{ background: "linear-gradient(160deg, var(--aksen), color-mix(in srgb, var(--aksen) 65%, black))" }}>
+      <div className="mx-auto flex max-w-md items-center justify-between gap-2">
+        <a href={`/${sekolah.slug}`} className="flex items-center gap-1 text-sm font-semibold text-white/90"><ChevronLeft className="size-4" aria-hidden />{sekolah.nama}</a>
+        <TeksBesar />
+      </div>
+    </div>
+  );
 
   if (terkirim) {
     return (
-      <main style={gaya} className="mx-auto max-w-md space-y-4 p-4 pb-24">
-        <h1 className="text-xl font-semibold">Unggah berkas</h1>
-        <p>Nomor pendaftaran Anda <b>{terkirim.nomor}</b>. Catat nomor ini. Lengkapi berkas berikut.</p>
+      <div style={gaya}>{kepala}
+      <main className="mx-auto -mt-3 max-w-md space-y-4 px-4 pb-24">
+        <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+          <p className="flex items-center gap-2 font-bold text-[#0b6b52]"><CheckCircle2 className="size-5" aria-hidden />Data terkirim</p>
+          <p className="mt-2 text-sm text-neutral-600">Nomor pendaftaran</p>
+          <p className="font-mono text-2xl font-bold tracking-wider">{terkirim.nomor}</p>
+          <p className="mt-2 text-sm">Satu langkah lagi: unggah berkas di bawah ini.</p>
+        </div>
         <Unggah slug={sekolah.slug} nomor={terkirim.nomor} tglLahir={terkirim.tglLahir} syarat={syarat}
           sudah={[]} format={sekolah.format_berkas} onSelesai={() => selesai(terkirim.nomor)} />
-      </main>
+      </main></div>
     );
   }
 
   const nama = langkah[d.step];
   return (
-    <main style={gaya} className="mx-auto max-w-md p-4 pb-28">
-      <h1 className="text-lg font-semibold">{sekolah.nama}</h1>
-      <p className="text-sm text-neutral-600">Langkah {d.step + 1} dari {langkah.length}: {nama}</p>
-      <div className="mt-1 h-1 rounded bg-neutral-200"><div className="h-1 rounded bg-[var(--aksen)]" style={{ width: `${((d.step + 1) / langkah.length) * 100}%` }} /></div>
+    <div style={gaya}>{kepala}
+    <main className="mx-auto -mt-3 max-w-md px-4 pb-28">
+      <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+      <h1 className="font-serif text-xl font-bold">Formulir pendaftaran</h1>
+      <ol className="mt-4 flex items-start" aria-label={`Langkah ${d.step + 1} dari ${langkah.length}`}>
+        {langkah.map((l, i) => (
+          <li key={l} className="flex flex-1 flex-col items-center gap-1 text-center text-xs font-semibold">
+            <span className={`grid size-8 place-items-center rounded-full text-sm font-bold ${i <= d.step ? "text-white" : "bg-neutral-200 text-neutral-500"}`}
+              style={i <= d.step ? { background: "var(--aksen)" } : undefined} aria-current={i === d.step ? "step" : undefined}>
+              {i < d.step ? <Check className="size-4" aria-hidden /> : i + 1}
+            </span>
+            <span className={i === d.step ? "" : "text-neutral-500"}>{l}</span>
+          </li>
+        ))}
+      </ol>
 
       <div className="mt-5 space-y-4">
         {nama === "Data anak" && (<>
           {sekolah.jalur.length > 0 && (
-            <label className="block"><span className="text-sm font-medium">Jalur pendaftaran</span>
-              <select className={input} value={d.jalur} onChange={(e) => set({ jalur: e.target.value })}>
-                <option value="">Pilih jalur</option>
-                {sekolah.jalur.map((j) => <option key={j.id} value={j.id}>{j.nama}</option>)}
-              </select></label>
+            <fieldset>
+              <legend className="mb-1 text-sm font-semibold">Pilih jalur pendaftaran</legend>
+              <div className="grid grid-cols-2 gap-2">
+                {sekolah.jalur.map((j) => (
+                  <label key={j.id} className={`flex cursor-pointer items-center gap-2 rounded-xl border-2 p-3 font-semibold ${d.jalur === j.id ? "" : "border-neutral-200"}`}
+                    style={d.jalur === j.id ? { borderColor: "var(--aksen)", background: "color-mix(in srgb, var(--aksen) 8%, white)" } : undefined}>
+                    <input type="radio" name="jalur" className="size-4 accent-[var(--aksen)]" checked={d.jalur === j.id} onChange={() => set({ jalur: j.id })} />{j.nama}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
           )}
-          {syarat.length > 0 && <p className="rounded-lg bg-neutral-100 p-3 text-sm">Berkas yang diminta: {syarat.join(", ")}. Diunggah setelah data dikirim.</p>}
-          <label className="block"><span className="text-sm font-medium">Nama lengkap anak</span>
-            <input className={input} value={d.namaAnak} maxLength={100} autoComplete="off" onChange={(e) => set({ namaAnak: e.target.value })} /></label>
-          <label className="block"><span className="text-sm font-medium">Tanggal lahir anak</span>
+          {syarat.length > 0 && <p className="rounded-xl bg-[var(--kuning-muda)] p-3 text-sm"><b>Siapkan berkas:</b> {syarat.join(", ")}. Diunggah setelah data dikirim.</p>}
+          <label className="block"><span className="mb-1 block text-sm font-semibold">Nama lengkap anak</span>
+            <input className={input} placeholder="Contoh: Budi Santoso" value={d.namaAnak} maxLength={100} autoComplete="off" onChange={(e) => set({ namaAnak: e.target.value })} /></label>
+          <label className="block"><span className="mb-1 block text-sm font-semibold">Tanggal lahir anak</span>
             <input type="date" className={input} value={d.tglLahir} max={new Date().toISOString().slice(0, 10)} onChange={(e) => set({ tglLahir: e.target.value })} /></label>
-          <label className="block"><span className="text-sm font-medium">WhatsApp orang tua</span>
+          <label className="block"><span className="mb-1 block text-sm font-semibold">Nomor WhatsApp orang tua</span>
             <input className={input} type="tel" inputMode="tel" autoComplete="tel" placeholder="081234567890" value={d.wa} maxLength={20} onChange={(e) => set({ wa: e.target.value })} />
-            <span className="mt-1 block text-xs text-neutral-600">Dipakai sekolah untuk menghubungi Anda.</span></label>
+            <span className="mt-1 block text-sm text-neutral-600">Sekolah akan menghubungi Anda lewat nomor ini.</span></label>
         </>)}
 
         {nama === "Data tambahan" && sekolah.form.map((f) => (
-          <label key={f.id} className="block"><span className="text-sm font-medium">{f.label}{f.wajib ? "" : " (opsional)"}</span>
-            {f.tipe === "paragraf" ? <textarea className="min-h-24 w-full rounded-lg border p-3 text-base" maxLength={500} value={d.isian[f.id] ?? ""} onChange={(e) => set({ isian: { ...d.isian, [f.id]: e.target.value } })} />
+          <label key={f.id} className="block"><span className="mb-1 block text-sm font-semibold">{f.label}{f.wajib ? "" : " (boleh dikosongkan)"}</span>
+            {f.tipe === "paragraf" ? <textarea className="min-h-24 w-full rounded-xl border border-neutral-300 p-3 text-base" maxLength={500} value={d.isian[f.id] ?? ""} onChange={(e) => set({ isian: { ...d.isian, [f.id]: e.target.value } })} />
             : f.tipe === "pilihan" ? <select className={input} value={d.isian[f.id] ?? ""} onChange={(e) => set({ isian: { ...d.isian, [f.id]: e.target.value } })}><option value="">Pilih</option>{f.opsi?.map((o) => <option key={o}>{o}</option>)}</select>
             : <input className={input} type={f.tipe === "angka" ? "number" : f.tipe === "tanggal" ? "date" : "text"} inputMode={f.tipe === "angka" ? "numeric" : undefined} maxLength={500} value={d.isian[f.id] ?? ""} onChange={(e) => set({ isian: { ...d.isian, [f.id]: e.target.value } })} />}
           </label>
         ))}
 
         {nama === "Tinjau" && (<>
-          <dl className="divide-y rounded-lg border text-sm">
+          <p className="text-sm text-neutral-600">Periksa lagi sebelum dikirim. Ketuk Kembali bila ada yang salah.</p>
+          <dl className="divide-y rounded-2xl bg-neutral-50 text-sm ring-1 ring-black/5">
             {jalur && <Baris k="Jalur" v={jalur.nama} />}
             <Baris k="Nama anak" v={d.namaAnak} />
-            <Baris k="Tanggal lahir" v={d.tglLahir} />
+            <Baris k="Tanggal lahir" v={d.tglLahir ? new Date(d.tglLahir + "T00:00:00").toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""} />
             <Baris k="WhatsApp" v={d.wa} />
             {sekolah.form.filter((f) => d.isian[f.id]).map((f) => <Baris key={f.id} k={f.label} v={d.isian[f.id]} />)}
           </dl>
@@ -153,15 +190,18 @@ export default function FormDaftar({ sekolah, sitekey }: { sekolah: SekolahPubli
         </>)}
       </div>
 
-      {galat && <p role="alert" className="mt-4 text-sm text-red-700">{galat}</p>}
-
-      <div className="fixed inset-x-0 bottom-0 flex gap-2 border-t bg-white p-3">
-        {d.step > 0 && <button type="button" className="h-12 rounded-lg border px-5" onClick={() => { setGalat(""); set({ step: d.step - 1 }); }}>Kembali</button>}
-        {nama !== "Tinjau"
-          ? <button type="button" className="h-12 flex-1 rounded-lg bg-[var(--aksen)] font-medium text-white" onClick={lanjut}>Lanjut</button>
-          : <button type="button" disabled={pending} className="h-12 flex-1 rounded-lg bg-[var(--aksen)] font-medium text-white disabled:opacity-50" onClick={kirim}>{pending ? "Mengirim…" : "Kirim pendaftaran"}</button>}
+      {galat && <p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-800">{galat}</p>}
       </div>
-    </main>
+
+      <div className="fixed inset-x-0 bottom-0 border-t bg-white/95 p-3 backdrop-blur">
+        <div className="mx-auto flex max-w-md gap-2">
+          {d.step > 0 && <button type="button" className="btn btn-pil h-12 border-2 border-neutral-300 bg-white" onClick={() => { setGalat(""); set({ step: d.step - 1 }); }}><ChevronLeft className="size-4" aria-hidden />Kembali</button>}
+          {nama !== "Tinjau"
+            ? <button type="button" className="btn h-12 flex-1 text-white" style={{ background: "var(--aksen)" }} onClick={lanjut}>Lanjut <ChevronRight className="size-5" aria-hidden /></button>
+            : <button type="button" disabled={pending} className="btn h-12 flex-1 text-white" style={{ background: "var(--aksen)" }} onClick={kirim}>{pending ? "Mengirim…" : "Kirim pendaftaran"}</button>}
+        </div>
+      </div>
+    </main></div>
   );
 }
 

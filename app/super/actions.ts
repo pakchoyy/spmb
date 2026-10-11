@@ -23,6 +23,17 @@ export async function setNonaktif(id: string, nonaktif: boolean): Promise<Hasil>
   return { ok: true };
 }
 
+export async function setVerifikasi(id: string, terverifikasi: boolean): Promise<Hasil> {
+  const { svc, email } = await wajibPemilik();
+  if (!UUID.test(id)) return gagal("ID tidak valid.");
+  const { data, error } = await svc.from("sekolah").update({ terverifikasi }).eq("id", id).select("slug").single();
+  if (error) return gagal("Gagal menyimpan.");
+  await catat(svc, email, id, terverifikasi ? "pemilik_verifikasi" : "pemilik_cabut_verifikasi", {});
+  revalidatePath(`/${data.slug}`);
+  segarkan(id);
+  return { ok: true };
+}
+
 export async function setBatal(id: string, dibatalkan: boolean): Promise<Hasil> {
   const { svc, email } = await wajibPemilik();
   if (!UUID.test(id)) return gagal("ID tidak valid.");

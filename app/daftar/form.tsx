@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { MailCheck, School } from "lucide-react";
 import { Galat, Halaman, Kolom, input, tombol } from "@/components/ui";
 import { BantuanWa } from "@/components/bantuan-wa";
@@ -14,6 +15,7 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
   const [slugManual, setSlugManual] = useState(false);
   const [galat, setGalat] = useState("");
   const [selesai, setSelesai] = useState(false);
+  const router = useRouter();
   const [pending, start] = useTransition();
   const set = (p: Partial<typeof f>) => setF((x) => ({ ...x, ...p }));
 
@@ -23,7 +25,9 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
     start(async () => {
       try {
         const r = await daftarSekolah(f);
-        if (r.ok) setSelesai(true); else setGalat(r.pesan);
+        if (!r.ok) setGalat(r.pesan);
+        else if (r.langsung) { router.push("/admin"); router.refresh(); }
+        else setSelesai(true);
       } catch { setGalat("Koneksi terputus. Coba lagi."); }
     });
   }
@@ -40,7 +44,7 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
   return (
     <Halaman ikon={School} judul="Coba gratis 7 hari" sub="Buat halaman SPMB sekolah Anda. Tanpa kartu kredit.">
       <ol className="grid grid-cols-3 gap-2 text-center text-xs font-semibold">
-        {["Isi data sekolah", "Konfirmasi email", "Atur & bagikan"].map((t, i) => (
+        {["Isi data sekolah", "Atur halaman", "Bagikan ke orang tua"].map((t, i) => (
           <li key={t} className="rounded-xl bg-[var(--biru-muda)] px-2 py-2 text-[var(--biru-tua)]"><span className="block text-base font-bold">{i + 1}</span>{t}</li>
         ))}
       </ol>

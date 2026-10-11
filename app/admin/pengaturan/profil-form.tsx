@@ -7,13 +7,13 @@ import { simpanProfil } from "./actions";
 
 export type Profil = {
   nama: string; alamat: string | null; warna_aksen: string; kontak_wa: string | null; peta_url: string | null;
-  instagram: string | null; keunggulan: string[]; format_berkas: string[];
+  instagram: string | null; keunggulan: string[]; format_berkas: string[]; tampil_kuota: boolean; tampil_di_beranda: boolean;
 };
 
 export default function ProfilForm({ awal, bisaUbah }: { awal: Profil; bisaUbah: boolean }) {
   const [f, setF] = useState({
     nama: awal.nama, alamat: awal.alamat ?? "", warna: awal.warna_aksen, wa: awal.kontak_wa ?? "",
-    peta: awal.peta_url ?? "", instagram: awal.instagram ?? "", format: awal.format_berkas,
+    peta: awal.peta_url ?? "", instagram: awal.instagram ?? "", format: awal.format_berkas, tampilKuota: awal.tampil_kuota, tampilDiBeranda: awal.tampil_di_beranda,
     keunggulan: [...awal.keunggulan, "", "", "", "", ""].slice(0, 5),
   });
   const { pending, galat, tersimpan, jalankan } = useAksi();
@@ -46,6 +46,12 @@ export default function ProfilForm({ awal, bisaUbah }: { awal: Profil; bisaUbah:
           </div>
         </div>
 
+        <div className="space-y-2 rounded-2xl bg-[var(--biru-muda)] p-4">
+          <label className="flex items-start gap-3"><input type="checkbox" className="mt-1 size-5" checked={f.tampilKuota} onChange={(e) => set({ tampilKuota: e.target.checked })} />
+            <span><b>Tampilkan sisa kuota</b><span className="block text-sm text-neutral-600">Orang tua melihat &ldquo;tersisa 12&rdquo; di setiap jalur.</span></span></label>
+          <label className="flex items-start gap-3"><input type="checkbox" className="mt-1 size-5" checked={f.tampilDiBeranda} onChange={(e) => set({ tampilDiBeranda: e.target.checked })} />
+            <span><b>Tampilkan sekolah di beranda Yuk Masuk!</b><span className="block text-sm text-neutral-600">Nama dan logo ikut di deretan sekolah pengguna (hanya saat berlangganan).</span></span></label>
+        </div>
         <div>
           <span className="text-sm font-semibold">Format berkas yang diterima</span>
           <div className="mt-1 flex gap-4">

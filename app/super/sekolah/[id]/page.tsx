@@ -18,6 +18,7 @@ export default async function DetailSekolah({ params }: { params: Promise<{ id: 
   const { data } = await svc.rpc("ringkasan_sekolah");
   const s = ((data ?? []) as Baris[]).find((x) => x.id === id);
   if (!s) notFound();
+  const { data: verif } = await svc.from("sekolah").select("terverifikasi").eq("id", id).single();
   const { data: kode } = await svc.from("kode_aktivasi").select("kode,dibuat_pada,dipakai_pada").eq("sekolah_id", id).order("dibuat_pada", { ascending: false }).limit(10);
   const { data: log } = await svc.from("log_langganan").select("id,peristiwa,detail,waktu").eq("sekolah_id", id).order("waktu", { ascending: false }).limit(15);
 
@@ -37,7 +38,7 @@ export default async function DetailSekolah({ params }: { params: Promise<{ id: 
         ))}
       </dl>
 
-      <Aksi id={s.id} slug={s.slug} email={s.email ?? ""} dibatalkan={s.dibatalkan} nonaktif={s.nonaktif} />
+      <Aksi id={s.id} slug={s.slug} email={s.email ?? ""} dibatalkan={s.dibatalkan} nonaktif={s.nonaktif} terverifikasi={!!verif?.terverifikasi} />
 
       <section>
         <h2 className="mb-2 font-serif text-lg font-bold">Kode aktivasi</h2>

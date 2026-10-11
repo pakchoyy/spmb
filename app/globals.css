@@ -60,3 +60,6 @@ a { text-decoration: none; }
   .marquee-isi, .muncul { animation: none; }
   .btn { transition: none; }
 }
+
+/* Mode tulisan besar (tombol A+), disimpan di HP. */
+html.teks-besar { font-size: 112.5%; }
