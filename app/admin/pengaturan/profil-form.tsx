@@ -1,19 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { Galat, Kolom, input, tombol } from "@/components/ui";
 import { useAksi } from "@/components/aksi";
 import { simpanProfil } from "./actions";
 
+// Tema jadi: semua cukup gelap agar teks putih di header tetap terbaca.
+const TEMA = [
+  { nama: "Biru", warna: "#2449d8" }, { nama: "Hijau", warna: "#0f7a4f" }, { nama: "Merah", warna: "#c0262d" },
+  { nama: "Ungu", warna: "#6a3fc4" }, { nama: "Toska", warna: "#0e7490" }, { nama: "Cokelat", warna: "#8a4b16" },
+];
+
 export type Profil = {
   nama: string; alamat: string | null; warna_aksen: string; kontak_wa: string | null; peta_url: string | null;
-  instagram: string | null; keunggulan: string[]; format_berkas: string[]; tampil_kuota: boolean; tampil_di_beranda: boolean; akreditasi: string | null;
+  instagram: string | null; keunggulan: string[]; format_berkas: string[]; tampil_kuota: boolean; tampil_di_beranda: boolean; tampil_jumlah: boolean; akreditasi: string | null;
 };
 
 export default function ProfilForm({ awal, bisaUbah }: { awal: Profil; bisaUbah: boolean }) {
   const [f, setF] = useState({
     nama: awal.nama, alamat: awal.alamat ?? "", warna: awal.warna_aksen, wa: awal.kontak_wa ?? "",
-    peta: awal.peta_url ?? "", instagram: awal.instagram ?? "", format: awal.format_berkas, tampilKuota: awal.tampil_kuota, tampilDiBeranda: awal.tampil_di_beranda, akreditasi: awal.akreditasi ?? "",
+    peta: awal.peta_url ?? "", instagram: awal.instagram ?? "", format: awal.format_berkas, tampilKuota: awal.tampil_kuota, tampilDiBeranda: awal.tampil_di_beranda, tampilJumlah: awal.tampil_jumlah, akreditasi: awal.akreditasi ?? "",
     keunggulan: [...awal.keunggulan, "", "", "", "", ""].slice(0, 5),
   });
   const { pending, galat, tersimpan, jalankan } = useAksi();
@@ -27,12 +34,28 @@ export default function ProfilForm({ awal, bisaUbah }: { awal: Profil; bisaUbah:
         <Kolom label="Akreditasi (boleh kosong)" bantu={<span className="text-neutral-600">Contoh: A (Unggul). Tampil sebagai lencana di halaman sekolah.</span>}>
           <input className={input} value={f.akreditasi} maxLength={40} placeholder="A (Unggul)" onChange={(e) => set({ akreditasi: e.target.value })} />
         </Kolom>
-        <Kolom label="Warna utama halaman" bantu={<span className="text-neutral-600">Ambil dari warna logo sekolah.</span>}>
-          <div className="flex items-center gap-3">
-            <input type="color" className="size-12 cursor-pointer rounded-xl border-2 border-neutral-200" value={f.warna} onChange={(e) => set({ warna: e.target.value })} />
-            <code>{f.warna}</code>
+        <div>
+          <span className="mb-1 block text-sm font-semibold">Tema warna halaman</span>
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+            {TEMA.map((t) => {
+              const pilih = f.warna.toLowerCase() === t.warna;
+              return (
+                <button key={t.warna} type="button" aria-pressed={pilih} onClick={() => set({ warna: t.warna })}
+                  className={`overflow-hidden rounded-2xl text-left text-xs font-semibold ring-2 transition ${pilih ? "ring-[var(--foreground)]" : "ring-black/10"}`}>
+                  <span className="block h-10" style={{ background: `linear-gradient(160deg, ${t.warna}, color-mix(in srgb, ${t.warna} 65%, black))` }} />
+                  <span className="flex items-center justify-between px-2 py-1.5">{t.nama}{pilih && <Check className="size-4" aria-hidden />}</span>
+                </button>
+              );
+            })}
           </div>
-        </Kolom>
+          <details className="mt-2 text-sm">
+            <summary className="cursor-pointer text-neutral-600">Warna lain (sesuai logo)</summary>
+            <div className="mt-2 flex items-center gap-3">
+              <input type="color" aria-label="Pilih warna sendiri" className="size-12 cursor-pointer rounded-xl border-2 border-neutral-200" value={f.warna} onChange={(e) => set({ warna: e.target.value })} />
+              <code>{f.warna}</code>
+            </div>
+          </details>
+        </div>
         <Kolom label="WhatsApp sekolah" bantu={<span className="text-neutral-600">Contoh 081234567890. Orang tua mengetuk untuk chat.</span>}>
           <input className={input} inputMode="tel" value={f.wa} onChange={(e) => set({ wa: e.target.value })} />
         </Kolom>
@@ -52,6 +75,8 @@ export default function ProfilForm({ awal, bisaUbah }: { awal: Profil; bisaUbah:
         <div className="space-y-2 rounded-2xl bg-[var(--biru-muda)] p-4">
           <label className="flex items-start gap-3"><input type="checkbox" className="mt-1 size-5" checked={f.tampilKuota} onChange={(e) => set({ tampilKuota: e.target.checked })} />
             <span><b>Tampilkan sisa kuota</b><span className="block text-sm text-neutral-600">Orang tua melihat &ldquo;tersisa 12&rdquo; di setiap jalur.</span></span></label>
+          <label className="flex items-start gap-3"><input type="checkbox" className="mt-1 size-5" checked={f.tampilJumlah} onChange={(e) => set({ tampilJumlah: e.target.checked })} />
+            <span><b>Tampilkan jumlah pendaftar</b><span className="block text-sm text-neutral-600">Orang tua melihat &ldquo;120 calon siswa sudah mendaftar&rdquo;. Muncul setelah ada 5 pendaftar.</span></span></label>
           <label className="flex items-start gap-3"><input type="checkbox" className="mt-1 size-5" checked={f.tampilDiBeranda} onChange={(e) => set({ tampilDiBeranda: e.target.checked })} />
             <span><b>Tampilkan sekolah di beranda SPMB Zone</b><span className="block text-sm text-neutral-600">Nama dan logo ikut di deretan sekolah pengguna (hanya saat berlangganan).</span></span></label>
         </div>

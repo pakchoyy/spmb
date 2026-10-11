@@ -26,6 +26,7 @@ export type SekolahPublik = {
   status: "trial" | "aktif" | "tenggang" | "nonaktif";
   terverifikasi?: boolean;
   akreditasi?: string | null;
+  jumlah?: number | null;
   jadwal?: Jadwal[];
   prestasi?: Prestasi[];
   jalur: { id: string; nama: string; kuota: number | null; sisa?: number | null; buka: string | null; tutup: string | null; syarat_berkas: string[] }[];

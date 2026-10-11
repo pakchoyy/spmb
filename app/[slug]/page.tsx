@@ -109,6 +109,11 @@ export default async function HalamanSekolah({ params }: Params) {
             <span className={`size-2 rounded-full ${buka ? "bg-green-700" : "bg-white/60"}`} aria-hidden />
             {buka ? "Pendaftaran dibuka" : "Pendaftaran ditutup"}
           </p>
+          {(s.jumlah ?? 0) >= 5 && (
+            <p className="mt-3 flex items-center gap-2 text-sm font-semibold">
+              <Users className="size-4" aria-hidden /><b className="text-base">{s.jumlah!.toLocaleString("id-ID")}</b> calon siswa sudah mendaftar
+            </p>
+          )}
           <div className="mt-5 grid grid-cols-2 gap-2 sm:max-w-sm">
             {buka && <Link href={`/${s.slug}/daftar`} className="btn bg-white font-bold" style={{ color: "var(--aksen)" }}>Daftar sekarang</Link>}
             {wa && <a href={`${wa}?text=${encodeURIComponent(`Halo, saya ingin bertanya tentang SPMB ${s.nama}.`)}`} target="_blank" rel="noopener noreferrer" className="btn btn-wa whitespace-nowrap px-3"><MessageCircle className="size-5" aria-hidden />Tanya via WA</a>}
