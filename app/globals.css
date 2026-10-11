@@ -63,3 +63,30 @@ a { text-decoration: none; }
 
 /* Mode tulisan besar (tombol A+), disimpan di HP. */
 html.teks-besar { font-size: 112.5%; }
+
+/* Latar hero: gradasi lembut + pola titik */
+.hero-latar {
+  background:
+    radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--kuning) 28%, transparent), transparent 40%),
+    radial-gradient(circle at 90% 30%, color-mix(in srgb, var(--ungu) 18%, transparent), transparent 45%),
+    radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--mint) 18%, transparent), transparent 50%);
+}
+.hero-latar::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .35;
+  background-image: radial-gradient(#2449d81f 1px, transparent 1px); background-size: 18px 18px;
+  mask-image: linear-gradient(to bottom, #000, transparent 85%);
+}
+.hero-latar > * { position: relative; }
+
+/* Tombol WA melayang: denyut halus */
+.wa-melayang::after { content: ""; position: absolute; inset: 0; border-radius: 9999px; box-shadow: 0 0 0 0 #25d36680; animation: denyut-wa 2.4s infinite; }
+@keyframes denyut-wa { 70% { box-shadow: 0 0 0 14px #25d36600; } 100% { box-shadow: 0 0 0 0 #25d36600; } }
+
+/* Akordeon pengaturan */
+.akordeon > summary { list-style: none; cursor: pointer; }
+.akordeon > summary::-webkit-details-marker { display: none; }
+.akordeon[open] .akordeon-panah { transform: rotate(180deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

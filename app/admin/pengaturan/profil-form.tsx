@@ -50,7 +50,7 @@ export default function ProfilForm({ awal, bisaUbah }: { awal: Profil; bisaUbah:
           <label className="flex items-start gap-3"><input type="checkbox" className="mt-1 size-5" checked={f.tampilKuota} onChange={(e) => set({ tampilKuota: e.target.checked })} />
             <span><b>Tampilkan sisa kuota</b><span className="block text-sm text-neutral-600">Orang tua melihat &ldquo;tersisa 12&rdquo; di setiap jalur.</span></span></label>
           <label className="flex items-start gap-3"><input type="checkbox" className="mt-1 size-5" checked={f.tampilDiBeranda} onChange={(e) => set({ tampilDiBeranda: e.target.checked })} />
-            <span><b>Tampilkan sekolah di beranda Yuk Masuk!</b><span className="block text-sm text-neutral-600">Nama dan logo ikut di deretan sekolah pengguna (hanya saat berlangganan).</span></span></label>
+            <span><b>Tampilkan sekolah di beranda SPMB Zone</b><span className="block text-sm text-neutral-600">Nama dan logo ikut di deretan sekolah pengguna (hanya saat berlangganan).</span></span></label>
         </div>
         <div>
           <span className="text-sm font-semibold">Format berkas yang diterima</span>

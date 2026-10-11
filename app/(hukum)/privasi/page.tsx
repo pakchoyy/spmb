@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Kebijakan Privasi" };
 export default function Privasi() {
   return (
     <KerangkaHukum judul="Kebijakan Privasi">
-      <p>Kebijakan ini menjelaskan data apa yang dikumpulkan lewat aplikasi Yuk Masuk!, untuk apa, dan bagaimana dijaga. Data anak adalah data pribadi, dan kami memperlakukannya dengan hati-hati.</p>
+      <p>Kebijakan ini menjelaskan data apa yang dikumpulkan lewat aplikasi SPMB Zone, untuk apa, dan bagaimana dijaga. Data anak adalah data pribadi, dan kami memperlakukannya dengan hati-hati.</p>
 
       <Pasal no={1} judul="Siapa yang mengelola data">
         <Daftar butir={[

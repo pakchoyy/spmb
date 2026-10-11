@@ -84,9 +84,9 @@ export default async function HalamanSekolah({ params }: Params) {
             <TeksBesar />
             <Bagikan judul={`SPMB ${s.nama}`} teks={`Pendaftaran siswa baru ${s.nama} sudah bisa lewat HP:`} className="btn btn-pil bg-white/15 text-white" />
           </div>
-          <div className="mt-4 grid size-20 place-items-center overflow-hidden bg-white shadow-lg [border-radius:2.5rem_2.5rem_1rem_1rem]">
+          <div className="mt-4 grid size-28 place-items-center overflow-hidden bg-white shadow-lg ring-4 ring-white/30 [border-radius:2.5rem_2.5rem_1rem_1rem]">
             {logo
-              ? <Image src={logo} alt={`Logo ${s.nama}`} width={80} height={80} className="size-full object-contain p-2" />
+              ? <Image src={logo} alt={`Logo ${s.nama}`} width={224} height={224} className="size-full object-contain p-1.5" />
               : <span className="font-serif text-3xl font-bold" style={{ color: "var(--aksen)" }}>{s.nama[0]}</span>}
           </div>
           <p className="mt-4 text-sm font-semibold opacity-90">Penerimaan siswa baru (SPMB)</p>

@@ -9,7 +9,7 @@ export function SekolahMarquee({ sekolah }: { sekolah: SekolahPengguna[] }) {
   if (sekolah.length < 3) return null;
   const isi = [...sekolah, ...sekolah]; // digandakan agar putaran mulus
   return (
-    <section className="py-8" aria-label="Sekolah yang memakai Yuk Masuk!">
+    <section className="py-8" aria-label="Sekolah yang memakai SPMB Zone">
       <p className="px-5 text-center text-sm font-semibold text-neutral-600">Sudah dipakai {sekolah.length} sekolah</p>
       <div className="marquee mt-4 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
         <ul className="marquee-isi gap-3" style={{ "--durasi": `${Math.max(20, sekolah.length * 4)}s` } as React.CSSProperties}>

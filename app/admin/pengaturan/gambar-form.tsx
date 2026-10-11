@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Galat } from "@/components/ui";
 import { useAksi } from "@/components/aksi";
 import { urlAset } from "@/lib/berkas";
@@ -9,7 +10,9 @@ type Jenis = "logo" | "banner" | "galeri";
 
 /** Perkecil dan ubah ke WebP di browser sebelum diunggah, supaya ringan di HP orang tua. */
 async function siapkan(file: File, sisiMaks: number): Promise<File> {
-  const bmp = await createImageBitmap(file);
+  // Format yang tidak bisa dibaca browser (mis. HEIC) dikirim apa adanya; server yang menolak dengan pesan jelas.
+  const bmp = await createImageBitmap(file).catch(() => null);
+  if (!bmp) return file;
   const skala = Math.min(1, sisiMaks / Math.max(bmp.width, bmp.height));
   const c = document.createElement("canvas");
   c.width = Math.round(bmp.width * skala);
@@ -20,20 +23,27 @@ async function siapkan(file: File, sisiMaks: number): Promise<File> {
   return new File([blob], "gambar.webp", { type: "image/webp" });
 }
 
-function Pilih({ jenis, label, sisi, aksi }: { jenis: Jenis; label: string; sisi: number; aksi: ReturnType<typeof useAksi> }) {
+function Pilih({ jenis, label, sisi, aksi, maks = 1 }: { jenis: Jenis; label: string; sisi: number; aksi: ReturnType<typeof useAksi>; maks?: number }) {
+  const [progres, setProgres] = useState("");
   return (
     <label className="flex h-12 cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[var(--biru)]/40 bg-[var(--biru-muda)] text-[var(--biru-tua)] text-sm font-semibold">
-      {aksi.pending ? "Memproses…" : label}
-      <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={aksi.pending}
+      {aksi.pending ? (progres || "Memproses…") : label}
+      <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={aksi.pending} multiple={maks > 1}
         onChange={(e) => {
-          const f = e.target.files?.[0];
+          const pilihan = Array.from(e.target.files ?? []).slice(0, maks);
           e.target.value = "";
-          if (!f) return;
+          if (!pilihan.length) return;
           aksi.jalankan(async () => {
-            const kecil = await siapkan(f, sisi);
-            const fd = new FormData();
-            fd.set("file", kecil);
-            return unggahGambar(jenis, fd);
+            // Satu per satu supaya tiap kiriman tetap di bawah batas ukuran Server Action.
+            for (const [i, f] of pilihan.entries()) {
+              if (pilihan.length > 1) setProgres(`Mengunggah ${i + 1}/${pilihan.length}…`);
+              const fd = new FormData();
+              fd.set("file", await siapkan(f, sisi));
+              const r = await unggahGambar(jenis, fd);
+              if (!r.ok) { setProgres(""); return pilihan.length > 1 ? { ok: false as const, pesan: `Foto ke-${i + 1}: ${r.pesan}` } : r; }
+            }
+            setProgres("");
+            return { ok: true as const };
           });
         }} />
     </label>
@@ -91,7 +101,7 @@ export default function GambarForm({ logo, banner, galeri, bisaUbah }: {
             </div>
           ))}
         </div>
-        {bisaUbah && galeri.length < 6 && <div className="mt-2"><Pilih jenis="galeri" label="Tambah foto" sisi={1280} aksi={aGaleri} /></div>}
+        {bisaUbah && galeri.length < 6 && <div className="mt-2"><Pilih jenis="galeri" label={`Tambah foto (bisa pilih ${6 - galeri.length} sekaligus)`} sisi={1280} aksi={aGaleri} maks={6 - galeri.length} /></div>}
         <Galat>{aGaleri.galat || aHapus.galat}</Galat>
       </div>
     </div>

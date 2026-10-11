@@ -36,14 +36,14 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
   if (selesai) {
     return (
       <Halaman ikon={MailCheck} judul="Cek email Anda" sub={`Kami mengirim tautan konfirmasi ke ${f.email}.`}>
-        <p>Klik tautan di email itu untuk mengaktifkan akun. Masa coba gratis 7 hari mulai setelah akun aktif. Tidak ada email? Periksa folder spam.</p>
+        <p>Klik tautan di email itu untuk mengaktifkan akun. Tidak ada email? Periksa folder spam.</p>
         <Link className="tautan" href="/masuk">Sudah konfirmasi? Masuk</Link>
       </Halaman>
     );
   }
 
   return (
-    <Halaman ikon={School} judul="Coba gratis 7 hari" sub="Buat halaman SPMB sekolah Anda. Tanpa kartu kredit.">
+    <Halaman ikon={School} judul="Daftarkan sekolah" sub="Buat halaman SPMB sekolah Anda. Tanpa kartu kredit.">
       <ol className="grid grid-cols-3 gap-2 text-center text-xs font-semibold">
         {["Isi data sekolah", "Atur halaman", "Bagikan ke orang tua"].map((t, i) => (
           <li key={t} className="rounded-xl bg-[var(--biru-muda)] px-2 py-2 text-[var(--biru-tua)]"><span className="block text-base font-bold">{i + 1}</span>{t}</li>

@@ -17,7 +17,7 @@ export const revalidate = 3600; // harga dan daftar sekolah cukup segar tiap jam
 
 export const metadata: Metadata = {
   title: `${NAMA_APP} — Halaman SPMB sendiri untuk sekolah`,
-  description: "Sekolah mendapat halaman SPMB sendiri. Orang tua daftar dari HP tanpa akun, sekolah memeriksa berkas dengan mudah. Coba gratis 7 hari.",
+  description: "Sekolah mendapat halaman SPMB sendiri. Orang tua daftar dari HP tanpa akun, sekolah memeriksa berkas dengan mudah.",
 };
 
 async function ambilData(): Promise<{ harga: number | null; sekolah: SekolahPengguna[]; testimoni: TestimoniPublik[] }> {
@@ -33,10 +33,10 @@ async function ambilData(): Promise<{ harga: number | null; sekolah: SekolahPeng
   return { harga, sekolah, testimoni };
 }
 
-const contoh = process.env.NEXT_PUBLIC_CONTOH_SLUG;
+const contoh = process.env.NEXT_PUBLIC_CONTOH_SLUG || "sdbaru";
 
 const LANGKAH = [
-  { ikon: School, warna: "var(--biru-muda)", aksen: "var(--biru)", j: "Daftar dan atur sekolah", t: "Pilih alamat halaman, isi profil, lalu atur jalur dan isian form. Masa coba 7 hari langsung berjalan." },
+  { ikon: School, warna: "var(--biru-muda)", aksen: "var(--biru)", j: "Daftar dan atur sekolah", t: "Pilih alamat halaman, isi profil, lalu atur jalur dan isian form." },
   { ikon: QrCode, warna: "var(--kuning-muda)", aksen: "#b7780a", j: "Bagikan ke orang tua", t: "Unduh QR dan tautan halaman sekolah untuk brosur, spanduk, atau grup WhatsApp." },
   { ikon: BadgeCheck, warna: "var(--mint-muda)", aksen: "var(--mint)", j: "Periksa dari HP", t: "Lihat pendaftar baru, buka berkasnya, lalu tetapkan Diterima, Cadangan, atau Ditolak." },
 ];
@@ -52,7 +52,7 @@ const FITUR = [
 
 const FAQ = [
   ["Apakah orang tua perlu membuat akun?", "Tidak. Orang tua mengisi form, mengunggah berkas, lalu mendapat nomor pendaftaran. Status bisa dicek dengan nomor itu dan tanggal lahir anak."],
-  ["Bagaimana cara berlangganan?", "Setelah masa coba, beli paket tahunan memakai email admin sekolah. Kode aktivasi dikirim ke email itu, lalu dimasukkan di menu Langganan."],
+  ["Bagaimana cara berlangganan?", "Beli paket tahunan memakai email admin sekolah. Kode aktivasi dikirim ke email itu, lalu dimasukkan di menu Langganan."],
   ["Bagaimana jika langganan habis?", "Ada masa tenggang 3 hari: data masih bisa dilihat, tetapi pendaftaran ditutup. Setelah itu halaman pendaftaran nonaktif, data tetap tersimpan dan bisa diunduh ke Excel."],
   ["Apakah zonasi atau nilai dihitung otomatis?", "Belum. Sekolah menetapkan hasil setelah memeriksa data dan berkas, lalu bisa menghubungi orang tua lewat tombol WhatsApp."],
   ["Berapa lama data disimpan?", "Selama sekolah berlangganan, dan tetap tersimpan setelah nonaktif. Admin bisa mengarsipkan atau menghapus data tahun lalu."],
@@ -102,16 +102,16 @@ export default async function Beranda() {
       </header>
 
       <main className="flex-1">
-        <section className="relative overflow-hidden px-5 pb-6 pt-8">
+        <section className="hero-latar relative overflow-hidden px-5 pb-10 pt-8">
           <div className="mx-auto grid max-w-4xl items-center gap-6 sm:grid-cols-2">
             <div className="muncul text-center sm:text-left">
               <p className="inline-flex items-center gap-1.5 rounded-full bg-[var(--kuning-muda)] px-3 py-1 text-sm font-bold text-[#8a5a00]">
                 <CalendarClock className="size-4" aria-hidden /> SPMB online untuk sekolah
               </p>
-              <h1 className="mt-3 font-serif text-4xl font-bold leading-tight">Halaman SPMB sendiri untuk sekolah Anda</h1>
+              <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl">Web SPMB <span className="bg-gradient-to-r from-[var(--biru)] to-[var(--ungu)] bg-clip-text text-transparent">Custom</span> untuk sekolah anda</h1>
               <p className="mt-3 text-lg text-neutral-700">Orang tua daftar dari HP tanpa akun. Sekolah memeriksa berkas dengan mudah.</p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <TombolCoba className="btn btn-utama h-14 text-lg">Coba gratis 7 hari <ArrowRight className="size-5" aria-hidden /></TombolCoba>
+                <TombolCoba className="btn btn-utama h-14 text-lg">Daftarkan sekolah <ArrowRight className="size-5" aria-hidden /></TombolCoba>
                 {contoh && <Link href={`/${contoh}`} className="btn btn-lembut h-14">Lihat contoh halaman</Link>}
               </div>
               <ul className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-neutral-600 sm:justify-start">
@@ -170,12 +170,12 @@ export default async function Beranda() {
                 ? <p className="mt-1 font-serif text-4xl font-bold">Rp{harga.toLocaleString("id-ID")}<span className="text-base font-normal text-neutral-600"> / tahun</span></p>
                 : <p className="mt-1 font-serif text-2xl font-bold">Tanyakan harga terbaik</p>}
               <ul className="mt-4 space-y-2 text-left">
-                {["Coba gratis 7 hari dulu", "Pendaftar tanpa batas jumlah", "Semua fitur, tanpa biaya tambahan", "Data bisa diunduh kapan saja"].map((x) => (
+                {["Pendaftar tanpa batas jumlah", "Semua fitur, tanpa biaya tambahan", "Data bisa diunduh kapan saja"].map((x) => (
                   <li key={x} className="flex gap-2"><BadgeCheck className="size-5 shrink-0 text-[var(--mint)]" aria-hidden />{x}</li>
                 ))}
               </ul>
               <div className="mt-6 grid gap-2">
-                <TombolCoba className="btn btn-utama w-full">Coba gratis</TombolCoba>
+                <TombolCoba className="btn btn-utama w-full">Daftarkan sekolah</TombolCoba>
                 {!harga && (
                   <a href={linkWaBantuan(PESAN_WA.harga)} target="_blank" rel="noopener noreferrer" className="btn btn-wa w-full">
                     <MessageCircle className="size-5" aria-hidden /> Tanya harga lewat WhatsApp

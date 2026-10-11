@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import Link from "next/link";
-import { Archive, Building2, Eye, ImageIcon, ListPlus, QrCode, Route } from "lucide-react";
+import { Archive, Building2, ChevronDown, Eye, ImageIcon, ListPlus, QrCode, Route, type LucideIcon } from "lucide-react";
 import QRCode from "qrcode";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import ProfilForm, { type Profil } from "./profil-form";
@@ -9,20 +9,28 @@ import JalurForm, { type JalurAdmin } from "./jalur-form";
 import FieldForm, { type FieldAdmin } from "./field-form";
 import Qr from "./qr";
 import ArsipForm from "./arsip-form";
+import BukaHash from "./buka-hash";
 
 export const dynamic = "force-dynamic";
 
 const kini = () => Date.now();
 
-const Bagian = ({ id, judul, bantu, children }: { id: string; judul: string; bantu?: string; children: React.ReactNode }) => (
-  <section id={id} className="scroll-mt-20 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
-    <h2 className="font-serif text-xl font-bold">{judul}</h2>
-    {bantu && <p className="mt-1 text-sm text-neutral-600">{bantu}</p>}
-    <div className="mt-4">{children}</div>
-  </section>
+/** Satu bagian pengaturan berbentuk tanya-jawab: ketuk judul untuk membuka. Hanya satu yang terbuka (atribut name). */
+const Bagian = ({ id, judul, bantu, ikon: Ikon, warna, children }: {
+  id: string; judul: string; bantu?: string; ikon: LucideIcon; warna: string; children: React.ReactNode;
+}) => (
+  <details id={id} name="pengaturan" className="akordeon scroll-mt-4 overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5 open:ring-2 open:ring-[var(--biru)]/30">
+    <summary className="flex items-center gap-3 p-4">
+      <span className="grid size-11 shrink-0 place-items-center rounded-2xl" style={{ background: warna }}><Ikon className="size-5 text-[var(--biru-tua)]" aria-hidden /></span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-bold">{judul}</span>
+        {bantu && <span className="block text-sm text-neutral-600">{bantu}</span>}
+      </span>
+      <ChevronDown className="akordeon-panah size-5 shrink-0 text-neutral-500 transition-transform" aria-hidden />
+    </summary>
+    <div className="border-t border-black/5 p-5">{children}</div>
+  </details>
 );
-
-const TAB = [["profil", "Profil", Building2], ["gambar", "Foto", ImageIcon], ["jalur", "Jalur", Route], ["form", "Form", ListPlus], ["qr", "QR", QrCode], ["arsip", "Arsip", Archive]] as const;
 
 export default async function Pengaturan() {
   const { db, sekolah } = await wajibAdmin();
@@ -61,23 +69,18 @@ export default async function Pengaturan() {
         <Link href={`/${sekolah.slug}`} target="_blank" className="btn btn-pil btn-kuning mt-4"><Eye className="size-4" aria-hidden />Lihat seperti orang tua</Link>
       </header>
       {!bisaUbah && <p className="mt-3 rounded-2xl bg-[var(--kuning-muda)] p-3 text-sm">Langganan tidak aktif, pengaturan hanya bisa dibaca. <Link className="tautan" href="/admin/langganan">Kelola langganan</Link></p>}
-      <nav className="sticky top-0 z-20 -mx-4 mt-3 overflow-x-auto bg-[var(--background)]/95 px-4 py-2 backdrop-blur">
-        <ul className="flex gap-2">
-          {TAB.map(([i, l, Ikon]) => (
-            <li key={i}><a href={`#${i}`} className="btn btn-pil btn-lembut whitespace-nowrap"><Ikon className="size-4" aria-hidden />{l}</a></li>
-          ))}
-        </ul>
-      </nav>
-      <div className="mt-2 space-y-4">
-        <Bagian id="profil" judul="Profil sekolah" bantu="Tampil di halaman sekolah yang dilihat orang tua."><ProfilForm awal={s as Profil} bisaUbah={bisaUbah} /></Bagian>
-        <Bagian id="gambar" judul="Logo, banner, dan galeri">
+      <p className="mt-4 px-1 text-sm text-neutral-600">Ketuk salah satu bagian untuk membuka. Setiap bagian punya tombol simpan sendiri.</p>
+      <div className="mt-2 space-y-3">
+        <Bagian id="profil" ikon={Building2} warna="var(--biru-muda)" judul="Profil sekolah" bantu="Nama, alamat, kontak, dan info yang dilihat orang tua."><ProfilForm awal={s as Profil} bisaUbah={bisaUbah} /></Bagian>
+        <Bagian id="gambar" ikon={ImageIcon} warna="var(--kuning-muda)" judul="Logo, banner, dan galeri" bantu="Foto bisa dipilih beberapa sekaligus.">
           <GambarForm logo={s?.logo_path ?? null} banner={s?.banner_path ?? null} galeri={galeri ?? []} bisaUbah={bisaUbah} />
         </Bagian>
-        <Bagian id="jalur" judul="Jalur SPMB" bantu="Boleh dikosongkan. Tanpa jalur, form langsung menerima pendaftar."><JalurForm jalur={jalurAdmin} bisaUbah={bisaUbah} /></Bagian>
-        <Bagian id="form" judul="Isian formulir" bantu="Pertanyaan tambahan untuk orang tua."><FieldForm fields={(fields ?? []) as FieldAdmin[]} bisaUbah={bisaUbah} /></Bagian>
-        <Bagian id="qr" judul="QR dan tautan" bantu="Cetak di brosur atau spanduk, atau kirim ke grup WhatsApp."><Qr url={url} svg={svg} png={png} slug={sekolah.slug} /></Bagian>
-        <Bagian id="arsip" judul="Data tahun lalu"><ArsipForm slug={sekolah.slug} aktif={ringkas.total} arsip={ringkas.arsip} bisaUbah={bisaUbah} /></Bagian>
+        <Bagian id="jalur" ikon={Route} warna="var(--mint-muda)" judul="Jalur SPMB" bantu="Zonasi, prestasi, dll. Boleh dikosongkan."><JalurForm jalur={jalurAdmin} bisaUbah={bisaUbah} /></Bagian>
+        <Bagian id="form" ikon={ListPlus} warna="var(--ungu-muda)" judul="Isian formulir" bantu="Pertanyaan tambahan untuk orang tua."><FieldForm fields={(fields ?? []) as FieldAdmin[]} bisaUbah={bisaUbah} /></Bagian>
+        <Bagian id="qr" ikon={QrCode} warna="var(--oranye-muda)" judul="QR dan tautan" bantu="Untuk brosur, spanduk, atau grup WhatsApp."><Qr url={url} svg={svg} png={png} slug={sekolah.slug} /></Bagian>
+        <Bagian id="arsip" ikon={Archive} warna="#eceff5" judul="Data tahun lalu" bantu="Arsipkan pendaftar untuk tahun ajaran baru."><ArsipForm slug={sekolah.slug} aktif={ringkas.total} arsip={ringkas.arsip} bisaUbah={bisaUbah} /></Bagian>
       </div>
+      <BukaHash />
     </main>
   );
 }

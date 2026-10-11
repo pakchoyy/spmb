@@ -20,10 +20,10 @@ const MINT = "var(--mint)", KUNING = "var(--kuning)";
 const ADMIN: Langkah[] = [
   {
     judul: "Daftar dan pilih alamat halaman",
-    teks: "Ketuk Coba gratis, lalu daftar dengan Google atau email. Isi nama sekolah dan pilih alamat halaman. Masa coba 7 hari langsung berjalan.",
+    teks: "Ketuk Daftarkan sekolah, lalu daftar dengan Google atau email. Isi nama sekolah dan pilih alamat halaman.",
     tips: "Pilih alamat yang pendek dan mudah diingat, misalnya sdn1menteng.",
     gambar: (
-      <Layar judul="Coba gratis 7 hari" label="Layar daftar sekolah">
+      <Layar judul="Daftarkan sekolah" label="Layar daftar sekolah">
         <rect x="24" y="72" width="132" height="20" rx="7" fill="#fff" stroke="#c9cfe3" />
         <Teks y={85} t="G  Daftar dengan Google" ukuran={7.5} tebal tengah />
         <Ketuk x={148} y={82} />
@@ -143,12 +143,12 @@ const ADMIN: Langkah[] = [
   },
   {
     judul: "Berlangganan",
-    teks: "Sebelum masa coba habis, buka Langganan dan ketuk Beli sekarang. Kode aktivasi dikirim ke email admin; masukkan kodenya di halaman yang sama.",
+    teks: "Buka Langganan dan ketuk Beli sekarang. Kode aktivasi dikirim ke email admin; masukkan kodenya di halaman yang sama.",
     tips: "Perpanjangan menambah 1 tahun dari tanggal berakhir, sisa hari tidak hilang.",
     gambar: (
       <Layar judul="Langganan" label="Layar langganan">
         <rect x="20" y="68" width="140" height="44" rx="10" fill="var(--biru-muda)" />
-        <Teks x={30} y={86} t="Masa coba gratis" ukuran={9} tebal warna="var(--biru-tua)" />
+        <Teks x={30} y={86} t="Status langganan" ukuran={9} tebal warna="var(--biru-tua)" />
         <Teks x={30} y={100} t="Sisa 5 hari" ukuran={7.5} warna="var(--biru-tua)" />
         <Tombol y={122} teks="Beli sekarang" warna={KUNING} gelap />
         <Kolom y={162} label="Kode aktivasi" isi="SPMB-AB3CD" />
@@ -324,7 +324,7 @@ export default function CaraPakai() {
 
         <section className="px-4 pb-10">
           <div className="mx-auto max-w-md space-y-3 text-center">
-            <TombolCoba className="btn btn-utama h-14 w-full text-lg">Coba gratis 7 hari <ArrowRight className="size-5" aria-hidden /></TombolCoba>
+            <TombolCoba className="btn btn-utama h-14 w-full text-lg">Daftarkan sekolah <ArrowRight className="size-5" aria-hidden /></TombolCoba>
             <BantuanWa />
           </div>
         </section>

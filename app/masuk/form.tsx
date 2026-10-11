@@ -55,7 +55,7 @@ export default function FormMasuk({ awal }: { awal: string }) {
       </button>
       <div className="rounded-2xl bg-[var(--kuning-muda)] p-4 text-center">
         <p className="text-sm font-semibold">Sekolah Anda belum punya akun?</p>
-        <Link className="btn btn-kuning btn-pil mt-2" href="/daftar">Coba gratis 7 hari</Link>
+        <Link className="btn btn-kuning btn-pil mt-2" href="/daftar">Daftarkan sekolah</Link>
       </div>
       <BantuanWa konteks="sekolah" />
     </Halaman>

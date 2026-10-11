@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Syarat dan Ketentuan" };
 export default function Syarat() {
   return (
     <KerangkaHukum judul="Syarat dan Ketentuan">
-      <p>Dokumen ini mengatur penggunaan aplikasi Yuk Masuk! (&ldquo;Layanan&rdquo;) oleh sekolah. Dengan mendaftar atau memakai Layanan, pihak sekolah menyatakan setuju. Ketentuan bagi orang tua calon siswa ada di <Link className="tautan" href="/privasi">Kebijakan Privasi</Link>.</p>
+      <p>Dokumen ini mengatur penggunaan aplikasi SPMB Zone (&ldquo;Layanan&rdquo;) oleh sekolah. Dengan mendaftar atau memakai Layanan, pihak sekolah menyatakan setuju. Ketentuan bagi orang tua calon siswa ada di <Link className="tautan" href="/privasi">Kebijakan Privasi</Link>.</p>
 
       <Pasal no={1} judul="Pihak dan istilah">
         <Daftar butir={[

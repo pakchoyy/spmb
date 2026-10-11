@@ -28,7 +28,7 @@ export default function TestimoniForm({ awal }: { awal: Awal }) {
   if (awal && !buka) {
     return (
       <section className="flex items-center justify-between gap-3 rounded-3xl bg-[var(--ungu-muda)] p-4 print:hidden">
-        <p className="text-sm"><b>Terima kasih atas testimoninya!</b> Sudah tampil di beranda Yuk Masuk!</p>
+        <p className="text-sm"><b>Terima kasih atas testimoninya!</b> Sudah tampil di beranda SPMB Zone</p>
         <button className="btn btn-pil bg-white text-[var(--ungu)]" onClick={() => setBuka(true)}>Ubah</button>
       </section>
     );
@@ -37,7 +37,7 @@ export default function TestimoniForm({ awal }: { awal: Awal }) {
   return (
     <section className="rounded-3xl bg-[var(--ungu-muda)] p-5 print:hidden">
       <div className="flex items-start justify-between gap-2">
-        <h2 className="flex items-center gap-2 font-bold"><MessageSquareHeart className="size-5 text-[var(--ungu)]" aria-hidden />Bagaimana pengalaman memakai Yuk Masuk!?</h2>
+        <h2 className="flex items-center gap-2 font-bold"><MessageSquareHeart className="size-5 text-[var(--ungu)]" aria-hidden />Bagaimana pengalaman memakai SPMB Zone?</h2>
         {!awal && <button onClick={sembunyikan} aria-label="Tutup" className="grid size-8 shrink-0 place-items-center rounded-full bg-white/70"><X className="size-4" aria-hidden /></button>}
       </div>
       <p className="mt-1 text-sm text-neutral-700">Testimoni Anda tampil di beranda dan membantu sekolah lain.</p>

@@ -1,9 +1,9 @@
 // Identitas aplikasi di satu tempat.
-export const NAMA_APP = "Yuk Masuk!";
+export const NAMA_APP = "SPMB Zone";
 export const NOMOR_WA = "6289530713597"; // bantuan, kritik & saran
 
 /** Host aplikasi tanpa protokol, untuk contoh alamat halaman sekolah. */
-export const HOST_APP = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://yukmasuk.id").replace(/^https?:\/\//, "").replace(/\/$/, "");
+export const HOST_APP = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://spmbz.web.id").replace(/^https?:\/\//, "").replace(/\/$/, "");
 
 export const linkWaBantuan = (pesan: string) => `https://wa.me/${NOMOR_WA}?text=${encodeURIComponent(pesan)}`;
 
@@ -13,3 +13,6 @@ export const PESAN_WA = {
   harga: `Halo, saya ingin tahu harga paket ${NAMA_APP} untuk sekolah kami.`,
   saran: `Halo, saya punya kritik/saran untuk ${NAMA_APP}: `,
 };
+
+export const TAGLINE = "Web SPMB Custom untuk sekolah anda";
+export const TIKTOK = "https://www.tiktok.com/@pak.choyy";

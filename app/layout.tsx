@@ -10,8 +10,8 @@ const isi = Plus_Jakarta_Sans({ variable: "--font-isi", subsets: ["latin"] });
 export const viewport: Viewport = { themeColor: "#2449d8" };
 
 export const metadata: Metadata = {
-  title: "Yuk Masuk! — SPMB online untuk sekolah",
-  description: "Pendaftaran SPMB online untuk sekolah: coba gratis 7 hari.",
+  title: "SPMB Zone — Web SPMB Custom untuk sekolah anda",
+  description: "Pendaftaran SPMB online untuk sekolah. Halaman SPMB sendiri, periksa berkas dengan mudah.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
