@@ -107,44 +107,53 @@ export default async function HalamanSekolah({ params }: Params) {
   return (
     <div style={{ "--aksen": s.warna_aksen, "--muda": "color-mix(in srgb, var(--aksen) 10%, white)" } as React.CSSProperties}
       className="flex min-h-screen flex-col">
-      <header className="relative overflow-hidden px-5 pb-10 pt-5 text-white"
+      <header className="relative overflow-hidden px-5 pb-10 pt-5 text-white lg:pb-12 lg:pt-8"
         style={{ background: "linear-gradient(160deg, var(--aksen), color-mix(in srgb, var(--aksen) 65%, black))" }}>
         {banner && <Image src={banner} alt="" fill priority sizes="100vw" className="object-cover opacity-25"
           style={{ objectPosition: `${ba.x}% ${ba.y}%`, transform: `scale(${ba.z / 100})`, transformOrigin: `${ba.x}% ${ba.y}%` }} />}
         <div aria-hidden className="absolute -right-10 -top-10 size-40 rounded-full bg-white/10" />
-        <div className="relative mx-auto max-w-2xl lg:max-w-6xl lg:py-6">
-          <div className="flex justify-end gap-2">
+        <div className="relative mx-auto max-w-2xl lg:max-w-6xl lg:py-2">
+          {/* layar lebar: tombol kecil di pojok, identitas sekolah sebaris agar bagian atas tidak makan tempat */}
+          <div className="flex justify-end gap-2 lg:absolute lg:right-0 lg:top-0 lg:z-10">
             <TeksBesar />
             <Bagikan judul={`SPMB ${s.nama}`} teks={`Pendaftaran siswa baru ${s.nama} sudah bisa lewat HP:`} className="btn btn-pil bg-white/15 text-white" />
           </div>
-          <div className="mt-4 grid size-28 place-items-center overflow-hidden bg-white shadow-lg ring-4 ring-white/30 [border-radius:2.5rem_2.5rem_1rem_1rem]">
+          <div className="lg:flex lg:items-center lg:gap-8">
+          <div className="mt-4 grid size-28 shrink-0 place-items-center lg:mt-0 overflow-hidden bg-white shadow-lg ring-4 ring-white/30 [border-radius:2.5rem_2.5rem_1rem_1rem]">
             {logo
               ? <Image src={logo} alt={`Logo ${s.nama}`} width={224} height={224} className="size-full object-contain p-1.5" />
               : <span className="font-serif text-3xl font-bold" style={{ color: "var(--aksen)" }}>{s.nama[0]}</span>}
           </div>
-          <p className="mt-4 text-sm font-semibold opacity-90">Penerimaan siswa baru (SPMB)</p>
+          <div className="min-w-0 flex-1 lg:pr-4">
+          <p className="mt-4 text-sm font-semibold opacity-90 lg:mt-0">Penerimaan siswa baru (SPMB)</p>
           <h1 className="font-serif text-3xl font-bold leading-tight">
             {s.nama}
             {s.terverifikasi && <BadgeCheck className="ml-1 inline size-6 align-[-0.1em] text-[var(--kuning)]" aria-label="Sekolah terverifikasi" />}
           </h1>
           {s.alamat && <p className="mt-1 flex gap-1 text-sm opacity-90"><MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />{s.alamat}</p>}
+          <div className="mt-3 flex flex-wrap items-center gap-2">
           {s.akreditasi && (
-            <p className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-white px-3 py-1.5 text-sm font-bold text-neutral-900 shadow">
+            <p className="inline-flex items-center gap-2 rounded-2xl bg-white px-3 py-1.5 text-sm font-bold text-neutral-900 shadow">
               <Award className="size-5" style={{ color: "var(--aksen)" }} aria-hidden />Terakreditasi {s.akreditasi}
             </p>
           )}
-          <p className={`mt-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold ${buka ? "bg-[var(--kuning)] text-black" : "bg-white/20"}`}>
+          <p className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold ${buka ? "bg-[var(--kuning)] text-black" : "bg-white/20"}`}>
             <span className={`size-2 rounded-full ${buka ? "bg-green-700" : "bg-white/60"}`} aria-hidden />
             {buka ? "Pendaftaran dibuka" : "Pendaftaran ditutup"}
           </p>
+          </div>
+          </div>
+          <div className="lg:w-80 lg:shrink-0 lg:pt-10">
           {(s.jumlah ?? 0) >= 5 && (
             <p className="mt-3 flex items-center gap-2 text-sm font-semibold">
               <Users className="size-4" aria-hidden /><b className="text-base">{s.jumlah!.toLocaleString("id-ID")}</b> calon siswa sudah mendaftar
             </p>
           )}
-          <div className="mt-5 grid grid-cols-2 gap-2 sm:max-w-sm">
-            {buka && <Link href={`/${s.slug}/daftar`} className="btn bg-white font-bold" style={{ color: "var(--aksen)" }}>Daftar sekarang</Link>}
+          <div className="mt-5 grid grid-cols-2 gap-2 sm:max-w-sm lg:max-w-none">
+            {buka && <Link href={`/${s.slug}/daftar`} className="btn whitespace-nowrap bg-white font-bold" style={{ color: "var(--aksen)" }}>Daftar sekarang</Link>}
             {wa && <a href={`${wa}?text=${encodeURIComponent(`Halo, saya ingin bertanya tentang SPMB ${s.nama}.`)}`} target="_blank" rel="noopener noreferrer" className="btn btn-wa whitespace-nowrap px-3"><IkonWa className="size-5" aria-hidden />Tanya via WA</a>}
+          </div>
+          </div>
           </div>
         </div>
       </header>
