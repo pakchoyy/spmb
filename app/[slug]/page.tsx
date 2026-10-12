@@ -2,7 +2,7 @@ import { IkonIg, IkonWa } from "@/components/ikon-merek";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Award, BadgeCheck, Trophy, CheckCircle2, MapPin, Search, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Award, BadgeCheck, Trophy, CheckCircle2, MapPin, Search, Users } from "lucide-react";
 import TeksBesar from "@/components/teks-besar";
 import Bagikan from "@/components/bagikan";
 import PasangApp from "@/components/pasang-app";
@@ -157,7 +157,7 @@ export default async function HalamanSekolah({ params }: Params) {
         <div className="min-w-0 space-y-4 lg:col-span-7">
         {s.keunggulan.length > 0 && (
           <section className={kartu}>
-            <h2 className="font-serif text-xl font-bold">Keunggulan sekolah</h2>
+            <h2 className="text-center font-serif text-xl font-bold">Keunggulan sekolah</h2>
             <ul className="mt-3 grid gap-2">
               {s.keunggulan.map((k) => (
                 <li key={k} className="flex gap-3 rounded-2xl p-3" style={{ background: "var(--muda)" }}>
@@ -170,7 +170,7 @@ export default async function HalamanSekolah({ params }: Params) {
 
         {prestasi.length > 0 && (
           <section className="py-1">
-            <h2 className="flex items-center gap-2 px-1 font-serif text-xl font-bold"><Trophy className="size-5" style={{ color: "var(--aksen)" }} aria-hidden />Prestasi siswa</h2>
+            <h2 className="flex items-center justify-center gap-2 px-1 font-serif text-xl font-bold"><Trophy className="size-5" style={{ color: "var(--aksen)" }} aria-hidden />Prestasi siswa</h2>
             {s.prestasi_gerak && prestasi.length > 1 ? (
               <div className="marquee -mx-4 mt-3 overflow-hidden pb-2">
                 <ul className="marquee-isi gap-3 px-2" style={{ "--durasi": `${Math.max(18, prestasi.length * 7)}s` } as React.CSSProperties}>
@@ -189,7 +189,7 @@ export default async function HalamanSekolah({ params }: Params) {
 
         {s.galeri.length > 0 && (
           <section className={kartu}>
-            <h2 className="font-serif text-xl font-bold">Galeri</h2>
+            <h2 className="text-center font-serif text-xl font-bold">Galeri Sekolah</h2>
             <div className="mt-3 grid grid-cols-2 gap-2">
               {s.galeri.map((g) => (
                 <Image key={g} src={urlAset(g)!} alt="" width={400} height={300} sizes="(max-width: 640px) 50vw, 320px" className="aspect-[4/3] w-full rounded-2xl object-cover" />
@@ -201,7 +201,7 @@ export default async function HalamanSekolah({ params }: Params) {
         </div>
         <div className="mt-4 min-w-0 space-y-4 lg:col-span-5 lg:mt-0 lg:pt-10">
         {(jadwal.length > 0 || s.jalur.length > 0 || berkas.length > 0) && (
-          <div className="px-1 pt-4 lg:pt-0">
+          <div className="px-1 pt-4 text-center lg:pt-0">
             <p className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--aksen)" }}>Penerimaan siswa baru</p>
             <h2 className="font-serif text-2xl font-bold">Cara mendaftar</h2>
           </div>
@@ -209,7 +209,7 @@ export default async function HalamanSekolah({ params }: Params) {
 
         {jadwal.length > 0 && (
           <section className={kartu}>
-            <h2 className="font-serif text-xl font-bold"><Langkah n={1} />Jadwal SPMB</h2>
+            <h2 className="text-center font-serif text-xl font-bold"><Langkah n={1} />Jadwal SPMB</h2>
             <ol className="mt-4">
               {jadwal.map((j, i) => {
                 const t = hariIni(), lewat = (j.selesai ?? j.mulai) < t, berjalan = !lewat && j.mulai <= t;
@@ -233,7 +233,7 @@ export default async function HalamanSekolah({ params }: Params) {
 
         {s.jalur.length > 0 && (
           <section className={kartu}>
-            <h2 className="font-serif text-xl font-bold"><Langkah n={jadwal.length ? 2 : 1} />Pilih jalur pendaftaran</h2>
+            <h2 className="text-center font-serif text-xl font-bold"><Langkah n={jadwal.length ? 2 : 1} />Pilih jalur pendaftaran</h2>
             <div className="mt-3 grid gap-2">
               {s.jalur.map((j) => {
                 const k = keadaan(j);
@@ -263,7 +263,7 @@ export default async function HalamanSekolah({ params }: Params) {
 
         {berkas.length > 0 && (
           <section className={kartu}>
-            <h2 className="font-serif text-xl font-bold"><Langkah n={(jadwal.length ? 1 : 0) + (s.jalur.length ? 1 : 0) + 1} />Siapkan berkas ini</h2>
+            <h2 className="text-center font-serif text-xl font-bold"><Langkah n={(jadwal.length ? 1 : 0) + (s.jalur.length ? 1 : 0) + 1} />Siapkan berkas ini</h2>
             <p className="mt-1 text-sm text-neutral-600">Foto langsung dari HP juga boleh, maksimal 2 MB per berkas. Diunggah setelah mengisi formulir.</p>
             <ul className="mt-3 flex flex-wrap gap-2">
               {berkas.map((b) => <li key={b} className="rounded-full px-3 py-1 text-sm font-semibold" style={{ background: "var(--muda)" }}>{b}</li>)}
@@ -272,11 +272,15 @@ export default async function HalamanSekolah({ params }: Params) {
         )}
 
         <section className={kartu}>
-          <h2 className="font-serif text-xl font-bold">Ada pertanyaan?</h2>
+          <h2 className="text-center font-serif text-xl font-bold">Ada pertanyaan?</h2>
           <div className="mt-3 grid gap-2">
             {wa && <a className="btn btn-wa" href={wa} rel="noopener"><IkonWa className="size-5" aria-hidden />Chat WhatsApp sekolah</a>}
             <Link className="btn btn-lembut" href={`/${s.slug}/cek-status`}><Search className="size-5" aria-hidden />Cek status pendaftaran</Link>
-            <Link className="tautan text-center text-sm" href="/cara-pakai#orang-tua">Bingung cara daftar? Lihat panduan bergambar</Link>
+            <Link href="/cara-pakai#orang-tua" className="flex items-center gap-3 rounded-2xl border-2 border-dashed p-3 transition active:scale-[.98]" style={{ background: "var(--muda)", borderColor: "color-mix(in srgb, var(--aksen) 45%, transparent)" }}>
+              <span className="grid size-11 shrink-0 place-items-center rounded-xl text-white" style={{ background: "var(--aksen)" }}><BookOpen className="size-5" aria-hidden /></span>
+              <span className="min-w-0 flex-1"><b className="block">Bingung cara daftar?</b><span className="text-sm text-neutral-600">Lihat panduan bergambar langkah demi langkah</span></span>
+              <ArrowRight className="size-5 shrink-0" style={{ color: "var(--aksen)" }} aria-hidden />
+            </Link>
             <div className="grid grid-cols-2 gap-2">
               {peta && <a className="btn btn-garis btn-pil" href={peta} rel="noopener noreferrer"><MapPin className="size-4" aria-hidden />Lihat peta</a>}
               {ig && <a className="btn btn-garis btn-pil" href={ig.url} rel="noopener noreferrer"><IkonIg className="size-4" />{ig.nama}</a>}
