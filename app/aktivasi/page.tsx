@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Aktivasi langganan", robots: { index
 export const dynamic = "force-dynamic";
 
 export default async function Aktivasi({ searchParams }: PageProps<"/aktivasi">) {
-  const { t } = await searchParams;
+  const { t, email } = await searchParams;
   const token = typeof t === "string" ? t.slice(0, 64) : "";
   const { data: p } = await supabaseService().from("pengaturan").select("token_aktivasi,lynk_url").eq("id", 1).single();
   if (!token || token !== p?.token_aktivasi) {
@@ -27,5 +27,5 @@ export default async function Aktivasi({ searchParams }: PageProps<"/aktivasi">)
       </Halaman>
     );
   }
-  return <FormAktivasi token={token} sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY ?? null} />;
+  return <FormAktivasi token={token} emailAwal={typeof email === "string" ? email.slice(0, 200) : ""} sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY ?? null} />;
 }

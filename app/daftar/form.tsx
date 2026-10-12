@@ -12,8 +12,8 @@ import SlugField from "@/components/slug-field";
 import { buatSlug } from "@/lib/slug";
 import { daftarSekolah } from "./actions";
 
-export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
-  const [f, setF] = useState({ nama: "", slug: "", npsn: "", email: "", sandi: "", kodeRef: kodeAwal, setuju: false });
+export default function FormDaftarSekolah({ kodeAwal, token = "", emailAwal = "" }: { kodeAwal: string; token?: string; emailAwal?: string }) {
+  const [f, setF] = useState({ nama: "", slug: "", npsn: "", email: emailAwal, sandi: "", kodeRef: kodeAwal, setuju: false });
   const [slugManual, setSlugManual] = useState(false);
   const [galat, setGalat] = useState("");
   const [selesai, setSelesai] = useState(false);
@@ -28,7 +28,7 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
       try {
         const r = await daftarSekolah(f);
         if (!r.ok) setGalat(r.pesan);
-        else if (r.langsung) { router.push("/admin"); router.refresh(); }
+        else if (r.langsung) { router.push(token ? `/admin/langganan?t=${token}` : "/admin"); router.refresh(); }
         else setSelesai(true);
       } catch { setGalat("Koneksi terputus. Coba lagi."); }
     });
@@ -45,7 +45,9 @@ export default function FormDaftarSekolah({ kodeAwal }: { kodeAwal: string }) {
 
   return (
     <Halaman ikon={School} judul="Daftarkan sekolah" sub="Buat halaman SPMB sekolah Anda. Mulai dengan masa coba 7 hari.">
-      <InfoTrial />
+      {token
+        ? <p className="rounded-2xl bg-[var(--mint-muda)] p-3 text-sm text-[#0b6b52]"><b>Terima kasih sudah membeli!</b> Daftarkan sekolah dulu, setelah itu Anda langsung diarahkan untuk mengaktifkan paket.</p>
+        : <InfoTrial />}
       <ol className="grid grid-cols-3 gap-2 text-center text-xs font-semibold">
         {["Isi data sekolah", "Atur halaman", "Bagikan ke orang tua"].map((t, i) => (
           <li key={t} className="rounded-xl bg-[var(--biru-muda)] px-2 py-2 text-[var(--biru-tua)]"><span className="block text-base font-bold">{i + 1}</span>{t}</li>

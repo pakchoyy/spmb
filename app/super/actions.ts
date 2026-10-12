@@ -213,3 +213,14 @@ export async function gantiTokenAktivasi(): Promise<Hasil> {
   revalidatePath("/super/pengaturan");
   return { ok: true };
 }
+
+/** Pemilik membuatkan kode aktivasi (berlaku 24 jam) untuk email admin sekolah. */
+export async function buatKodePemilik(email: string): Promise<{ ok: true; kode: string } | { ok: false; pesan: string }> {
+  const { svc } = await wajibPemilik();
+  const em = email.trim().toLowerCase();
+  if (!/^\S+@\S+\.\S+$/.test(em)) return { ok: false, pesan: "Isi email yang benar." };
+  const { data, error } = await svc.rpc("buat_kode_pemilik", { p_email: em, p_jam: 24 });
+  if (error || typeof data !== "string") return { ok: false, pesan: error?.message.includes("email_tidak_terdaftar") ? "Email ini belum terdaftar sebagai admin sekolah." : "Gagal membuat kode." };
+  revalidatePath("/super");
+  return { ok: true, kode: data };
+}

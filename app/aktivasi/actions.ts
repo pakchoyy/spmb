@@ -5,11 +5,11 @@ import { kirimEmail } from "@/lib/email";
 import { lolosTurnstile } from "@/lib/turnstile";
 import { bolehLanjut } from "@/lib/perangkat";
 
-type Hasil = { ok: true; kode: string } | { ok: false; pesan: string };
+type Hasil = { ok: true; kode: string } | { ok: false; pesan: string; belumDaftar?: boolean };
 
 const PESAN: Record<string, string> = {
   token_salah: "Tautan aktivasi tidak valid. Buka lagi tautan dari halaman pesanan bgy-store.",
-  email_tidak_terdaftar: "Email ini belum terdaftar sebagai admin sekolah. Daftarkan sekolah dulu, atau pakai email yang dipakai saat daftar.",
+  email_tidak_terdaftar: "Email ini belum terdaftar sebagai admin sekolah.",
   langganan_dibatalkan: "Langganan sekolah ini dinonaktifkan. Hubungi kami lewat WhatsApp.",
   batas_harian: "Email ini sudah meminta 3 kode hari ini. Coba lagi besok atau hubungi kami.",
 };
@@ -24,7 +24,7 @@ export async function mintaKode(email: string, token: string, turnstile: string 
   const { data: kode, error } = await supabaseService().rpc("minta_kode_aktivasi", { p_email: em, p_token: token.slice(0, 64) });
   if (error || typeof kode !== "string") {
     const k = Object.keys(PESAN).find((x) => error?.message.includes(x));
-    return { ok: false, pesan: k ? PESAN[k] : "Gagal membuat kode. Coba lagi." };
+    return { ok: false, pesan: k ? PESAN[k] : "Gagal membuat kode. Coba lagi.", belumDaftar: k === "email_tidak_terdaftar" };
   }
   await kirimEmail(em, `Kode aktivasi ${kode}`,
     `Terima kasih sudah berlangganan SPMB Zone.\n\nKode aktivasi Anda: ${kode}\n\n` +

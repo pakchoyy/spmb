@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { linkWaBantuan } from "@/lib/merek";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import { supabaseService } from "@/lib/supabase/admin";
@@ -12,7 +13,9 @@ const kini = () => Date.now();
 const tgl = (d: Date) => d.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta" });
 const rupiah = (n: number) => `Rp${n.toLocaleString("id-ID")}`;
 
-export default async function Langganan() {
+export default async function Langganan({ searchParams }: PageProps<"/admin/langganan">) {
+  const { t } = await searchParams;
+  const tokenAktivasi = typeof t === "string" && /^[0-9a-f]{8,64}$/.test(t) ? t : null;
   const { db, sekolah } = await wajibAdmin();
   const [{ data }, { data: ajakan }] = await Promise.all([db.rpc("status_saya"), db.rpc("ajakan_saya")]);
   const st = data as St | null;
@@ -40,6 +43,14 @@ export default async function Langganan() {
         <h1 className="font-serif text-2xl font-bold">Langganan</h1>
         <p className="mt-1 text-sm text-white/85">Status paket, pembelian, kode aktivasi, dan program ajak sekolah.</p>
       </header>
+
+      {tokenAktivasi && (
+        <section className="space-y-3 rounded-3xl bg-[var(--mint-muda)] p-5 ring-2 ring-[var(--mint)]">
+          <p className="text-lg font-bold text-[#0b6b52]">Sekolah sudah terdaftar 🎉 Lanjutkan aktivasi paket</p>
+          <p className="text-sm">Ketuk tombol di bawah, kode aktivasi untuk <b>{st.email}</b> akan muncul. Salin, lalu tempel di kolom &ldquo;Punya kode aktivasi?&rdquo; di halaman ini.</p>
+          <Link className="btn btn-utama w-full" href={`/aktivasi?t=${tokenAktivasi}&email=${encodeURIComponent(st.email)}`}>Dapatkan kode aktivasi</Link>
+        </section>
+      )}
 
       <section className={`rounded-3xl p-5 ${ringkas.warna}`}>
         <p className="text-lg font-bold">{ringkas.judul}</p>

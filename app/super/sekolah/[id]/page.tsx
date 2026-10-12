@@ -5,6 +5,7 @@ import { wajibPemilik } from "@/lib/pemilik";
 import { tglId } from "@/lib/pendaftar";
 import Aksi from "./aksi";
 import Pencairan from "./pencairan";
+import BuatKode from "../../buat-kode";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,8 @@ export default async function DetailSekolah({ params }: { params: Promise<{ id: 
         <p className="text-sm">Mengajak {(diajak ?? []).length} sekolah, {berbayar} berlangganan. Komisi Rp{komisi.toLocaleString("id-ID")}, dicairkan Rp{dicairkan.toLocaleString("id-ID")}, <b>saldo Rp{Math.max(0, komisi - dicairkan).toLocaleString("id-ID")}</b>.</p>
         {komisi - dicairkan > 0 && <Pencairan id={s.id} saldo={komisi - dicairkan} />}
       </section>
+
+      {s.email && <BuatKode email={s.email} kunci />}
 
       <Aksi id={s.id} slug={s.slug} email={s.email ?? ""} dibatalkan={s.dibatalkan} nonaktif={s.nonaktif} terverifikasi={!!verif?.terverifikasi} />
 

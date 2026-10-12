@@ -7,10 +7,11 @@ import { Galat, Halaman, Kolom, input, tombol } from "@/components/ui";
 import Turnstile from "@/components/turnstile";
 import { mintaKode } from "./actions";
 
-export default function FormAktivasi({ token, sitekey }: { token: string; sitekey: string | null }) {
-  const [email, setEmail] = useState("");
+export default function FormAktivasi({ token, sitekey, emailAwal = "" }: { token: string; sitekey: string | null; emailAwal?: string }) {
+  const [email, setEmail] = useState(emailAwal);
   const [ts, setTs] = useState<string | null>(null);
   const [galat, setGalat] = useState("");
+  const [belumDaftar, setBelumDaftar] = useState(false);
   const [kode, setKode] = useState<string | null>(null);
   const [tersalin, setTersalin] = useState(false);
   const [pending, start] = useTransition();
@@ -35,7 +36,7 @@ export default function FormAktivasi({ token, sitekey }: { token: string; siteke
       <form className="space-y-4" onSubmit={(e) => {
         e.preventDefault(); setGalat("");
         start(async () => {
-          try { const r = await mintaKode(email, token, ts); if (r.ok) setKode(r.kode); else setGalat(r.pesan); }
+          try { const r = await mintaKode(email, token, ts); setBelumDaftar(false); if (r.ok) setKode(r.kode); else { setGalat(r.pesan); setBelumDaftar(!!r.belumDaftar); } }
           catch { setGalat("Koneksi terputus. Coba lagi."); }
         });
       }}>
@@ -44,6 +45,13 @@ export default function FormAktivasi({ token, sitekey }: { token: string; siteke
         </Kolom>
         <Turnstile sitekey={sitekey} onToken={setTs} />
         <Galat>{galat}</Galat>
+        {belumDaftar && (
+          <div className="space-y-2 rounded-2xl bg-[var(--kuning-muda)] p-4 text-sm">
+            <p><b>Belum punya akun sekolah?</b> Daftarkan sekolah dulu (±2 menit). Setelah selesai, Anda langsung diarahkan untuk mengaktifkan paket ini. Tautan aktivasi ini juga tetap bisa dibuka lagi nanti.</p>
+            <Link className="btn btn-kuning w-full" href={`/daftar?t=${token}&email=${encodeURIComponent(email)}`}>Daftarkan sekolah dulu</Link>
+            <p className="text-xs text-neutral-600">Sudah punya akun? Pastikan memakai email yang sama dengan saat mendaftar.</p>
+          </div>
+        )}
         <button className={tombol} disabled={pending || (!!sitekey && !ts)}>{pending ? "Memeriksa…" : "Dapatkan kode aktivasi"}</button>
         <p className="text-xs text-neutral-500">Kode hanya bisa dipakai sekali dan berlaku 1 jam.</p>
       </form>
