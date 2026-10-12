@@ -96,18 +96,22 @@ export async function gantiEmail(id: string, emailBaru: string): Promise<Hasil> 
   return { ok: true };
 }
 
-export async function simpanPengaturan(f: { lynk: string; harga: string; komisi: string; batas: string }): Promise<Hasil> {
+export async function simpanPengaturan(f: { lynk: string; harga: string; coret: string; promo: string; komisi: string; batas: string }): Promise<Hasil> {
   const { svc, email } = await wajibPemilik();
   const lynk = f.lynk.trim();
   if (lynk && !/^https:\/\//.test(lynk)) return gagal("Link produk harus diawali https://");
   const angka = (s: string) => (s.trim() === "" ? null : Number(s));
-  const harga = angka(f.harga), komisi = angka(f.komisi), batas = angka(f.batas);
+  const harga = angka(f.harga), komisi = angka(f.komisi), batas = angka(f.batas), coret = angka(f.coret);
+  const promo = f.promo ? `${f.promo}:00+07:00` : null;
+  if (promo && Number.isNaN(new Date(promo).getTime())) return gagal("Tanggal promo tidak valid.");
+  if (coret !== null && harga !== null && coret <= harga) return gagal("Harga coret harus lebih besar dari harga biasa.");
   for (const n of [harga, komisi, batas]) if (n !== null && (!Number.isInteger(n) || n < 0)) return gagal("Nominal harus angka bulat 0 atau lebih.");
   if (komisi === null || batas === null) return gagal("Isi nominal komisi dan batas pencairan.");
 
   const { data: lama } = await svc.from("pengaturan").select("komisi_nominal,batas_pencairan").eq("id", 1).single();
   const { error } = await svc.from("pengaturan").update({
     lynk_url: lynk || null, harga_paket: harga, komisi_nominal: komisi, batas_pencairan: batas,
+    harga_coret: coret, promo_sampai: promo,
   }).eq("id", 1);
   if (error) return gagal("Gagal menyimpan.");
   // perubahan nominal komisi wajib tercatat (PRD)

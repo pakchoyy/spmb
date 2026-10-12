@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { linkWaBantuan } from "@/lib/merek";
+import { hargaTampil, tglPromo } from "@/lib/harga";
 import { wajibAdmin } from "@/lib/sekolah-saya";
 import { supabaseService } from "@/lib/supabase/admin";
 import KodeForm from "./kode-form";
@@ -22,7 +23,7 @@ export default async function Langganan({ searchParams }: PageProps<"/admin/lang
   if (!st) return null;
 
   // tabel pengaturan hanya bisa dibaca server (service_role), tidak oleh admin sekolah
-  const { data: p } = await supabaseService().from("pengaturan").select("lynk_url,harga_paket").eq("id", 1).maybeSingle();
+  const { data: p } = await supabaseService().from("pengaturan").select("lynk_url,harga_paket,harga_coret,promo_sampai").eq("id", 1).maybeSingle();
   const lynk = p?.lynk_url && /^https:\/\//.test(p.lynk_url) ? p.lynk_url : null;
 
   const akhir = new Date(st.active_until ?? st.trial_until);
@@ -62,7 +63,11 @@ export default async function Langganan({ searchParams }: PageProps<"/admin/lang
       ) : (<>
         <section className="space-y-3 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-black/5">
           <h2 className="font-bold">{st.status === "aktif" ? "Perpanjang langganan" : "Beli paket 1 tahun"}</h2>
-          {p?.harga_paket ? <p className="text-2xl font-bold">{rupiah(p.harga_paket)}<span className="text-sm font-normal text-neutral-600"> / tahun</span></p> : null}
+          {(() => { const h = hargaTampil(p); return h && (
+            <div>
+              {h.promoAktif && <p className="text-sm font-bold text-[#8a5a00]">Promo pembukaan s.d. {tglPromo(h.promoSampai!)}</p>}
+              <p className="text-2xl font-bold">{h.coret && <s className="mr-2 text-base font-normal text-neutral-400">{rupiah(h.coret)}</s>}{rupiah(h.harga)}<span className="text-sm font-normal text-neutral-600"> / tahun</span></p>
+            </div>); })()}
           <ol className="list-decimal space-y-1 pl-5 text-sm">
             <li>Ketuk <b>Beli sekarang</b> dan bayar paket di BGY Store.</li>
             <li>Setelah bayar, buka tautan aktivasi yang diberikan, lalu isi email admin: <b className="break-all">{st.email}</b>.</li>

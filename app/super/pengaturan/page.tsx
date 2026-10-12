@@ -15,7 +15,7 @@ export default async function Pengaturan() {
       <h1 className="font-serif text-2xl font-bold">Harga, toko, dan komisi</h1>
       <BuatKode />
       <TautanAktivasi url={`${(process.env.NEXT_PUBLIC_SITE_URL ?? "https://spmbz.web.id").replace(/\/$/, "")}/aktivasi?t=${p?.token_aktivasi ?? ""}`} />
-      <Form awal={{ lynk: p?.lynk_url ?? "", harga: String(p?.harga_paket ?? ""), komisi: String(p?.komisi_nominal ?? 7000), batas: String(p?.batas_pencairan ?? 25000) }} />
+      <Form awal={{ lynk: p?.lynk_url ?? "", harga: String(p?.harga_paket ?? ""), coret: String(p?.harga_coret ?? ""), promo: p?.promo_sampai ? new Date(new Date(p.promo_sampai).getTime() + 7 * 3600000).toISOString().slice(0, 16) : "", komisi: String(p?.komisi_nominal ?? 7000), batas: String(p?.batas_pencairan ?? 25000) }} />
     </main>
   );
 }

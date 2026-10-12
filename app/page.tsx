@@ -12,6 +12,7 @@ import { Footer } from "@/components/footer";
 import { SekolahMarquee, type SekolahPengguna } from "@/components/sekolah-marquee";
 import { Testimoni, type TestimoniPublik } from "@/components/testimoni";
 import TombolCoba from "./tombol-coba";
+import { hargaTampil, rupiahHarga, tglPromo, type HargaPaket } from "@/lib/harga";
 
 export const revalidate = 3600; // harga dan daftar sekolah cukup segar tiap jam
 
@@ -20,11 +21,11 @@ export const metadata: Metadata = {
   description: "Sekolah mendapat halaman SPMB sendiri. Orang tua daftar dari HP tanpa akun, sekolah memeriksa berkas dengan mudah.",
 };
 
-async function ambilData(): Promise<{ harga: number | null; sekolah: SekolahPengguna[]; testimoni: TestimoniPublik[] }> {
+async function ambilData(): Promise<{ harga: HargaPaket | null; sekolah: SekolahPengguna[]; testimoni: TestimoniPublik[] }> {
   // Gagal ambil data (mis. saat build tanpa database) tidak boleh menggagalkan beranda.
   const [harga, sekolah, testimoni] = await Promise.all([
-    supabaseService().from("pengaturan").select("harga_paket").eq("id", 1).maybeSingle()
-      .then((r) => r.data?.harga_paket ?? null, () => null),
+    supabaseService().from("pengaturan").select("harga_paket,harga_coret,promo_sampai").eq("id", 1).maybeSingle()
+      .then((r) => hargaTampil(r.data), () => null),
     supabaseAnon().rpc("sekolah_pengguna")
       .then((r) => (r.data ?? []) as SekolahPengguna[], () => []),
     supabaseAnon().rpc("testimoni_publik")
@@ -194,7 +195,18 @@ export default async function Beranda() {
             <div className="mt-6 rounded-[2rem] bg-white p-6 shadow-sm ring-2 ring-[var(--kuning)]">
               <p className="font-semibold text-neutral-600">Paket tahunan</p>
               {harga
-                ? <p className="mt-1 font-serif text-4xl font-bold">Rp{harga.toLocaleString("id-ID")}<span className="text-base font-normal text-neutral-600"> / tahun</span></p>
+                ? <div className="mt-1">
+                    {harga.promoAktif && (
+                      <p className="flex items-center justify-center gap-2 text-sm font-bold text-[#8a5a00]">
+                        <span className="rounded-full bg-[var(--kuning)] px-2.5 py-0.5 text-[#14204a]">PROMO PEMBUKAAN</span>
+                        <span>s.d. {tglPromo(harga.promoSampai!)}</span>
+                      </p>
+                    )}
+                    <p className="mt-1 flex flex-wrap items-baseline justify-center gap-3 font-serif text-4xl font-bold">
+                      {harga.coret && <s className="text-2xl font-normal text-neutral-400">{rupiahHarga(harga.coret)}</s>}
+                      <span>{rupiahHarga(harga.harga)}<span className="text-base font-normal text-neutral-600"> / tahun</span></span>
+                    </p>
+                  </div>
                 : <p className="mt-1 font-serif text-2xl font-bold">Tanyakan harga terbaik</p>}
               <ul className="mt-4 space-y-2 text-left">
                 {["Pendaftar tanpa batas jumlah", "Semua fitur, tanpa biaya tambahan", "Data bisa diunduh kapan saja"].map((x) => (
