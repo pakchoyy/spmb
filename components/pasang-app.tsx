@@ -9,7 +9,7 @@ type PromptPasang = Event & { prompt: () => Promise<void>; userChoice: Promise<{
  * Tombol "Pasang aplikasi". Android/Chrome: memakai prompt bawaan browser.
  * iPhone/iPad: menampilkan petunjuk Bagikan → Tambahkan ke Layar Utama. Tersembunyi bila sudah terpasang.
  */
-export default function PasangApp({ judul = "Pasang aplikasi di HP", teks = "Buka lebih cepat dari layar utama, seperti aplikasi.", kunci = "pasang", ikon = "/api/ikon/192", nama = "SPMB Zone" }: { judul?: string; teks?: string; kunci?: string; ikon?: string; nama?: string }) {
+export default function PasangApp({ judul = "Pasang aplikasi di HP", teks = "Buka lebih cepat dari layar utama, seperti aplikasi.", kunci = "pasang", ikon = "/api/ikon/192?v=3", nama = "SPMB Zone" }: { judul?: string; teks?: string; kunci?: string; ikon?: string; nama?: string }) {
   const [prompt, setPrompt] = useState<PromptPasang | null>(null);
   const [ios, setIos] = useState(false);
   const [petunjuk, setPetunjuk] = useState(false);

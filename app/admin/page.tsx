@@ -103,7 +103,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<Re
         </div>
       </header>
 
-      <PasangApp ikon="/api/ikon/192" nama="Admin SPMB" judul="Pasang aplikasi admin" teks="Buka dasbor langsung dari layar utama HP." kunci="pasang-admin" />
+      <PasangApp ikon="/api/ikon/192?v=3" nama="Admin SPMB" judul="Pasang aplikasi admin" teks="Buka dasbor langsung dari layar utama HP." kunci="pasang-admin" />
       <Notif />
 
       {!awalSelesai && (

@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
       : [],
   },
   poweredByHeader: false,
+  // browser yang langsung meminta /favicon.ico tetap mendapat logo SPMB Zone
+  async rewrites() {
+    return [{ source: "/favicon.ico", destination: "/api/ikon/192?v=3" }];
+  },
   // header keamanan dasar untuk semua halaman
   async headers() {
     return [{

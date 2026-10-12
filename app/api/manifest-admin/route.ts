@@ -13,13 +13,13 @@ export function GET() {
     theme_color: "#2449d8",
     categories: ["education", "productivity"],
     shortcuts: [
-      { name: "Pendaftar baru", url: "/admin?status=Baru", icons: [{ src: "/api/ikon/192", sizes: "192x192" }] },
-      { name: "Pengaturan", url: "/admin/pengaturan", icons: [{ src: "/api/ikon/192", sizes: "192x192" }] },
+      { name: "Pendaftar baru", url: "/admin?status=Baru", icons: [{ src: "/api/ikon/192?v=3", sizes: "192x192" }] },
+      { name: "Pengaturan", url: "/admin/pengaturan", icons: [{ src: "/api/ikon/192?v=3", sizes: "192x192" }] },
     ],
     icons: [
-      { src: "/api/ikon/192", sizes: "192x192", type: "image/png" },
-      { src: "/api/ikon/512", sizes: "512x512", type: "image/png" },
-      { src: "/api/ikon/512?maskable=1", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      { src: "/api/ikon/192?v=3", sizes: "192x192", type: "image/png" },
+      { src: "/api/ikon/512?v=3", sizes: "512x512", type: "image/png" },
+      { src: "/api/ikon/512?v=3&maskable=1", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
   return new Response(JSON.stringify(body), { headers: { "Content-Type": "application/manifest+json", "Cache-Control": "public, max-age=86400" } });

@@ -13,11 +13,13 @@ export function TandaLogo({ className = "size-9", putih = false }: { className?:
           <linearGradient id="spmbz-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#2f8bff" /><stop offset="1" stopColor="#1747c4" /></linearGradient>
         </defs>
       )}
-      <path d="M78 22 L50 7 L14 27 L14 47 L86 53 L86 73 L50 93 L22 78" fill="none" stroke={putih ? "#fff" : "url(#spmbz-g)"} strokeWidth="13" strokeLinejoin="round" />
-      <g stroke={putih ? "#fff" : "#2567C9"} strokeWidth="4.2" strokeLinecap="round"><path d="M31 27 H55" /><path d="M31 35 H62" /></g>
-      <circle cx="70" cy="71" r="18" fill={putih ? "#2567C9" : "#fff"} />
-      <circle cx="70" cy="71" r="14.5" fill={putih ? "#fff" : "#0F2F5B"} />
-      <path d="M62.5 71.5 L68 77 L78 65.5" fill="none" stroke={putih ? "#2567C9" : "#fff"} strokeWidth="4.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M79 27 L50 10 L18 27 L18 43 L50 50 L82 57 L82 73 L50 90 L21 73" fill="none" stroke={putih ? "#fff" : "url(#spmbz-g)"} strokeWidth="19" strokeLinejoin="round" />
+      {/* dokumen di dalam huruf S */}
+      <path d="M28 26 L50 16 L68 25 L68 45 L28 38 Z" fill={putih ? "#1d5fd6" : "#fff"} stroke={putih ? "#1d5fd6" : "#fff"} strokeWidth="3" strokeLinejoin="round" />
+      <g stroke={putih ? "#fff" : "#2567C9"} strokeWidth="4.5" strokeLinecap="round"><path d="M36 27 H56" /><path d="M36 35 H60" /></g>
+      <circle cx="72" cy="73" r="17" fill={putih ? "#1d5fd6" : "#fff"} />
+      <circle cx="72" cy="73" r="13.5" fill="#0F2F5B" />
+      <path d="M65 73.5 L70 78.5 L79 68" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

@@ -47,11 +47,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ ukur
         // ikon aplikasi SPMB Zone: kotak biru gradasi + tanda putih (lihat public/merek/)
         <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(150deg, #2f8bff, #1747c4)", borderRadius: radius }}>
           <svg width={isi * 0.92} height={isi * 0.92} viewBox="-4 -4 108 108">
-            <path d="M78 22 L50 7 L14 27 L14 47 L86 53 L86 73 L50 93 L22 78" fill="none" stroke="#fff" strokeWidth="13" strokeLinejoin="round" />
-            <path d="M31 27 H55 M31 35 H62" stroke="#fff" strokeWidth="4.2" strokeLinecap="round" />
-            <circle cx="70" cy="71" r="18" fill="#1d5fd6" />
-            <circle cx="70" cy="71" r="14.5" fill="#fff" />
-            <path d="M62.5 71.5 L68 77 L78 65.5" fill="none" stroke="#1d5fd6" strokeWidth="4.2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M79 27 L50 10 L18 27 L18 43 L50 50 L82 57 L82 73 L50 90 L21 73" fill="none" stroke="#fff" strokeWidth="19" strokeLinejoin="round" />
+            <path d="M28 26 L50 16 L68 25 L68 45 L28 38 Z" fill="#1d5fd6" stroke="#1d5fd6" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M36 27 H56 M36 35 H60" stroke="#fff" strokeWidth="4.5" strokeLinecap="round" />
+            <circle cx="72" cy="73" r="17" fill="#1d5fd6" />
+            <circle cx="72" cy="73" r="13.5" fill="#0F2F5B" />
+            <path d="M65 73.5 L70 78.5 L79 68" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       )

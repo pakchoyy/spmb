@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://spmbz.web.id"),
   title: "SPMB Zone — Web SPMB Custom untuk sekolah anda",
   description: "Pendaftaran SPMB online untuk sekolah. Halaman SPMB sendiri, periksa berkas dengan mudah.",
-  icons: { icon: [{ url: "/api/ikon/192", type: "image/png" }], apple: "/api/ikon/180" },
+  icons: { icon: [{ url: "/api/ikon/192?v=3", type: "image/png" }], apple: "/api/ikon/180?v=3" },
   appleWebApp: { capable: true, title: "SPMB Zone", statusBarStyle: "default" },
 };
 
