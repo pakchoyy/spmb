@@ -3,6 +3,7 @@
 import { after } from "next/server";
 import { bolehLanjut, hashPerangkat } from "@/lib/perangkat";
 import { kirimPushSekolah } from "@/lib/push";
+import { catatGalat } from "@/lib/galat";
 import { supabaseAnon } from "@/lib/supabase/anon";
 import { supabaseService } from "@/lib/supabase/admin";
 import { lolosTurnstile } from "@/lib/turnstile";
@@ -44,7 +45,11 @@ export async function kirimPendaftaran(slug: string, data: {
     p_slug: slug, p_jalur: data.jalur, p_nama_anak: nama, p_tgl_lahir: data.tglLahir,
     p_isian: isian, p_perangkat: perangkat, p_setuju: data.setuju, p_wa: wa,
   });
-  if (error) return { ok: false, pesan: pesanError(error.message) };
+  if (error) {
+    // galat tak terduga (bukan validasi biasa) dicatat agar langsung terlihat di /super/galat
+    if (!/^[a-z_]+$/.test(error.message)) await catatGalat("server", `daftar_pendaftar: ${error.message}`, `/${slug}/daftar`);
+    return { ok: false, pesan: pesanError(error.message) };
+  }
   // notifikasi HP ke admin sekolah, setelah respons terkirim agar orang tua tidak menunggu
   after(async () => {
     const { data: sk } = await supabaseService().from("sekolah").select("id").eq("slug", slug).maybeSingle();
