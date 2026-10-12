@@ -36,14 +36,25 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ ukur
         <img src={logo} width={isi} height={isi} style={{ objectFit: "contain" }} alt="" />
       </div>
     ) : (
-      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(150deg, ${warna}, ${warna}cc)`, borderRadius: radius }}>
-        <svg width={isi} height={isi} viewBox="0 0 32 32">
-          <path d="M9 25V15a7 7 0 0 1 14 0v10" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
-          {huruf
-            ? <text x="16" y="23" textAnchor="middle" fontSize="8" fontWeight="800" fill="#ffc83d">{huruf}</text>
-            : <circle cx="16" cy="20" r="2.4" fill="#ffc83d" />}
-        </svg>
-      </div>
+      huruf ? (
+        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: `linear-gradient(150deg, ${warna}, ${warna}cc)`, borderRadius: radius }}>
+          <svg width={isi} height={isi} viewBox="0 0 32 32">
+            <path d="M9 25V15a7 7 0 0 1 14 0v10" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
+            <text x="16" y="23" textAnchor="middle" fontSize="8" fontWeight="800" fill="#ffc83d">{huruf}</text>
+          </svg>
+        </div>
+      ) : (
+        // ikon aplikasi SPMB Zone: kotak biru gradasi + tanda putih (lihat public/merek/)
+        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(150deg, #2f8bff, #1747c4)", borderRadius: radius }}>
+          <svg width={isi * 0.92} height={isi * 0.92} viewBox="-4 -4 108 108">
+            <path d="M78 22 L50 7 L14 27 L14 47 L86 53 L86 73 L50 93 L22 78" fill="none" stroke="#fff" strokeWidth="13" strokeLinejoin="round" />
+            <path d="M31 27 H55 M31 35 H62" stroke="#fff" strokeWidth="4.2" strokeLinecap="round" />
+            <circle cx="70" cy="71" r="18" fill="#1d5fd6" />
+            <circle cx="70" cy="71" r="14.5" fill="#fff" />
+            <path d="M62.5 71.5 L68 77 L78 65.5" fill="none" stroke="#1d5fd6" strokeWidth="4.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+      )
     ),
     { width: px, height: px, headers: { "Cache-Control": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=604800" } },
   );

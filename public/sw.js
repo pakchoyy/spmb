@@ -1,6 +1,6 @@
 // Service worker SPMB Zone. Sengaja sempit: hanya aset statis dan halaman informasi sekolah.
 // Dashboard, form, cek status, login, dan semua data pengguna TIDAK PERNAH disimpan.
-const VERSI = "v2";
+const VERSI = "v3";
 const CACHE_ASET = `aset-${VERSI}`;
 const CACHE_HALAMAN = `halaman-${VERSI}`;
 const MAKS_UMUR_HALAMAN = 24 * 60 * 60 * 1000; // 1 hari
