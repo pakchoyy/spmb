@@ -55,6 +55,15 @@ export default function GambarForm({ logo, banner, bannerAtur, warna, galeri, bi
   logo: string | null; banner: string | null; bannerAtur: BannerAtur; warna: string; galeri: { id: string; path: string }[]; bisaUbah: boolean;
 }) {
   const aLogo = useAksi(), aBanner = useAksi(), aGaleri = useAksi(), aHapus = useAksi();
+  // hapus terasa instan: item langsung disembunyikan, server menyusul (dikembalikan bila gagal)
+  const [terhapus, setTerhapus] = useState<string[]>([]);
+  const hapus = (kunci: string, fn: () => ReturnType<typeof hapusGambar>) => {
+    setTerhapus((x) => [...x, kunci]);
+    aHapus.jalankan(async () => { const r = await fn(); if (!r.ok) setTerhapus((x) => x.filter((k) => k !== kunci)); return r; });
+  };
+  if (terhapus.includes("logo")) logo = null;
+  if (terhapus.includes("banner")) banner = null;
+  galeri = galeri.filter((g) => !terhapus.includes(g.id));
 
   return (
     <div className="space-y-6">
@@ -67,7 +76,7 @@ export default function GambarForm({ logo, banner, bannerAtur, warna, galeri, bi
         {bisaUbah && (
           <div className="mt-2 grid gap-2">
             <Pilih jenis="logo" label={logo ? "Ganti logo" : "Pasang logo"} sisi={512} aksi={aLogo} />
-            {logo && <button className="text-sm tautan" onClick={() => aHapus.jalankan(() => hapusGambar("logo"))}>Hapus logo</button>}
+            {logo && <button className="text-sm tautan" onClick={() => hapus("logo", () => hapusGambar("logo"))}>Hapus logo</button>}
             <Galat>{aLogo.galat}</Galat>
           </div>
         )}
@@ -83,7 +92,7 @@ export default function GambarForm({ logo, banner, bannerAtur, warna, galeri, bi
         {bisaUbah && (
           <div className="mt-2 grid gap-2">
             <Pilih jenis="banner" label={banner ? "Ganti banner" : "Pasang banner"} sisi={1600} aksi={aBanner} />
-            {banner && <button className="text-sm tautan" onClick={() => aHapus.jalankan(() => hapusGambar("banner"))}>Hapus banner</button>}
+            {banner && <button className="text-sm tautan" onClick={() => hapus("banner", () => hapusGambar("banner"))}>Hapus banner</button>}
             <Galat>{aBanner.galat}</Galat>
           </div>
         )}
@@ -98,7 +107,7 @@ export default function GambarForm({ logo, banner, bannerAtur, warna, galeri, bi
               <img src={urlAset(g.path)!} alt="" loading="lazy" className="aspect-square w-full rounded-2xl object-cover ring-1 ring-black/10" />
               {bisaUbah && (
                 <button aria-label="Hapus foto" className="absolute right-1 top-1 size-7 rounded-full bg-black/70 text-white"
-                  onClick={() => aHapus.jalankan(() => hapusGambar("galeri", g.id))}>×</button>
+                  onClick={() => hapus(g.id, () => hapusGambar("galeri", g.id))}>×</button>
               )}
             </div>
           ))}

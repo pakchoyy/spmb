@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Move, ZoomIn } from "lucide-react";
+import { Move, MoveHorizontal, MoveVertical, ZoomIn } from "lucide-react";
 import { useAksi } from "@/components/aksi";
 import { Galat } from "@/components/ui";
 import { simpanBannerAtur } from "./actions";
@@ -28,6 +28,7 @@ export default function AturBanner({ src, awal, warna }: { src: string; awal: Ba
   return (
     <div className="space-y-3 rounded-2xl bg-neutral-50 p-3">
       <p className="flex items-center gap-2 text-sm font-semibold"><Move className="size-4" aria-hidden />Atur bagian foto yang tampil</p>
+      <p className="text-xs text-neutral-600">Seret foto atau pakai penggeser. Perbesar sedikit dulu agar foto bisa digeser ke segala arah.</p>
       <div className="grid grid-cols-[3fr_2fr] items-end gap-3">
         <div ref={kotak} className="relative aspect-[4/5] touch-none cursor-grab overflow-hidden rounded-2xl active:cursor-grabbing"
           style={{ background: `linear-gradient(160deg, ${warna}, color-mix(in srgb, ${warna} 65%, black))` }}
@@ -36,7 +37,7 @@ export default function AturBanner({ src, awal, warna }: { src: string; awal: Ba
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={src} alt="" draggable={false} className="absolute inset-0 size-full select-none object-cover opacity-60"
             style={{ objectPosition: `${a.x}% ${a.y}%`, transform: `scale(${a.z / 100})`, transformOrigin: `${a.x}% ${a.y}%` }} />
-          <span className="absolute bottom-2 left-2 rounded-full bg-black/50 px-2 py-0.5 text-[11px] font-semibold text-white">Tampilan HP · geser foto</span>
+          <span className="absolute bottom-2 left-2 rounded-full bg-black/50 px-2 py-0.5 text-[11px] font-semibold text-white">Tampilan HP · seret foto</span>
         </div>
         <div className="relative aspect-[16/7] overflow-hidden rounded-xl" style={{ background: warna }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -45,6 +46,15 @@ export default function AturBanner({ src, awal, warna }: { src: string; awal: Ba
           <span className="absolute bottom-1 left-1 rounded-full bg-black/50 px-1.5 text-[10px] text-white">Layar lebar</span>
         </div>
       </div>
+      {/* geser dengan tombol/penggeser juga (selain menyeret foto) */}
+      <label className="flex items-center gap-3 text-sm">
+        <MoveHorizontal className="size-5 shrink-0 text-neutral-500" aria-hidden />
+        <input type="range" min={0} max={100} value={Math.round(a.x)} onChange={(e) => setA({ ...a, x: Number(e.target.value) })} className="w-full accent-[var(--biru)]" aria-label="Geser kiri–kanan" />
+      </label>
+      <label className="flex items-center gap-3 text-sm">
+        <MoveVertical className="size-5 shrink-0 text-neutral-500" aria-hidden />
+        <input type="range" min={0} max={100} value={Math.round(a.y)} onChange={(e) => setA({ ...a, y: Number(e.target.value) })} className="w-full accent-[var(--biru)]" aria-label="Geser atas–bawah" />
+      </label>
       <label className="flex items-center gap-3 text-sm">
         <ZoomIn className="size-5 shrink-0 text-neutral-500" aria-hidden />
         <input type="range" min={100} max={250} value={a.z} onChange={(e) => setA({ ...a, z: Number(e.target.value) })} className="w-full accent-[var(--biru)]" aria-label="Perbesar" />
