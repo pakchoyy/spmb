@@ -69,7 +69,7 @@ const FAQ = [
 function Ilustrasi() {
   // HP dengan form singkat dan tanda centang: gambaran "daftar dari HP".
   return (
-    <svg viewBox="0 0 220 240" aria-hidden className="mx-auto h-56 w-auto lg:h-64">
+    <svg viewBox="0 0 220 240" aria-hidden className="mx-auto h-56 w-auto lg:h-48">
       <circle cx="170" cy="50" r="38" fill="var(--kuning)" opacity=".35" />
       <circle cx="40" cy="190" r="30" fill="var(--mint)" opacity=".2" />
       <rect x="55" y="20" width="110" height="200" rx="22" fill="#14204a" />
@@ -110,20 +110,20 @@ export default async function Beranda() {
       </header>
 
       <main className="flex-1">
-        <section className="hero-latar relative overflow-hidden px-5 pb-10 pt-8 lg:py-10">
+        <section className="hero-latar relative overflow-hidden px-5 pb-10 pt-8 lg:pb-6 lg:pt-6">
           {/* layar lebar: kolom teks lebih lebar agar judul cukup 2 baris dan hero tidak memenuhi layar */}
           <div className="mx-auto grid max-w-4xl items-center gap-6 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-[1.6fr_1fr] lg:gap-10">
             <div className="muncul text-center sm:text-left">
               <p className="inline-flex items-center gap-1.5 rounded-full bg-[var(--kuning-muda)] px-3 py-1 text-sm font-bold text-[#8a5a00]">
                 <CalendarClock className="size-4" aria-hidden /> SPMB online untuk sekolah
               </p>
-              <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">Web SPMB <span className="relative whitespace-nowrap text-[var(--biru)]">Custom<svg aria-hidden viewBox="0 0 120 10" preserveAspectRatio="none" className="absolute -bottom-1 left-0 h-2.5 w-full text-[var(--kuning)]"><path d="M2 7c30-5 80-6 116-2" stroke="currentColor" strokeWidth="5" fill="none" strokeLinecap="round" /></svg></span> <br className="hidden lg:block" />untuk sekolah anda</h1>
+              <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-[2.6rem] lg:leading-[1.12]">Web SPMB <span className="relative whitespace-nowrap text-[var(--biru)]">Custom<svg aria-hidden viewBox="0 0 120 10" preserveAspectRatio="none" className="absolute -bottom-1 left-0 h-2.5 w-full text-[var(--kuning)]"><path d="M2 7c30-5 80-6 116-2" stroke="currentColor" strokeWidth="5" fill="none" strokeLinecap="round" /></svg></span> <br className="hidden lg:block" />untuk sekolah anda</h1>
               <p className="mt-3 text-lg text-neutral-700">Orang tua daftar dari HP tanpa akun. Sekolah memeriksa berkas dengan mudah.</p>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:mt-7">
-                <TombolCoba className="btn btn-utama h-14 whitespace-nowrap text-lg">Daftarkan sekolah <ArrowRight className="size-5" aria-hidden /></TombolCoba>
-                {contoh && <Link href={`/${contoh}`} className="btn btn-lembut h-14 whitespace-nowrap">Lihat contoh halaman</Link>}
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:mt-5">
+                <TombolCoba className="btn btn-utama h-14 whitespace-nowrap text-lg lg:h-12 lg:text-base">Daftarkan sekolah <ArrowRight className="size-5" aria-hidden /></TombolCoba>
+                {contoh && <Link href={`/${contoh}`} className="btn btn-lembut h-14 whitespace-nowrap lg:h-12">Lihat contoh web SPMB</Link>}
               </div>
-              <ul className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-neutral-600 sm:justify-start">
+              <ul className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-neutral-600 sm:justify-start">
                 <li className="flex items-center gap-1"><BadgeCheck className="size-4 text-[var(--mint)]" aria-hidden /> Coba dulu 7 hari (trial)</li>
                 <li className="flex items-center gap-1"><Smartphone className="size-4 text-[var(--mint)]" aria-hidden /> Cukup pakai HP</li>
               </ul>
