@@ -69,7 +69,7 @@ const FAQ = [
 function Ilustrasi() {
   // HP dengan form singkat dan tanda centang: gambaran "daftar dari HP".
   return (
-    <svg viewBox="0 0 220 240" aria-hidden className="mx-auto h-56 w-auto">
+    <svg viewBox="0 0 220 240" aria-hidden className="mx-auto h-56 w-auto lg:h-64">
       <circle cx="170" cy="50" r="38" fill="var(--kuning)" opacity=".35" />
       <circle cx="40" cy="190" r="30" fill="var(--mint)" opacity=".2" />
       <rect x="55" y="20" width="110" height="200" rx="22" fill="#14204a" />
@@ -100,7 +100,7 @@ export default async function Beranda() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-20 border-b border-black/5 bg-[var(--background)]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-5 py-3">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-5 py-3 lg:max-w-6xl">
           <Logo />
           <div className="flex items-center gap-2">
             <Link href="/cara-pakai" className="btn btn-pil px-3 text-[var(--biru)]">Cara pakai</Link>
@@ -110,15 +110,16 @@ export default async function Beranda() {
       </header>
 
       <main className="flex-1">
-        <section className="hero-latar relative overflow-hidden px-5 pb-10 pt-8">
-          <div className="mx-auto grid max-w-4xl items-center gap-6 sm:grid-cols-2">
+        <section className="hero-latar relative overflow-hidden px-5 pb-10 pt-8 lg:py-10">
+          {/* layar lebar: kolom teks lebih lebar agar judul cukup 2 baris dan hero tidak memenuhi layar */}
+          <div className="mx-auto grid max-w-4xl items-center gap-6 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-[1.6fr_1fr] lg:gap-10">
             <div className="muncul text-center sm:text-left">
               <p className="inline-flex items-center gap-1.5 rounded-full bg-[var(--kuning-muda)] px-3 py-1 text-sm font-bold text-[#8a5a00]">
                 <CalendarClock className="size-4" aria-hidden /> SPMB online untuk sekolah
               </p>
-              <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl">Web SPMB <span className="relative whitespace-nowrap text-[var(--biru)]">Custom<svg aria-hidden viewBox="0 0 120 10" preserveAspectRatio="none" className="absolute -bottom-1 left-0 h-2.5 w-full text-[var(--kuning)]"><path d="M2 7c30-5 80-6 116-2" stroke="currentColor" strokeWidth="5" fill="none" strokeLinecap="round" /></svg></span> untuk sekolah anda</h1>
+              <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">Web SPMB <span className="relative whitespace-nowrap text-[var(--biru)]">Custom<svg aria-hidden viewBox="0 0 120 10" preserveAspectRatio="none" className="absolute -bottom-1 left-0 h-2.5 w-full text-[var(--kuning)]"><path d="M2 7c30-5 80-6 116-2" stroke="currentColor" strokeWidth="5" fill="none" strokeLinecap="round" /></svg></span> <br className="hidden lg:block" />untuk sekolah anda</h1>
               <p className="mt-3 text-lg text-neutral-700">Orang tua daftar dari HP tanpa akun. Sekolah memeriksa berkas dengan mudah.</p>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:mt-7">
                 <TombolCoba className="btn btn-utama h-14 whitespace-nowrap text-lg">Daftarkan sekolah <ArrowRight className="size-5" aria-hidden /></TombolCoba>
                 {contoh && <Link href={`/${contoh}`} className="btn btn-lembut h-14 whitespace-nowrap">Lihat contoh halaman</Link>}
               </div>
@@ -135,7 +136,7 @@ export default async function Beranda() {
         <Testimoni daftar={testimoni} />
 
         <section className="bg-[var(--biru)] px-5 py-10 text-white">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-4xl lg:max-w-6xl">
             <h2 className="text-center font-serif text-3xl font-bold">Mulai dalam tiga langkah</h2>
             <ol className="mt-6 grid gap-3 sm:grid-cols-3">
               {LANGKAH.map((l, i) => (
@@ -153,7 +154,7 @@ export default async function Beranda() {
         </section>
 
         <section className="px-5 py-10">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-4xl lg:max-w-6xl">
             <Judul kecil="Fitur">Yang sekolah dapatkan</Judul>
             <ul className="mt-6 grid gap-3 sm:grid-cols-2">
               {FITUR.map((f) => (
@@ -170,7 +171,7 @@ export default async function Beranda() {
         </section>
 
         <section className="bg-[#14204a] px-5 py-12 text-white">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-4xl lg:max-w-6xl">
             <p className="text-center text-sm font-bold uppercase tracking-wider text-[var(--kuning)]">Kenapa kami</p>
             <h2 className="mt-1 text-center font-serif text-3xl font-bold">Kenapa memilih {NAMA_APP}?</h2>
             <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
