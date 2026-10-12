@@ -120,6 +120,7 @@ export async function simpanPengaturan(f: { lynk: string; harga: string; coret: 
   }
   revalidatePath("/super/pengaturan");
   revalidatePath("/admin/langganan");
+  revalidatePath("/"); // beranda memuat harga dan promo
   return { ok: true };
 }
 
