@@ -31,10 +31,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const desk = `Pendaftaran siswa baru (SPMB) ${sekolah.nama} secara online dari HP.${sekolah.alamat ? ` ${sekolah.alamat}.` : ""}`;
   const gambar = urlAset(sekolah.banner_path) ?? urlAset(sekolah.logo_path);
   return {
-    title: `SPMB ${sekolah.nama}`, description: desk,
-    manifest: `/${sekolah.slug}/manifest.webmanifest`,
-    icons: { icon: `/api/ikon/192?s=${sekolah.slug}&v=${(sekolah.logo_path ?? "").replace(/\W/g, "").slice(-8) || "0"}`, apple: `/api/ikon/180?s=${sekolah.slug}&v=${(sekolah.logo_path ?? "").replace(/\W/g, "").slice(-8) || "0"}` },
-    appleWebApp: { capable: true, title: sekolah.nama.slice(0, 20), statusBarStyle: "default" },
+    title: { absolute: `SPMB ${sekolah.nama}` }, description: desk,
     alternates: { canonical: `/${sekolah.slug}` },
     openGraph: { title: `SPMB ${sekolah.nama}`, description: desk, type: "website", ...(gambar ? { images: [gambar] } : {}) },
   };

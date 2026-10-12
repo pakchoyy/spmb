@@ -3,6 +3,8 @@ import { supabaseAnon } from "@/lib/supabase/anon";
 import type { SekolahPublik } from "@/lib/berkas";
 import CekForm from "./cek-form";
 
+export const metadata = { title: "Cek status", robots: { index: false } };
+
 export const revalidate = 600; // hanya info sekolah; data pendaftar diambil lewat server action
 export const generateStaticParams = () => [];
 

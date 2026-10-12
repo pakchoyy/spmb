@@ -4,6 +4,8 @@ import { supabaseAnon } from "@/lib/supabase/anon";
 import type { SekolahPublik } from "@/lib/berkas";
 import FormDaftar from "./form";
 
+export const metadata = { title: "Daftar", robots: { index: false } };
+
 export const dynamic = "force-dynamic"; // status langganan harus selalu segar
 
 export default async function Daftar({ params, searchParams }: PageProps<"/[slug]/daftar">) {

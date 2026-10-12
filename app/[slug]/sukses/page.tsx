@@ -5,6 +5,8 @@ import { supabaseAnon } from "@/lib/supabase/anon";
 import type { SekolahPublik } from "@/lib/berkas";
 import AksiBukti from "./cetak";
 
+export const metadata = { title: "Bukti pendaftaran", robots: { index: false } };
+
 export const dynamic = "force-dynamic";
 
 export default async function Sukses({ params, searchParams }: {
