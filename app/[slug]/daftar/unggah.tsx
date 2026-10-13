@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { kompres, MAKS_BYTE, MIME } from "@/lib/berkas";
-import { unggahBerkas } from "./actions";
+import { supabaseBrowser } from "@/lib/supabase/browser";
+import { mintaUnggah, selesaiUnggah, unggahBerkas } from "./actions";
 import { Camera, CheckCircle2, FolderOpen } from "lucide-react";
 
 type Props = { slug: string; nomor: string; tglLahir: string; syarat: string[]; sudah: string[]; format: string[]; onSelesai?: () => void };
@@ -22,9 +23,20 @@ export default function Unggah({ slug, nomor, tglLahir, syarat, sudah, format, o
     try {
       const kecil = await kompres(f);
       if (kecil.size > MAKS_BYTE) throw new Error("Ukuran berkas maksimal 2 MB.");
-      const fd = new FormData();
-      fd.set("file", kecil);
-      const r = await unggahBerkas(slug, nomor, tglLahir, jenis, fd);
+      // 1) izin dari server  2) kirim langsung ke Storage  3) server memeriksa & mencatat
+      const izin = await mintaUnggah(slug, nomor, tglLahir, jenis, kecil.type, kecil.size);
+      if (!izin.ok) throw new Error(izin.pesan);
+      const { error: up } = await supabaseBrowser().storage.from("berkas")
+        .uploadToSignedUrl(izin.path, izin.token, kecil, { contentType: kecil.type, upsert: true })
+        .catch(() => ({ error: new Error("jaringan") }));
+      let r: { ok: true } | { ok: false; pesan: string };
+      if (!up) r = await selesaiUnggah(slug, nomor, tglLahir, jenis, izin.path);
+      else {
+        // cadangan: kirim lewat server seperti sebelumnya
+        const fd = new FormData();
+        fd.set("file", kecil);
+        r = await unggahBerkas(slug, nomor, tglLahir, jenis, fd);
+      }
       if (!r.ok) throw new Error(r.pesan);
       setOk((o) => [...new Set([...o, jenis])]);
       // pratinjau kecil foto yang terkirim, supaya orang tua yakin berkasnya benar
