@@ -95,3 +95,9 @@ html.teks-besar { font-size: 112.5%; }
   0% { opacity: 1; transform: translateY(0) rotate(0); }
   100% { opacity: 0; transform: translateY(105vh) rotate(720deg); }
 }
+
+/* Skrip bar info Bantu Guru Yuk juga memasang navbar bawah (Tools/Soal/Modul/LKPD) dan menyembunyikan footer.
+   Itu khusus situs Bantu Guru Yuk, jadi di SPMB Zone dimatikan. Spesifisitas dinaikkan agar menang. */
+html body .bgnv, html body .bgnv-panel, html body .bgnv-scrim { display: none !important; }
+html.bgnv-on:root body { padding-bottom: 0 !important; }
+html.bgnv-on:root body footer { display: block !important; }
